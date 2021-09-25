@@ -1,0 +1,16 @@
+auto-save-list
+custom.el
+.org-id-locations
+\#*
+org-mode-config.el
+*~
+.#*
+\#*\#
+*.log
+.DS_Store
+org-clock-save.el
+emacs-config.el
+node_modules/
+package-lock.json
+.directory
+/dist/*

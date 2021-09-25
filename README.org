@@ -1,0 +1,88 @@
+* Privacy Search Engine Switcher
+A WebExtension to switch current page between various search engines in just one click (or =Ctrl+Alt+N=), if you are too lazy to type =!b=, =!g= (especially on mobile) in DuckDuckGo.
+
+So you can easily keep your privacy as possible as you can.
+
+Currently supported search engines:
+
+- DuckDuckGo
+- Ecosia
+- StartPage
+- Bing
+- Google
+- Wikipedia English (Experimental)
+
+For more information please see [[https://github.com/kuanyui/EngineSwitcher][GitHub]].
+
+* Install
+- [[https://addons.mozilla.org/en-US/firefox/addon/privacy-search-engine-switcher/][Mozilla Add-ons]]
+
+* Screenshot
+[[https://addons.cdn.mozilla.net/user-media/previews/full/214/214819.png]]
+
+* Supported Browser
+- Firefox for Desktop >= 61
+- Firefox for Android >= 61
+
+
+* Requirements for Development
+- Node
+- web-ext
+- GNU Make
+- Python 3 (For HTTP server)
+
+* Development
+** Prepare
+#+BEGIN_SRC sh
+npm i
+#+END_SRC
+
+** Run for development (Watch)
+#+BEGIN_SRC sh
+make dev
+web-ext run --verbose --firefox-profile ~/.mozilla/firefox/PROFILE_DIR_NAME
+#+END_SRC
+#+BEGIN_QUOTE
+If webpack watch exit immediately without any error, please try [[https://github.com/guard/listen/wiki/Increasing-the-amount-of-inotify-watchers]]
+#+END_QUOTE
+
+** Run Firefox for developing WebExtension
+#+BEGIN_SRC sh
+web-ext run --verbose --firefox-profile ~/.mozilla/firefox/XXXXXXX.NAME
+#+END_SRC
+
+** Deploy (Build .xpi file & run a HTTP server for download)
+#+BEGIN_SRC sh
+make xpi-server
+#+END_SRC
+
+** Zip this repository for uploading to addons.mozilla.org
+#+BEGIN_SRC sh
+make zip-repo
+#+END_SRC
+
+* Permission
+For paranoid users such as me, these are all used permissions with its usages:
+- =tabs=:
+  - Watch the URL changing of all tabs, for checking if URL is supported stie, and decide if show / hide =pageAction= button. (=browser.tabs.onUpdated=).
+  - Get the URL of current page (=Tab.url= in =pageAction.onClicked=)
+  - Redirect to new URL (=tabs.update({url: string})=)
+  #+BEGIN_QUOTE
+    [[https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Differences_between_desktop_and_Android#Effect_on_your_add-on_UI][Firefox for Android requires developer call =browser.pageAction.show()= explicitly]] and it's impossible to use =pageAction= with only =manifest.page_action.show_matches= to implement this extension.
+  #+END_QUOTE
+
+- =storage=:
+  - For saving user preferences in your Mozilla account (=storage.sync=)
+
+- =startpage.com=
+  - =startpage.com= protect privacy in a extremely paranoid way: it's impossible to get query string from URL. Therefore, I have to inserting =content.js= to get query string from =<input>=.
+
+* Acknowedgement
+- Main icon is from Breeze of KDE Project
+
+* TODOs
+- Customizable keyboard shortcuts.
+- More search engines.
+- Buttons for Fenix
+* License
+WTFPL 2.0

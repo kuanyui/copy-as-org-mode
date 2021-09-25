@@ -1,0 +1,28 @@
+{
+  "include": [
+    "*",  // What? `includes` is not same as `include` ???
+    "src/*.ts",
+    "src/**/*.ts",
+    "options_ui/*.ts",
+  ],
+  "exclude": [
+    "node_modules"
+  ],
+  "typeAcquisition": {
+    "enable": true,
+    "include": ["web-ext-types"]  // Useless for .vue
+  },
+  "compilerOptions": {
+    "typeRoots": ["node_modules/@types", "node_modules/web-ext-types"],  // Useless for .vue
+    "types": ["web-ext-types"],   // Useless for .vue
+    "target": "esnext",
+    "lib": [
+      "esnext",
+      "dom",
+      "dom.Iterable"
+    ],
+    "strict": true,
+    "removeComments": true,
+    "moduleResolution": "node",  // without this, vue cannot be import by TypeScript
+  }
+}

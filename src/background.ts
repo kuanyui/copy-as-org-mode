@@ -1,0 +1,82 @@
+import { MyStorage, storageManager, objectAssignPerfectly } from "./common";
+
+
+/** This can be modify */
+const STORAGE: MyStorage = storageManager.getDefaultData()
+
+// Storage
+console.log('[background] first time to get config from storage')
+storageManager.getData().then((obj) => {
+    objectAssignPerfectly(STORAGE, obj)
+})
+
+storageManager.onDataChanged((changes) => {
+    console.log('[background] storage changed!', changes)
+    STORAGE.listBulletChar = changes.listBulletChar.newValue
+})
+browser.menus.create(
+    {
+      id: "copy-current-page-url-as-org-mode",
+      title: "Copy Current Page's Title and URL as Org-Mode",
+      contexts: ["page", "frame"],
+      documentUrlPatterns: ["<all_urls>"],
+    },
+    () => {
+      if (browser.runtime.lastError)
+        console.log(`Error: ${browser.runtime.lastError}`)
+    }
+  )
+
+  browser.menus.create(
+    {
+      id: "copy-selection-as-org-mode",
+      title: "Copy Selection as Org-Mode",
+      contexts: ["selection"],
+      documentUrlPatterns: ["<all_urls>"],
+    },
+    () => {
+      if (browser.runtime.lastError)
+        console.log(`Error: ${browser.runtime.lastError}`)
+    }
+  )
+
+  browser.menus.create(
+    {
+      id: "copy-link-as-org-mode",
+      title: "Copy This Link as Org-Mode",
+      contexts: ["link"],
+      documentUrlPatterns: ["<all_urls>"],
+    },
+    () => {
+      if (browser.runtime.lastError)
+        console.log(`Error: ${browser.runtime.lastError}`)
+    }
+  )
+
+browser.menus.onClicked.addListener((info, tab) => {
+    const tabId = tab.id
+    if (tabId === undefined) { console.error('[To Developer] tab.id is undefined??? What the fuck?'); return }
+      if (
+        info.menuItemId === "copy-selection-as-org-mode" ||
+        info.menuItemId === "copy-current-page-url-as-org-mode"
+      ) {
+        browser.tabs.executeScript(tabId, { file: "copy.js" })
+      } else if (info.menuItemId === "copy-link-as-org-mode") {
+        browser.tabs.executeScript(tabId, { file: "copy-link.js" }).then(() => {
+          const linkText = info.linkText.replace(/([\\`*_[\]<>])/g, "\\$1")
+          const linkUrl = info.linkUrl.replace(
+            /[\\!'()*]/g,
+            (c) => `%${c.charCodeAt(0).toString(16)}`
+          )
+          browser.tabs.sendMessage(tabId, {
+            text: `[[${linkUrl}][${linkText}]]`,  /// TODO: Rename: orgText
+            html: `<a href="${linkUrl}">${linkText}</a>`,
+          })
+        })
+      }
+    }
+  )
+
+  browser.browserAction.onClicked.addListener(() =>
+    browser.tabs.executeScript(undefined, { file: "copy.js" })
+  )
