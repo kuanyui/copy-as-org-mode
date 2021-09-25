@@ -1,0 +1,30 @@
+{
+    "manifest_version": 2,
+    "name": "Copy as Org-Mode",
+    "version": "0.0.1",
+
+    "description": "Switch between various search engines in one click",
+    "icons": {
+        "256": "img/icon.png"
+    },
+    "page_action": {
+      "browser_style": true,
+      "default_icon": {
+        "256": "img/icon.png"
+      },
+      "default_title": "Switch Engine!"
+    },
+    "background": {
+        "scripts": ["dist/background.js"]
+    },
+    "permissions": ["activeTab", "clipboardWrite", "contextMenus", "storage"],
+    "commands": {
+        "_execute_page_action": {
+            "suggested_key": {
+                "default": "Ctrl+Alt+O",
+                "linux": "Ctrl+Alt+O"
+            },
+            "description": "Copy as Org-Mode"
+        }
+    }
+}
