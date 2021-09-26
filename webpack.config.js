@@ -1,11 +1,13 @@
 const CopyPlugin = require('copy-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+// const HtmlWebpackPugPlugin = require('html-webpack-pug-plugin')
 
 const config = {
     entry: {
         background: './src/background.ts',
         copy: './src/copy.ts',
         'copy-link': './src/copy-link.ts',
-        // options_ui: './options_ui/index.ts'
+        // 'options_ui': './options_ui/options_ui.pug',
     },
     output: {
         filename: '[name].js',
@@ -19,7 +21,26 @@ const config = {
                     loader: 'ts-loader',
                 }
             },
-            // { test: /\.pug$/, loader: 'pug-plain-loader' },
+            {
+                test: /\.pug$/,
+                // use: [
+                //     // 'html-loader',
+                //     'pug-html-loader'
+                // ],
+                use: [
+                    //{
+                    //    loader: 'html-loader',
+                    //    options: { minimize: false }
+                    //},
+                    {
+                        loader: 'raw-loader',
+                    },
+                    {
+                        loader: 'pug-html-loader',
+                        options: { pretty: true }
+                    }
+                ]
+            },
             // { test: /\.styl(us)?$/, use: [ 'vue-style-loader', 'css-loader', 'stylus-loader' ] },
             { test: /\.(gif|svg|jpg|png)$/, loader: "file-loader" },
 
@@ -30,6 +51,26 @@ const config = {
       extensions: [ '.tsx', '.ts', '.js' ]
     },
     plugins: [
+    new HtmlWebpackPlugin({
+        template: './options_ui/options_ui.pug',
+        filename: 'options_ui.html',
+    }),
+    //new HtmlWebpackPugPlugin({
+    //
+    //}),
+    // new HtmlWebpackPlugin({
+    //     template: './options_ui/index.pug',
+    //     filename: 'options_ui.html',
+    //     inject: true,
+    //     chunks: ['main'],
+    //     //minify: {
+    //     //    sortAttributes: true,
+    //     //    collapseWhitespace: false,
+    //     //    collapseBooleanAttributes: true,
+    //     //    removeComments: true,
+    //     //    removeAttributeQuotes: false,
+    //     //  }
+    // }),
       new CopyPlugin([
         // { from: 'options_ui/index.html', to: 'options_ui.html', force: true, toType: 'file' },
         // { from: 'img/', to: 'img/', force: true, toType: 'dir' },
