@@ -1,5 +1,6 @@
-export type list_bullet_char_t = '-' | '*' | '+'
-export type code_char_t = '=' | '~'
+export type ul_mark_t = '-' | '*' | '+'
+export type ol_mark_t = '.' | ')'
+export type code_mark_t = '=' | '~'
 export type source_link_insert_pos_t = 'prepend' | 'append'
 export type source_link_text_fmt_t =
     `${string}%t${string}%u${string}` |
@@ -9,9 +10,11 @@ export type source_link_text_fmt_t =
 
 export interface MyStorage {
     /** The character of `ul > li` in Org-mode */
-    listBulletChar: list_bullet_char_t
+    ulBulletChar: ul_mark_t
+    /** The character of `ul > li` in Org-mode */
+    olBulletChar: ol_mark_t
     /** The character to mark `<code>`in Org-mode */
-    codeChar: code_char_t
+    codeChar: code_mark_t
     /** Replace angle brackets (`<>`) with HTML entities< */
     escapeHtmlEntities: boolean
     /** When copy selection, insert the link of current page as source reference. */
@@ -20,7 +23,7 @@ export interface MyStorage {
         pos: source_link_insert_pos_t,
         format: source_link_text_fmt_t
     }
-    /** Remove matched string or RegExp in the title */
+    /** Remove matched string or RegExp pattern in the title */
     titleBlackList: string
     convertImageAsDataUrl: boolean
 }
@@ -60,7 +63,8 @@ class StorageManager {
     }
     getDefaultData(): MyStorage {
         return {
-            listBulletChar: '-',
+            ulBulletChar: '-',
+            olBulletChar: '.',
             codeChar: '=',
             escapeHtmlEntities: false,
             insertReferenceLink: {
@@ -83,7 +87,7 @@ class StorageManager {
             // Too lazy to do migration ....
             if (
                 !d ||
-                d.listBulletChar === undefined
+                d.ulBulletChar === undefined
             ) {
                 const defaultValue = storageManager.getDefaultData()
                 storageManager.setData(defaultValue)

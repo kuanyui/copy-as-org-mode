@@ -12,7 +12,7 @@ storageManager.getData().then((obj) => {
 
 storageManager.onDataChanged((changes) => {
     console.log('[background] storage changed!', changes)
-    STORAGE.listBulletChar = changes.listBulletChar.newValue
+    STORAGE.ulBulletChar = changes.ulBulletChar.newValue
 })
 browser.menus.create(
     {

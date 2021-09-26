@@ -1,3 +1,19 @@
+mixin row_checkbox(id)
+  .row
+    label(for=id)
+      input(id=id type='checkbox')
+      block
+
+//-  {1: 'one', 2: 'two', 3: 'three'}
+mixin row_select(id, optsObj={})
+  .row
+    label(for=id)
+    block
+    select(id=id type='checkbox')
+      each text, key in optsObj
+        option(value=key)= text
+
+
 doctype html
 html
   head
@@ -32,13 +48,15 @@ html
   form
     // <button type="submit">Save</button>
     div
+      h2 Syntax Preference
+      +row_select('ulBulletChar', {'-': '- unordered item', '+': '+ unordered item', '*': '* unordered item', })
+        span= "Mark for unordered list (<ul>)"
+      +row_select('olBulletChar', {'.': '1. ordered item', ')': '1) ordered item' })
+        span= "Mark for ordered list (<ol>)"
+      +row_select('codeChar', {'=': '=code=', '~': '~code~' })
+        span= "Mark for inline code (<code>)"
+
       h2 General
-      input#quote(type='checkbox')
-      label(for='quote')
-        | Prepend quote (
-        code &gt;
-        | ) to selection
-      br
       input#link(type='checkbox')
       label(for='link') Include link to source web page in the beginning of copied text
       br
