@@ -85,7 +85,8 @@ class StorageManager {
         this.area.set(deepCopy(d))
     }
     /** Get data object from LocalStorage */
-    getData (): Promise<MyStorage> {
+    getData(): Promise<MyStorage> {
+        // FIXME: PREPARE FOR MIGRATION
         return this.area.get().then((_d) => {
             const d = _d as unknown as MyStorage
             // Too lazy to do migration ....

@@ -42,16 +42,9 @@ html
 
       h2 Block Syntax
       table
+        - var fieldId = 'codeBlockStyle'
         tr
-          - var fieldId = 'codeBlockStyle'
           td(rowspan="2"): label(for=fieldId)= "Style of code block"
-          td: input(type='radio' name=fieldId value="colon" id="codeBlockStyle__colon")
-          td
-            label(for='codeBlockStyle__colon')
-              pre.
-                : const foo = 42
-                : function bar() { return foo }
-        tr
           td: input(type='radio' name=fieldId value="beginEnd" id="codeBlockStyle__begin")
           td
             label(for='codeBlockStyle__begin')
@@ -60,6 +53,13 @@ html
                 const foo = 42
                 function bar() { return foo }
                 #+end_src
+        tr
+          td: input(type='radio' name=fieldId value="colon" id="codeBlockStyle__colon")
+          td
+            label(for='codeBlockStyle__colon')
+              pre.
+                : const foo = 42
+                : function bar() { return foo }
         tr
       h2 Reference Link
       table
@@ -85,4 +85,6 @@ html
           code activeTab
           |  permission is not sufficient.
         |  Unchecking this removes the additional permission.
+    h2 Default Values
+    button(id="resetBtn") Reset to Defaults
   script(src='./options_ui.js')

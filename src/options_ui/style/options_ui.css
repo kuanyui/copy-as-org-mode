@@ -24,20 +24,7 @@ th {
 tr {
     border-bottom: #777 dotted 1px;
 }
-button {
-    font-size: 1.2em;
-    padding: .5em 1em;
-    border-radius: .25em;
-    border-style: none;
-    background-color: #006cb7;
-    color: #fff;
-}
-button:hover {
-    background-color: #34cdd7;
-}
-button:active {
-    background-color: #006cb7;
-}
+
 textarea {
     width: 100%;
 }
