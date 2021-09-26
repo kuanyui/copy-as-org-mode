@@ -2,13 +2,14 @@
  * Set up window for Node.js
  */
 
-var root = (typeof window !== 'undefined' ? window : {})
+var root: any = (typeof window !== 'undefined' ? window : {})
 
 /*
  * Parsing HTML strings
  */
 
 function canParseHTMLNatively () {
+  // @ts-ignore
   var Parser = root.DOMParser
   var canParse = false
 
@@ -26,31 +27,33 @@ function canParseHTMLNatively () {
 
 function createHTMLParser () {
   var Parser = function () {}
-
+  // @ts-ignore
   if (process.browser) {
     if (shouldUseActiveX()) {
-      Parser.prototype.parseFromString = function (string) {
+      Parser.prototype.parseFromString = function (str: string) {
+        // @ts-ignore
         var doc = new window.ActiveXObject('htmlfile')
         doc.designMode = 'on' // disable on-page scripts
         doc.open()
-        doc.write(string)
+        doc.write(str)
         doc.close()
         return doc
       }
     } else {
-      Parser.prototype.parseFromString = function (string) {
+      Parser.prototype.parseFromString = function (str: string) {
         var doc = document.implementation.createHTMLDocument('')
         doc.open()
-        doc.write(string)
+        doc.write(str)
         doc.close()
         return doc
       }
     }
   } else {
-    var domino = require('domino')
-    Parser.prototype.parseFromString = function (string) {
-      return domino.createDocument(string)
-    }
+    throw new Error('[To Developer] Currently need not this.')
+    // var domino = require('domino')
+    // Parser.prototype.parseFromString = function (str: string) {
+    //   return domino.createDocument(str)
+    // }
   }
   return Parser
 }
@@ -60,9 +63,12 @@ function shouldUseActiveX () {
   try {
     document.implementation.createHTMLDocument('').open()
   } catch (e) {
+    // @ts-ignore
     if (window.ActiveXObject) useActiveX = true
   }
   return useActiveX
 }
 
-export default canParseHTMLNatively() ? root.DOMParser : createHTMLParser()
+
+const parser: DOMParser = canParseHTMLNatively() ? root.DOMParser : createHTMLParser()
+export default parser

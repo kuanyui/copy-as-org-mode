@@ -1,8 +1,9 @@
 import collapseWhitespace from './collapse-whitespace'
 import HTMLParser from './html-parser'
+import { Html2OrgOptions } from './turndown'
 import { isBlock, isVoid } from './utilities'
 
-export default function RootNode (input, options) {
+export default function RootNode (input: string | Node, options: Html2OrgOptions): Node {
   var root
   if (typeof input === 'string') {
     var doc = htmlParser().parseFromString(
@@ -26,12 +27,12 @@ export default function RootNode (input, options) {
   return root
 }
 
-var _htmlParser
+let _htmlParser: HTMLParser
 function htmlParser () {
   _htmlParser = _htmlParser || new HTMLParser()
   return _htmlParser
 }
 
-function isPreOrCode (node) {
+function isPreOrCode (node: Node) {
   return node.nodeName === 'PRE' || node.nodeName === 'CODE'
 }

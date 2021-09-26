@@ -1,29 +1,42 @@
+import { Html2OrgOptions } from './turndown'
 import { isBlock, isVoid, hasVoid, isMeaningfulWhenBlank, hasMeaningfulWhenBlank } from './utilities'
 
-export default function Node (node, options) {
-  node.isBlock = isBlock(node)
-  node.isCode = node.nodeName === 'CODE' || node.parentNode.isCode
-  node.isBlank = isBlank(node)
-  node.flankingWhitespace = flankingWhitespace(node, options)
-  return node
+export interface CustomNode extends HTMLElement {
+  isBlock: boolean
+  isCode: boolean
+  isBlank: boolean
+  flankingWhitespace: {
+    leading: string,
+    trailing: string
+  }
+  parentNode: CustomNode
+}
+export default function CustomNodeConstructor(node: HTMLElement, options: Html2OrgOptions): CustomNode {
+  const _node: CustomNode = node as unknown as CustomNode
+  _node.isBlock = isBlock(node)
+  _node.isCode = node.nodeName === 'CODE' || _node.parentNode.isCode
+  _node.isBlank = isBlank(node)
+  _node.flankingWhitespace = flankingWhitespace(_node, options)
+  return _node
 }
 
-function isBlank (node) {
+
+function isBlank (node: HTMLElement) {
   return (
     !isVoid(node) &&
     !isMeaningfulWhenBlank(node) &&
-    /^\s*$/i.test(node.textContent) &&
+    /^\s*$/i.test(node.textContent || '') &&
     !hasVoid(node) &&
     !hasMeaningfulWhenBlank(node)
   )
 }
 
-function flankingWhitespace (node, options) {
+function flankingWhitespace (node: CustomNode, options: Html2OrgOptions) {
   if (node.isBlock || (options.preformattedCode && node.isCode)) {
     return { leading: '', trailing: '' }
   }
 
-  var edges = edgeWhitespace(node.textContent)
+  var edges = edgeWhitespace(node.textContent || '')
 
   // abandon leading ASCII WS if left-flanked by ASCII WS
   if (edges.leadingAscii && isFlankedByWhitespace('left', node, options)) {
@@ -38,8 +51,9 @@ function flankingWhitespace (node, options) {
   return { leading: edges.leading, trailing: edges.trailing }
 }
 
-function edgeWhitespace (string) {
-  var m = string.match(/^(([ \t\r\n]*)(\s*))[\s\S]*?((\s*?)([ \t\r\n]*))$/)
+function edgeWhitespace (str: string) {
+  var m = str.match(/^(([ \t\r\n]*)(\s*))[\s\S]*?((\s*?)([ \t\r\n]*))$/)
+  if (!m) {throw new Error('[To Developer] What is this?')}
   return {
     leading: m[1], // whole string for whitespace-only strings
     leadingAscii: m[2],
@@ -50,7 +64,7 @@ function edgeWhitespace (string) {
   }
 }
 
-function isFlankedByWhitespace (side, node, options) {
+function isFlankedByWhitespace (side: 'left' | 'right', node: Node, options: Html2OrgOptions) {
   var sibling
   var regExp
   var isFlanked
@@ -65,11 +79,11 @@ function isFlankedByWhitespace (side, node, options) {
 
   if (sibling) {
     if (sibling.nodeType === 3) {
-      isFlanked = regExp.test(sibling.nodeValue)
+      isFlanked = regExp.test(sibling.nodeValue || '')
     } else if (options.preformattedCode && sibling.nodeName === 'CODE') {
       isFlanked = false
     } else if (sibling.nodeType === 1 && !isBlock(sibling)) {
-      isFlanked = regExp.test(sibling.textContent)
+      isFlanked = regExp.test(sibling.textContent || '')
     }
   }
   return isFlanked

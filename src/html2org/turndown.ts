@@ -1,8 +1,8 @@
 import COMMONMARK_RULES from './commonmark-rules'
-import Rules from './rules'
-import { extend, trimLeadingNewlines, trimTrailingNewlines } from './utilities'
+import Rules, { RuleReplacementFn } from './rules'
+import { trimLeadingNewlines, trimTrailingNewlines } from './utilities'
 import RootNode from './root-node'
-import Node from './node'
+import CustomNodeConstructor, { CustomNode } from './node'
 var reduce = Array.prototype.reduce
 var escapes = [
   [/\\/g, '\\\\'],
@@ -20,37 +20,66 @@ var escapes = [
   [/^(\d+)\. /g, '$1\\. ']
 ]
 
-export default function TurndownService (options) {
-  if (!(this instanceof TurndownService)) return new TurndownService(options)
+export type h2o_opt_heading_style_t = 'setext' | 'atx'
+/** -, _, or * repeated > 3 times */
+export type h2o_hr_t = string
+export type h2o_bullet_marker_t = string
+export type h2o_code_block_style_t = 'indented' | 'fenced'
+export type h2o_em_delimiter_t = '/'
+export type h2o_strong_em_delimiter_t = '*'
+export type h2o_link_style_t = 'inlined' | 'referenced'
+export type h2o_link_ref_style_t = `full` | `collapsed` | `shortcut`
+export type h2o_preformatted_code_t = boolean
 
-  var defaults = {
-    rules: COMMONMARK_RULES,
-    headingStyle: 'setext',
-    hr: '* * *',
-    bulletListMarker: '*',
-    codeBlockStyle: 'indented',
-    fence: '```',
-    emDelimiter: '_',
-    strongDelimiter: '**',
-    linkStyle: 'inlined',
-    linkReferenceStyle: 'full',
-    br: '  ',
-    preformattedCode: false,
-    blankReplacement: function (content, node) {
-      return node.isBlock ? '\n\n' : ''
-    },
-    keepReplacement: function (content, node) {
-      return node.isBlock ? '\n\n' + node.outerHTML + '\n\n' : node.outerHTML
-    },
-    defaultReplacement: function (content, node) {
-      return node.isBlock ? '\n\n' + content + '\n\n' : content
-    }
-  }
-  this.options = extend({}, defaults, options)
-  this.rules = new Rules(this.options)
+
+export interface Html2OrgOptions {
+  rules: COMMONMARK_RULES,
+  headingStyle: h2o_opt_heading_style_t,
+  hr: h2o_hr_t,
+  bulletListMarker: h2o_bullet_marker_t,
+  codeBlockStyle: h2o_code_block_style_t,
+  emDelimiter: h2o_em_delimiter_t,
+  strongDelimiter: h2o_strong_em_delimiter_t,
+  linkStyle: h2o_link_style_t,
+  linkReferenceStyle: h2o_link_ref_style_t,
+  br: '  ',
+  preformattedCode: false,
+  blankReplacement: RuleReplacementFn
+  keepReplacement: RuleReplacementFn
+  defaultReplacement: RuleReplacementFn
 }
 
-TurndownService.prototype = {
+const DEFAULT_OPTION: Html2OrgOptions = {
+  rules: COMMONMARK_RULES,
+  headingStyle: 'setext',
+  hr: '* * *',
+  bulletListMarker: '*',
+  codeBlockStyle: 'indented',
+  fence: '```',
+  emDelimiter: '_',
+  strongDelimiter: '**',
+  linkStyle: 'inlined',
+  linkReferenceStyle: 'full',
+  br: '  ',
+  preformattedCode: false,
+  blankReplacement: function (content, node) {
+    return node.isBlock ? '\n\n' : ''
+  },
+  keepReplacement: function (content, node) {
+    return node.isBlock ? '\n\n' + node.outerHTML + '\n\n' : node.outerHTML
+  },
+  defaultReplacement: function (content, node) {
+    return node.isBlock ? '\n\n' + content + '\n\n' : content
+  }
+} as const
+
+export default class TurndownService {
+  options: Html2OrgOptions
+  rules: Rules
+  constructor(options: Partial<Html2OrgOptions>) {
+    this.options = Object.assign({}, DEFAULT_OPTION, options)
+    this.rules = new Rules(this.options)
+  }
   /**
    * The entry point for converting a string or DOM node to Markdown
    * @public
@@ -59,7 +88,7 @@ TurndownService.prototype = {
    * @type String
    */
 
-  turndown: function (input) {
+  turndown (input: string | HTMLElement) {
     if (!canConvert(input)) {
       throw new TypeError(
         input + ' is not a string, or an element/document/fragment node.'
@@ -70,7 +99,7 @@ TurndownService.prototype = {
 
     var output = process.call(this, new RootNode(input, this.options))
     return postProcess.call(this, output)
-  },
+  }
 
   /**
    * Add one or more plugins
@@ -80,7 +109,7 @@ TurndownService.prototype = {
    * @type Object
    */
 
-  use: function (plugin) {
+  use<F extends (instance: TurndownService) => any> (plugin: F | F[]) {
     if (Array.isArray(plugin)) {
       for (var i = 0; i < plugin.length; i++) this.use(plugin[i])
     } else if (typeof plugin === 'function') {
@@ -89,7 +118,7 @@ TurndownService.prototype = {
       throw new TypeError('plugin must be a Function or an Array of Functions')
     }
     return this
-  },
+  }
 
   /**
    * Adds a rule
@@ -100,10 +129,10 @@ TurndownService.prototype = {
    * @type Object
    */
 
-  addRule: function (key, rule) {
+  addRule (key: string, rule: object) {
     this.rules.add(key, rule)
     return this
-  },
+  }
 
   /**
    * Keep a node (as HTML) that matches the filter
@@ -113,10 +142,10 @@ TurndownService.prototype = {
    * @type Object
    */
 
-  keep: function (filter) {
+  keep (filter) {
     this.rules.keep(filter)
     return this
-  },
+  }
 
   /**
    * Remove a node that matches the filter
@@ -126,10 +155,10 @@ TurndownService.prototype = {
    * @type Object
    */
 
-  remove: function (filter) {
+  remove (filter) {
     this.rules.remove(filter)
     return this
-  },
+  }
 
   /**
    * Escapes Markdown syntax
@@ -139,10 +168,10 @@ TurndownService.prototype = {
    * @type String
    */
 
-  escape: function (string) {
+  escape (str: string) {
     return escapes.reduce(function (accumulator, escape) {
       return accumulator.replace(escape[0], escape[1])
-    }, string)
+    }, str)
   }
 }
 
@@ -154,10 +183,10 @@ TurndownService.prototype = {
  * @type String
  */
 
-function process (parentNode) {
+function process (parentNode: Node) {
   var self = this
   return reduce.call(parentNode.childNodes, function (output, node) {
-    node = new Node(node, self.options)
+    node = new CustomNodeConstructor(node, self.options)
 
     var replacement = ''
     if (node.nodeType === 3) {
@@ -178,7 +207,7 @@ function process (parentNode) {
  * @type String
  */
 
-function postProcess (output) {
+function postProcess (output: string) {
   var self = this
   this.rules.forEach(function (rule) {
     if (typeof rule.append === 'function') {
@@ -197,7 +226,7 @@ function postProcess (output) {
  * @type String
  */
 
-function replacementForNode (node) {
+function replacementForNode (node: HTMLElement) {
   var rule = this.rules.forNode(node)
   var content = process.call(this, node)
   var whitespace = node.flankingWhitespace
@@ -218,7 +247,7 @@ function replacementForNode (node) {
  * @type String
  */
 
-function join (output, replacement) {
+function join (output: string, replacement: string) {
   var s1 = trimTrailingNewlines(output)
   var s2 = trimLeadingNewlines(replacement)
   var nls = Math.max(output.length - s1.length, replacement.length - s2.length)
@@ -235,9 +264,9 @@ function join (output, replacement) {
  * @type String|Object|Array|Boolean|Number
  */
 
-function canConvert (input) {
+function canConvert (input: string | HTMLElement): String|Object|Array<any>|Boolean|Number {
   return (
-    input != null && (
+    input !== null && (
       typeof input === 'string' ||
       (input.nodeType && (
         input.nodeType === 1 || input.nodeType === 9 || input.nodeType === 11

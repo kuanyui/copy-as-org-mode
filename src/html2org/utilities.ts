@@ -1,29 +1,20 @@
-export function extend (destination) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i]
-    for (var key in source) {
-      if (source.hasOwnProperty(key)) destination[key] = source[key]
-    }
-  }
-  return destination
-}
 
-export function repeat (character, count) {
+export function repeat (character: string, count: number) {  // REFACTOR: use padLeft
   return Array(count + 1).join(character)
 }
 
-export function trimLeadingNewlines (string) {
-  return string.replace(/^\n*/, '')
+export function trimLeadingNewlines (str: string) {
+  return str.replace(/^\n*/, '')
 }
 
-export function trimTrailingNewlines (string) {
+export function trimTrailingNewlines (str: string) {
   // avoid match-at-end regexp bottleneck, see #370
-  var indexEnd = string.length
-  while (indexEnd > 0 && string[indexEnd - 1] === '\n') indexEnd--
-  return string.substring(0, indexEnd)
+  var indexEnd = str.length
+  while (indexEnd > 0 && str[indexEnd - 1] === '\n') indexEnd--
+  return str.substring(0, indexEnd)
 }
 
-export var blockElements = [
+export let blockElements = [
   'ADDRESS', 'ARTICLE', 'ASIDE', 'AUDIO', 'BLOCKQUOTE', 'BODY', 'CANVAS',
   'CENTER', 'DD', 'DIR', 'DIV', 'DL', 'DT', 'FIELDSET', 'FIGCAPTION', 'FIGURE',
   'FOOTER', 'FORM', 'FRAMESET', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'HEADER',
@@ -32,20 +23,20 @@ export var blockElements = [
   'TFOOT', 'TH', 'THEAD', 'TR', 'UL'
 ]
 
-export function isBlock (node) {
-  return is(node, blockElements)
-}
-
-export var voidElements = [
+export let voidElements = [
   'AREA', 'BASE', 'BR', 'COL', 'COMMAND', 'EMBED', 'HR', 'IMG', 'INPUT',
   'KEYGEN', 'LINK', 'META', 'PARAM', 'SOURCE', 'TRACK', 'WBR'
 ]
 
-export function isVoid (node) {
+export function isBlock(node: Node) {
+  return is(node, blockElements)
+}
+
+export function isVoid (node: Node) {
   return is(node, voidElements)
 }
 
-export function hasVoid (node) {
+export function hasVoid (node: HTMLElement) {
   return has(node, voidElements)
 }
 
@@ -54,19 +45,19 @@ var meaningfulWhenBlankElements = [
   'AUDIO', 'VIDEO'
 ]
 
-export function isMeaningfulWhenBlank (node) {
+export function isMeaningfulWhenBlank (node: Node) {
   return is(node, meaningfulWhenBlankElements)
 }
 
-export function hasMeaningfulWhenBlank (node) {
+export function hasMeaningfulWhenBlank (node: HTMLElement) {
   return has(node, meaningfulWhenBlankElements)
 }
 
-function is (node, tagNames) {
+function is (node: Node, tagNames: string[]) {
   return tagNames.indexOf(node.nodeName) >= 0
 }
 
-function has (node, tagNames) {
+function has (node: HTMLElement, tagNames: string[]) {
   return (
     node.getElementsByTagName &&
     tagNames.some(function (tagName) {

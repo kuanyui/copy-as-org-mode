@@ -25,6 +25,13 @@
  * THE SOFTWARE.
  */
 
+interface CollapseWhitespaceOptions {
+  element: root,
+  isBlock: isBlock,
+  isVoid: isVoid,
+  isPre: options.preformattedCode ? isPreOrCode : null
+}
+
 /**
  * collapseWhitespace(options) removes extraneous whitespace from an the given element.
  *
