@@ -19,26 +19,34 @@ var escapes: [RegExp, string][] = [
   [/^(\d+)\. /g, '$1\\. ']
 ]
 
-export type h2o_opt_heading_style_t = 'setext' | 'atx'
 /** -, _, or * repeated > 3 times */
+type h2o_heading_marker_t = '*'
 export type h2o_hr_t = string
-export type h2o_bullet_marker_t = string
-export type h2o_code_block_style_t = 'indented' | 'fenced'
-export type h2o_em_delimiter_t = '/'
-export type h2o_strong_em_delimiter_t = '*'
-export type h2o_link_style_t = 'inlined' | 'referenced'
-export type h2o_link_ref_style_t = `full` | `collapsed` | `shortcut`
-export type h2o_preformatted_code_t = boolean
+type h2o_ul_marker_t = '-' | '+'
+type h2o_ol_marker_t = '.' | ')'
+type h2o_code_delimiter_t = '=' | '~'
+type h2o_code_block_style_t = 'beginEnd' | 'colon'
+type h2o_italic_delimiter_t = '/'
+type h2o_bold_delimiter_t = '*'
+type h2o_underline_delimiter_t = '_'
+type h2o_strike_delimiter_t = '+'
+type h2o_link_style_t = 'inlined' | 'referenced'  // TODO: NOT IMPLEMENTED YET
+type h2o_link_ref_style_t = `full` | `collapsed` | `shortcut`  // TODO: NOT IMPLEMENTED YET
+type h2o_preformatted_code_t = boolean
 
 
 export interface Html2OrgOptions {
   rules: Record<string, Rule>,
-  headingStyle: h2o_opt_heading_style_t,
+  headingMarker: h2o_heading_marker_t,
   hr: h2o_hr_t,
-  bulletListMarker: h2o_bullet_marker_t,
+  unorderedListMarker: h2o_ul_marker_t,
+  orderedListMarker: h2o_ol_marker_t,
   codeBlockStyle: h2o_code_block_style_t,
-  emDelimiter: h2o_em_delimiter_t,
-  strongDelimiter: h2o_strong_em_delimiter_t,
+  italicDelimiter: h2o_italic_delimiter_t,
+  boldDelimiter: h2o_bold_delimiter_t,
+  underlineDelimiter: h2o_underline_delimiter_t,
+  strikeDelimiter: h2o_strike_delimiter_t,
+  codeDelimiter: h2o_code_delimiter_t,
   linkStyle: h2o_link_style_t,
   linkReferenceStyle: h2o_link_ref_style_t,
   br: '  ',
@@ -50,12 +58,16 @@ export interface Html2OrgOptions {
 
 const DEFAULT_OPTION: Readonly<Html2OrgOptions> = {
   rules: COMMONMARK_RULES,
-  headingStyle: 'setext',
+  headingMarker: '*',
   hr: '* * *',
-  bulletListMarker: '-',
-  codeBlockStyle: 'indented',
-  emDelimiter: '/',
-  strongDelimiter: '*',
+  unorderedListMarker: '-',
+  orderedListMarker: '.',
+  codeDelimiter: '=',
+  underlineDelimiter: '_',
+  strikeDelimiter: '+',
+  codeBlockStyle: 'beginEnd',
+  italicDelimiter: '/',
+  boldDelimiter: '*',
   linkStyle: 'inlined',
   linkReferenceStyle: 'full',
   br: '  ',

@@ -23,14 +23,7 @@ let rules: Record<string, Rule> = {
     replacement: function (content: string, node: Node, options: Html2OrgOptions): string {
       var hLevel = Number(node.nodeName.charAt(1))
 
-      if (options.headingStyle === 'setext' && hLevel < 3) {
-        var underline = repeat((hLevel === 1 ? '=' : '-'), content.length)
-        return (
-          '\n\n' + content + '\n' + underline + '\n\n'
-        )
-      } else {
-        return '\n\n' + repeat('#', hLevel) + ' ' + content + '\n\n'
-      }
+      return '\n\n' + repeat(options.headingMarker, hLevel) + ' ' + content + '\n\n'
     }
   },
   blockquote: {
@@ -39,7 +32,9 @@ let rules: Record<string, Rule> = {
     replacement: function (content: string): string {
       content = content.replace(/^\n+|\n+$/g, '')
       content = content.replace(/^/gm, '> ')
-      return '\n\n' + content + '\n\n'
+      return '\n\n#+begin_quote\n' +
+      content +
+      '\n#+end_quote\n\n'
     }
   },
   list: {
@@ -63,24 +58,24 @@ let rules: Record<string, Rule> = {
         .replace(/^\n+/, '') // remove leading newlines
         .replace(/\n+$/, '\n') // replace trailing newlines with just a single one
         .replace(/\n/gm, '\n    ') // indent
-      let prefix = options.bulletListMarker + '   '
+      let prefix = options.unorderedListMarker + '   '
       const parent = node.parentNode
       if (!parent) { return 'ERROR: Why does <li> has no parentNode?' }
       if (parent.nodeName === 'OL') {
         const parentEl: HTMLElement = parent as HTMLElement
         const start = parentEl.getAttribute('start')
         const index = Array.prototype.indexOf.call(parent.children, node)
-        prefix = (start ? Number(start) + index : index + 1) + '.  '
+        prefix = (start ? Number(start) + index : index + 1) + options.orderedListMarker + '  '
       }
       return (
         prefix + content + (node.nextSibling && !/\n$/.test(content) ? '\n' : '')
       )
     }
   },
-  indentedCodeBlock: {
+  colonCodeBlock: {
     filter: function (node: CustomNode, options: Html2OrgOptions) {
       return (
-        options.codeBlockStyle === 'indented' &&
+        options.codeBlockStyle === 'colon' &&
         node.nodeName === 'PRE' &&
         !!node.firstChild &&
         node.firstChild.nodeName === 'CODE'
@@ -89,20 +84,20 @@ let rules: Record<string, Rule> = {
 
     replacement: function (content: string, node: Node, options: Html2OrgOptions): string {
       const firstChild = node.firstChild
-      if (!firstChild) { return 'ERROR: indentedCodeBlock: has no firstChild' }
+      if (!firstChild) { return 'ERROR: colonCodeBlock: has no firstChild' }
       const textContent = firstChild.textContent
-      if (!textContent) { return 'ERROR: indentedCodeBlock: firstChild has no textContent' }
+      if (!textContent) { return 'ERROR: colonCodeBlock: firstChild has no textContent' }
       return (
-        '\n\n    ' +
-        textContent.replace(/\n/g, '\n    ') +
+        '\n\n' +
+        textContent.replace(/\n/g, '\n: ') +
         '\n\n'
       )
     }
   },
-  fencedCodeBlock: {
+  beginEndCodeBlock: {
     filter: function (node: CustomNode, options: Html2OrgOptions) {
       return (
-        options.codeBlockStyle === 'fenced' &&
+        options.codeBlockStyle === 'beginEnd' &&
         node.nodeName === 'PRE' &&
         !!node.firstChild &&
         node.firstChild.nodeName === 'CODE'
@@ -111,30 +106,18 @@ let rules: Record<string, Rule> = {
 
     replacement: function (content, node, options): string {
       const firstChild = node.firstChild
-      if (!firstChild) { return 'ERROR: fencedCodeBlock: has no firstChild' }
+      if (!firstChild) { return 'ERROR: beginEndCodeBlock: has no firstChild' }
       const textContent = firstChild.textContent
-      if (!textContent) { return 'ERROR: fencedCodeBlock: firstChild has no textContent' }
-      var className = (firstChild as Element).getAttribute('class') || ''
-      var language = (className.match(/language-(\S+)/) || [null, ''])[1]
-      var code: string = textContent
-
-      var fenceChar = '`'
-      var fenceSize = 3
-      var fenceInCodeRegex = new RegExp('^' + fenceChar + '{3,}', 'gm')
-
-      var match
-      while ((match = fenceInCodeRegex.exec(code))) {
-        if (match[0].length >= fenceSize) {
-          fenceSize = match[0].length + 1
-        }
-      }
-
-      var fence = repeat(fenceChar, fenceSize)
+      if (!textContent) { return 'ERROR: beginEndCodeBlock: firstChild has no textContent' }
+      let className = (firstChild as Element).getAttribute('class') || ''
+      let language = (className.match(/language-(\S+)/) || [null, ''])[1]
+      if (language) { language = ' ' + language }
+      let code: string = textContent
 
       return (
-        '\n\n' + fence + language + '\n' +
+        '\n\n#+begin_src'  + language + '\n' +
         code.replace(/\n$/, '') +
-        '\n' + fence + '\n\n'
+        '\n#+end_src\n\n'
       )
     }
   },
@@ -155,10 +138,12 @@ let rules: Record<string, Rule> = {
     },
 
     replacement: function (content: string, node: CustomNode) {
-      var href = node.getAttribute('href')
-      var title = cleanAttribute(node.getAttribute('title') || '')
-      if (title) title = ' "' + title + '"'
-      return '[' + content + '](' + href + title + ')'
+      let href = decodeURI(node.getAttribute('href') || '')   // Get rid of URL like "/%E7%B5%B6%E5%AF%BE%E7%8E%8B%E6%94%BF"
+      let title = cleanAttribute(node.getAttribute('title') || '')
+      if (title) {
+        title = ' "' + title + '"'
+      }
+      return `[[${href}][${content}]]`
     }
   },
   // referenceLink: {
@@ -207,20 +192,22 @@ let rules: Record<string, Rule> = {
   //     return references
   //   }
   // },
-  emphasis: {
+  italic: {
     filter: ['em', 'i'],
 
     replacement: function (content: string, node, options: Html2OrgOptions): string {
-      if (!content.trim()) return ''
-      return options.emDelimiter + content + options.emDelimiter
+      content = content.trim()
+      if (!content) { return '' }
+      return options.italicDelimiter + content + options.italicDelimiter
     }
   },
-  strong: {
+  bold: { // FIXME: extra space
     filter: ['strong', 'b'],
 
     replacement: function (content: string, node, options: Html2OrgOptions): string {
-      if (!content.trim()) return ''
-      return options.strongDelimiter + content + options.strongDelimiter
+      content = content.trim()
+      if (!content) { return '' }
+      return options.boldDelimiter + content + options.boldDelimiter
     }
   },
   code: {

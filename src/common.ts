@@ -1,4 +1,4 @@
-export type ul_mark_t = '-' | '*' | '+'
+export type ul_mark_t = '-' | '+'
 export type ol_mark_t = '.' | ')'
 export type code_mark_t = '=' | '~'
 export type codeblock_style_t = 'colon' | 'beginEnd'

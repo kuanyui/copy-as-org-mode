@@ -183,7 +183,7 @@ The replacement function determines how an element should be converted. It shoul
 The following rule shows how `<em>` elements are converted:
 
 ```js
-rules.emphasis = {
+rules.italic = {
   filter: ['em', 'i'],
 
   replacement: function (content, node, options) {
