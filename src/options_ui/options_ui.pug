@@ -1,255 +1,79 @@
 mixin row_checkbox(id)
-  .row
-    label(for=id)
-      input(id=id type='checkbox')
-      block
+  tr.row
+    td(colspan="100%")
+      label(for=id)
+        input(id=id type='checkbox')
+        block
 
 //-  {1: 'one', 2: 'two', 3: 'three'}
 mixin row_select(id, optsObj={})
-  .row
-    label(for=id)
-    block
-    select(id=id type='checkbox')
-      each text, key in optsObj
-        option(value=key)= text
+  tr.row
+    td
+      label(for=id)
+      block
+    td
+      select(id=id type='checkbox')
+        each text, key in optsObj
+          option(value=key)= text
+
+mixin row_1_column(id, label)
+  tr.row
+    td
+      label(for=id)= label
+      block
+
 
 
 doctype html
 html
   head
     meta(charset='utf-8')
-    style.
-      table {
-      border-collapse: collapse;
-      }
-      th {
-      border-bottom: black solid 1px;
-      }
-      tr {
-      border-bottom: gray dotted 1px;
-      }
-      button {
-      font-size: 1.2em;
-      padding: .5em 1em;
-      border-radius: .25em;
-      border-style: none;
-      background-color: #006cb7;
-      color: #fff;
-      }
-      button:hover {
-      background-color: #34cdd7;
-      }
-      button:active {
-      background-color: #006cb7;
-      }
-      textarea {
-      width: 100%;
-      }
+    link(rel="stylesheet" type="text/css" href="./options_ui.css")
   form
-    // <button type="submit">Save</button>
     div
-      h2 Syntax Preference
-      +row_select('ulBulletChar', {'-': '- unordered item', '+': '+ unordered item', '*': '* unordered item', })
-        span= "Mark for unordered list (<ul>)"
-      +row_select('olBulletChar', {'.': '1. ordered item', ')': '1) ordered item' })
-        span= "Mark for ordered list (<ol>)"
-      +row_select('codeChar', {'=': '=code=', '~': '~code~' })
-        span= "Mark for inline code (<code>)"
+      h2 Inline Syntax
+      table
+        +row_select('ulBulletChar', {'-': '- unordered item', '+': '+ unordered item', '*': '* unordered item', })
+          span= "Mark for unordered list (<ul>)"
+        +row_select('olBulletChar', {'.': '1. ordered item', ')': '1) ordered item' })
+          span= "Mark for ordered list (<ol>)"
+        +row_select('codeChar', {'=': '=code=', '~': '~code~' })
+          span= "Mark for inline code (<code>)"
 
-      h2 General
-      input#link(type='checkbox')
-      label(for='link') Include link to source web page in the beginning of copied text
-      br
-      input#mathjax(type='checkbox')
-      label(for='mathjax')
-        | Enable experimental MathJax support (
-        a(href='https://github.com/0x6b/copy-selection-as-markdown/issues/new') report issue
-        |  if you find
-        |             anything strange, with
-        strong debug
-        |  enabled
-      br
-      input#linkWithoutStyling(type='checkbox')
-      label(for='linkWithoutStyling')
-        | Disable link styling (
-        code like this (https://example.com)
-        |  instead of
-        code [like this](https://example.com)
-        | )
-      br
-      input#debug(type='checkbox')
-      label(for='debug') Log debug message in the console
-    div
-      h2 Markdown
-      input#gfm(type='checkbox')
-      label(for='gfm')
-        | Enable
-        a(href='https://github.github.com/gfm/') GitHub Flavored Markdown
-        |  (strikethrough,
-        |             tables, and taskListItems) support
-      br
-      input#img(type='checkbox')
-      label(for='img')
-        | Use
-        code img
-        |  tag for image
-      br
-      input#reduceListItemPadding(type='checkbox')
-      label(for='reduceListItemPadding') Reduce padding spaces for list items
-      br
-      input#replaceAngleBrackets(type='checkbox')
-      label(for='replaceAngleBrackets')
-        | Replace angle brackets (
-        code &lt;&gt;
-        | ) with HTML entities
-      br
+      h2 Block Syntax
       table
         tr
-          th Option
-          th(colspan='2') Preference
+          - var fieldId = 'codeBlockStyle'
+          td(rowspan="2"): label(for=fieldId)= "Style of code block"
+          td: input(type='radio' name=fieldId value="colon" id="codeBlockStyle__colon")
+          td
+            label(for='codeBlockStyle__colon')
+              pre.
+                : const foo = 42
+                : function bar() { return foo }
         tr
-          td(rowspan='2') Heading style
+          td: input(type='radio' name=fieldId value="beginEnd" id="codeBlockStyle__begin")
           td
-            input#setext(type='radio' name='headingStyle' value='setext')
-          td
-            label(for='setext')
-              code
-                | Heading 1
-                br
-                |                     =========
-                br
-                |                     Heading 2
-                br
-                |                     ---------
+            label(for='codeBlockStyle__begin')
+              pre.
+                #+begin_src
+                const foo = 42
+                function bar() { return foo }
+                #+end_src
         tr
-          td
-            input#atx(type='radio' name='headingStyle' value='atx' checked='')
-          td
-            label(for='atx')
-              code
-                | # Heading 1
-                br
-                |                     ## Heading 2
-        tr
-          td(rowspan='3') Bullet list marker
-          td
-            input#marker-hyphen(type='radio' name='bulletListMarker' value='-' checked='')
-          td
-            label(for='marker-hyphen')
-              code
-                | - one
-                br
-                |                     - two
-                br
-                |                     - three
-        tr
-          td
-            input#marker-plus(type='radio' name='bulletListMarker' value='+')
-          td
-            label(for='marker-plus')
-              code
-                | + one
-                br
-                |                     + two
-                br
-                |                     + three
-        tr
-          td
-            input#marker-asterisk(type='radio' name='bulletListMarker' value='*')
-          td
-            label(for='marker-asterisk')
-              code
-                | * one
-                br
-                |                     * two
-                br
-                |                     * three
-        tr
-          td(rowspan='2') Code block style
-          td
-            input#indented(type='radio' name='codeBlockStyle' value='indented' checked='')
-          td
-            label(for='indented')
-              code &nbsp;&nbsp;&nbsp;&nbsp;let code = &quot;indented&quot;;
-        tr
-          td
-            input#fenced(type='radio' name='codeBlockStyle' value='fenced')
-          td
-            label(for='fenced')
-              code
-                | &grave;&grave;&grave;
-                br
-                |                     let code = &quot;fenced&quot;;
-                br
-                |                     &grave;&grave;&grave;
-        tr
-          td(rowspan='2') Fence
-          td
-            input#backtick(type='radio' name='fence' value='`' checked='')
-          td
-            label(for='backtick')
-              code
-                | &grave;&grave;&grave;
-                br
-                |                     let code = &quot;fenced&quot;;
-                br
-                |                     &grave;&grave;&grave;
-        tr
-          td
-            input#tilde(type='radio' name='fence' value='~')
-          td
-            label(for='tilde')
-              code
-                | ~~~
-                br
-                |                     let code = &quot;fenced&quot;;
-                br
-                |                     ~~~
-        tr
-          td(rowspan='2') Em
-          td
-            input#em-underline(type='radio' name='emDelimiter' value='_' checked='')
-          td
-            label(for='em-underline')
-              code
-                | _
-                em Em
-                | _
-        tr
-          td
-            input#em-asterisk(type='radio' name='emDelimiter' value='*')
-          td
-            label(for='em-asterisk')
-              code
-                | *
-                em Em
-                | *
-        tr
-          td(rowspan='2') Strong
-          td
-            input#strong-underline(type='radio' name='strongDelimiter' value='__')
-          td
-            label(for='strong-underline')
-              code
-                | __
-                strong Strong
-                | __
-        tr
-          td
-            input#strong-asterisk(type='radio' name='strongDelimiter' value='**' checked='')
-          td
-            label(for='strong-asterisk')
-              code
-                | **
-                strong Strong
-                | **
-
+      h2 Reference Link
+      table
+        +row_checkbox('insertReferenceLink_enabled'): span When copy selection, insert a link to the current page as reference
+        +row_select('insertReferenceLink_pos', {'prepend': 'Prepend', 'append': 'Append' })
+          span= "Insertion position"
+        tr.row
+          td.nowrap: label(for="insertReferenceLink_format") Format #[br](#[code %t] means title, #[code %u] means URL.)
+          td.w100: textarea(id="insertReferenceLink_format" rows='3')
+        //tr.row: td:
     div
       h2 Advanced
-      label(for='titleSubstitution')
-        | Title Substitution -- line separated texts which will be removed from title text (supports
-        a(href='https://regex101.com/') regular expressions
-        |  if the line starts and ends with / e.g. #[code /^number:\d$/]
+      label(for='titleSubstitution').
+        Title Substitution -- line separated texts which will be removed from title text (supports #[a(href='https://regex101.com/') regular expressions] if the line starts and ends with / e.g. #[code /^number:\d$/]
       textarea#titleSubstitution(rows='5')
       input#embedImage(type='checkbox')
       label(for='embedImage')
@@ -261,5 +85,4 @@ html
           code activeTab
           |  permission is not sufficient.
         |  Unchecking this removes the additional permission.
-    button(type='submit') Save
   script(src='./options_ui.js')

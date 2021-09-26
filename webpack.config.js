@@ -72,7 +72,7 @@ const config = {
     //     //  }
     // }),
       new CopyPlugin([
-        // { from: 'options_ui/index.html', to: 'options_ui.html', force: true, toType: 'file' },
+        { from: 'src/options_ui/options_ui.css', to: 'options_ui.css', force: true, toType: 'file' },
         // { from: 'img/', to: 'img/', force: true, toType: 'dir' },
         // { from: 'manifest.json', to: 'manifest.json', force: true, toType: 'file' },
       ]),

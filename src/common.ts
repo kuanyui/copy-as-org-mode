@@ -1,6 +1,7 @@
 export type ul_mark_t = '-' | '*' | '+'
 export type ol_mark_t = '.' | ')'
 export type code_mark_t = '=' | '~'
+export type codeblock_style_t = 'colon' | 'beginEnd'
 export type source_link_insert_pos_t = 'prepend' | 'append'
 export type source_link_text_fmt_t =
     `${string}%t${string}%u${string}` |
@@ -15,6 +16,8 @@ export interface MyStorage {
     olBulletChar: ol_mark_t
     /** The character to mark `<code>`in Org-mode */
     codeChar: code_mark_t
+    /** #+begin_src or : colon */
+    codeBlockStyle: codeblock_style_t
     /** Replace angle brackets (`<>`) with HTML entities< */
     escapeHtmlEntities: boolean
     /** When copy selection, insert the link of current page as source reference. */
@@ -66,6 +69,7 @@ class StorageManager {
             ulBulletChar: '-',
             olBulletChar: '.',
             codeChar: '=',
+            codeBlockStyle: 'beginEnd',
             escapeHtmlEntities: false,
             insertReferenceLink: {
                 enabled: false,
