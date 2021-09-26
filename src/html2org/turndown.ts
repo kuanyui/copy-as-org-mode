@@ -48,14 +48,14 @@ export interface Html2OrgOptions {
   defaultReplacement: RuleReplacementFn
 }
 
-const DEFAULT_OPTION: Html2OrgOptions = {
+const DEFAULT_OPTION: Readonly<Html2OrgOptions> = {
   rules: COMMONMARK_RULES,
   headingStyle: 'setext',
   hr: '* * *',
-  bulletListMarker: '*',
+  bulletListMarker: '-',
   codeBlockStyle: 'indented',
-  emDelimiter: '_',
-  strongDelimiter: '**',
+  emDelimiter: '/',
+  strongDelimiter: '*',
   linkStyle: 'inlined',
   linkReferenceStyle: 'full',
   br: '  ',
@@ -181,19 +181,19 @@ export default class TurndownService {
  * @type String
  */
 
-function process (this: TurndownService, parentNode: Node) {
-  return Array.prototype.reduce.call(parentNode.childNodes, (output: string, node: Node): string => {
+function process (this: TurndownService, parentNode: Node): string {
+  let output: string = ''
+  for (const node of parentNode.childNodes) {
     const customNode = CustomNodeConstructor(node, this.options)
-
     let replacement: string = ''
     if (customNode.nodeType === 3) {
       replacement = customNode.isCode ? customNode.nodeValue || '' : this.escape(customNode.nodeValue || '')
     } else if (customNode.nodeType === 1) {
       replacement = replacementForNode.call(this, customNode)
     }
-
-    return join(output, replacement)
-  }, '')
+    output = join(output, replacement)
+  }
+  return output
 }
 
 /**
@@ -204,13 +204,12 @@ function process (this: TurndownService, parentNode: Node) {
  * @type String
  */
 
-function postProcess (output: string) {
-  var self = this
-  this.rules.forEach(function (rule) {
-    if (typeof rule.append === 'function') {
-      output = join(output, rule.append(self.options))
-    }
-  })
+function postProcess (this: TurndownService, output: string) {
+  // this.rules.forEach((rule) => {
+  //   if (typeof rule.append === 'function') {  // I didn't find any document about `Rule.append` nor find any reference to this symbol, so remove this
+  //     output = join(output, rule.append(this.options))
+  //   }
+  // })
 
   return output.replace(/^[\t\r\n]+/, '').replace(/[\t\r\n\s]+$/, '')
 }
