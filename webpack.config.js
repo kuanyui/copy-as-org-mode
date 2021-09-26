@@ -7,7 +7,7 @@ const config = {
         background: './src/background.ts',
         copy: './src/copy.ts',
         'copy-link': './src/copy-link.ts',
-        // 'options_ui': './options_ui/options_ui.pug',
+        'options_ui': './src/options_ui/options_ui.ts',
     },
     output: {
         filename: '[name].js',
@@ -52,7 +52,7 @@ const config = {
     },
     plugins: [
     new HtmlWebpackPlugin({
-        template: './options_ui/options_ui.pug',
+        template: './src/options_ui/options_ui.pug',
         filename: 'options_ui.html',
     }),
     //new HtmlWebpackPugPlugin({

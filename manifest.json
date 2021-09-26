@@ -16,6 +16,10 @@
       "default_icon": "img/icon.png",
       "default_title": "Copy as Org-mode!"
     },
+    "options_ui": {
+        "page": "dist/options_ui.html",
+        "browser_style": true
+      },
     "background": {
         "scripts": ["dist/background.js"]
     },
