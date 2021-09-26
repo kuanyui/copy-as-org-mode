@@ -74,7 +74,7 @@ const DEFAULT_OPTION: Readonly<Html2OrgOptions> = {
 export default class TurndownService {
   options: Html2OrgOptions
   rules: Rules
-  constructor(options: Partial<Html2OrgOptions>) {
+  constructor(options?: Partial<Html2OrgOptions>) {
     this.options = Object.assign({}, DEFAULT_OPTION, options)
     this.rules = new Rules(this.options)
   }

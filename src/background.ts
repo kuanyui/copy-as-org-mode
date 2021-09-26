@@ -63,6 +63,8 @@ browser.menus.onClicked.addListener((info, tab) => {
         browser.tabs.executeScript(tabId, { file: "copy.js" })
       } else if (info.menuItemId === "copy-link-as-org-mode") {
         browser.tabs.executeScript(tabId, { file: "copy-link.js" }).then(() => {
+          if (!info.linkText) { throw new TypeError('[To Developer] info.linkText is undefined') }
+          if (!info.linkUrl) { throw new TypeError('[To Developer] info.linkUrl is undefined') }
           const linkText = info.linkText.replace(/([\\`*_[\]<>])/g, "\\$1")
           const linkUrl = info.linkUrl.replace(
             /[\\!'()*]/g,

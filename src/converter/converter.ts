@@ -1,4 +1,5 @@
 import { MyStorage } from "../common";
+import TurndownService from "../html2org/turndown";
 import { getSelectionAsCleanHtml } from "./selection";
 
 interface ConversionResult {
@@ -10,7 +11,10 @@ interface ConversionResult {
 
 export async function convertSelectionToOrgMode(options: MyStorage): Promise<ConversionResult> {
     const html = await getSelectionAsCleanHtml(options)
-    const orgStr: string = convertHtmlToOrg(options)
+    var turndownService = new TurndownService({
+        bulletListMarker: options.listBulletChar
+    })
+    const orgStr = turndownService.turndown(html)
     return {
         html: html,
         output: orgStr

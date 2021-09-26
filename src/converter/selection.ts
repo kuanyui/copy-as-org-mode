@@ -11,7 +11,7 @@ import * as url from 'url'
  *
  * Or convert into Base64 data URL.
  */
-export async function getSelectionAsCleanElement (options: MyStorage): Promise<string> {
+export async function getSelectionAsCleanHtml (options: MyStorage): Promise<string> {
 
     let selection = document.getSelection();
     if (!selection) {

@@ -1,11 +1,11 @@
-const { VueLoaderPlugin } = require('vue-loader')
 const CopyPlugin = require('copy-webpack-plugin')
 
 const config = {
     entry: {
         background: './src/background.ts',
-        content: './src/content.ts',
-        options_ui: './options_ui/index.ts'
+        copy: './src/copy.ts',
+        'copy-link': './src/copy-link.ts',
+        // options_ui: './options_ui/index.ts'
     },
     output: {
         filename: '[name].js',
@@ -13,24 +13,24 @@ const config = {
     },
     module: {
         rules: [
-            { test: /\.tsx?$/, use: {
-                loader: 'ts-loader',
-                options: { appendTsSuffixTo: [/\.vue$/] } }
+            {
+                test: /\.tsx?$/, use:
+                {
+                    loader: 'ts-loader',
+                }
             },
-            { test: /\.vue$/, use: 'vue-loader' },
-            { test: /\.pug$/, loader: 'pug-plain-loader' },
-            { test: /\.styl(us)?$/, use: [ 'vue-style-loader', 'css-loader', 'stylus-loader' ] },
+            // { test: /\.pug$/, loader: 'pug-plain-loader' },
+            // { test: /\.styl(us)?$/, use: [ 'vue-style-loader', 'css-loader', 'stylus-loader' ] },
             { test: /\.(gif|svg|jpg|png)$/, loader: "file-loader" },
-            { test: /\.css$/, use: ['style-loader', 'css-loader'] }
+            // { test: /\.css$/, use: ['style-loader', 'css-loader'] }
         ]
     },
     resolve: {
       extensions: [ '.tsx', '.ts', '.js' ]
     },
     plugins: [
-      new VueLoaderPlugin(),
       new CopyPlugin([
-        { from: 'options_ui/index.html', to: 'options_ui.html', force: true, toType: 'file' },
+        // { from: 'options_ui/index.html', to: 'options_ui.html', force: true, toType: 'file' },
         // { from: 'img/', to: 'img/', force: true, toType: 'dir' },
         // { from: 'manifest.json', to: 'manifest.json', force: true, toType: 'file' },
       ]),
