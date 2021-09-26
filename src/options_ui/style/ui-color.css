@@ -1,79 +1,9 @@
- /* copy from https://github.com/piroor/treestyletab/blob/trunk/webextensions/resources/ui-color.css */
 /*
-$
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-table {
-    border-collapse: collapse;
-    width: 100%;
-}
-
-h2:before {
-    content: '■ ';
-    /* background-image: url('../img/icon.png');
-    background-size: 20px 20px;
-    position:absolute;
-    width:20px;
-    height:20px;
-    margin-left:-30px; */
-}
-td, th {
-    padding: 0.2rem 1rem;
-}
-th {
-    border-bottom: black solid 1px;
-}
-tr {
-    border-bottom: gray dotted 1px;
-}
-button {
-    font-size: 1.2em;
-    padding: .5em 1em;
-    border-radius: .25em;
-    border-style: none;
-    background-color: #006cb7;
-    color: #fff;
-}
-button:hover {
-    background-color: #34cdd7;
-}
-button:active {
-    background-color: #006cb7;
-}
-textarea {
-    width: 100%;
-}
-
-.w100 {
-    width: 100%;
-}
-
-.nowrap {
-    white-space: nowrap;
-}
-
-
-
-@media (prefers-color-scheme: dark) {
-    body {
-        background: var(--in-content-box-background);
-        color: var(--text-color);
-    }
-}
-body {
-    background: var(--bg-color);
-    box-sizing: border-box;
-    color: var(--text-color);
-    cursor: default;
-    display: flex;
-    flex-direction: column;
-    font: caption;
-    margin: 0;
-    padding: 1em 1em 100%;
-}
 :root {
     /* https://hg.mozilla.org/mozilla-central/raw-file/tip/toolkit/themes/shared/in-content/common.inc.css */
     --in-content-page-color: var(--grey-90);

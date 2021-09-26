@@ -1,0 +1,86 @@
+@import url(./ui-base.css);
+@import url(./ui-color.css);
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+h2:before {
+    content: '■ ';
+    /* background-image: url('../img/icon.png');
+    background-size: 20px 20px;
+    position:absolute;
+    width:20px;
+    height:20px;
+    margin-left:-30px; */
+}
+td, th {
+    padding: 0.2rem 1rem;
+}
+th {
+    border-bottom: black solid 1px;
+}
+tr {
+    border-bottom: gray dotted 1px;
+}
+button {
+    font-size: 1.2em;
+    padding: .5em 1em;
+    border-radius: .25em;
+    border-style: none;
+    background-color: #006cb7;
+    color: #fff;
+}
+button:hover {
+    background-color: #34cdd7;
+}
+button:active {
+    background-color: #006cb7;
+}
+textarea {
+    width: 100%;
+}
+
+.w100 {
+    width: 100%;
+}
+
+.nowrap {
+    white-space: nowrap;
+}
+
+
+
+/*
+==========================================
+Copied from treestyletab
+==========================================
+*/
+
+/*
+body {
+    background: var(--in-content-box-background);
+    color: var(--text-color);
+}
+*/
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background: var(--in-content-box-background);
+        color: var(--text-color);
+    }
+}
+
+body {
+    background: var(--bg-color);
+    box-sizing: border-box;
+    color: var(--text-color);
+    cursor: default;
+    display: flex;
+    flex-direction: column;
+    font: caption;
+    margin: 0;
+    padding: 1em 1em 100%;
+    -moz-user-select: none;
+}
