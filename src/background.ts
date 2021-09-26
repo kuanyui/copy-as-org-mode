@@ -60,9 +60,9 @@ browser.menus.onClicked.addListener((info, tab) => {
         info.menuItemId === "copy-selection-as-org-mode" ||
         info.menuItemId === "copy-current-page-url-as-org-mode"
       ) {
-        browser.tabs.executeScript(tabId, { file: "copy.js" })
+        browser.tabs.executeScript(tabId, { file: "dist/copy.js" })
       } else if (info.menuItemId === "copy-link-as-org-mode") {
-        browser.tabs.executeScript(tabId, { file: "copy-link.js" }).then(() => {
+        browser.tabs.executeScript(tabId, { file: "dist/copy-link.js" }).then(() => {
           if (!info.linkText) { throw new TypeError('[To Developer] info.linkText is undefined') }
           if (!info.linkUrl) { throw new TypeError('[To Developer] info.linkUrl is undefined') }
           const linkText = info.linkText.replace(/([\\`*_[\]<>])/g, "\\$1")
@@ -80,5 +80,5 @@ browser.menus.onClicked.addListener((info, tab) => {
   )
 
   browser.browserAction.onClicked.addListener(() =>
-    browser.tabs.executeScript(undefined, { file: "copy.js" })
+    browser.tabs.executeScript(undefined, { file: "dist/copy.js" })
   )

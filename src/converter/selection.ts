@@ -3,6 +3,7 @@ import { imgToCanvasToDataUrl, MyStorage } from "../common";
 
 // https://github.com/defunctzombie/node-url/issues/54
 // https://github.com/defunctzombie/node-url/issues/41
+// @ts-ignore
 import * as url from 'url'
 
 /** Process or resolve img.src, a.href in HTML.

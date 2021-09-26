@@ -107,21 +107,22 @@ export const storageManager = new StorageManager()
 
 
 export function copyToClipboard (text: string, html: string) {
-    var textBlob = new Blob([text], { type: 'text/plain' });
-    var htmlBlob = new Blob([html], { type: 'text/html' });
-    var data = [
-        new ClipboardItem({ 'text/plain': Promise.resolve(textBlob) }),
-        new ClipboardItem({ 'text/html': Promise.resolve(htmlBlob) })
-    ];
-
-    navigator.clipboard.write(data).then(
-        function () {
-        /* success */
-        },
-        function () {
-        /* failure */
-        }
-    );
+    // var textBlob = new Blob([text], { type: 'text/plain' });
+    // var htmlBlob = new Blob([html], { type: 'text/html' });
+    // var data = [
+    //     new ClipboardItem({ 'text/plain': Promise.resolve(textBlob) }),
+    //     new ClipboardItem({ 'text/html': Promise.resolve(htmlBlob) })
+    // ];
+//
+    // navigator.clipboard.write(data).then(
+    //     function () {
+    //     /* success */
+    //     },
+    //     function () {
+    //     /* failure */
+    //     }
+    // );
+    navigator.clipboard.writeText(text)
   };
 
 export function imgToCanvasToDataUrl (imgEl: HTMLImageElement): Promise<string> {

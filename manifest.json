@@ -2,24 +2,26 @@
     "manifest_version": 2,
     "name": "Copy as Org-Mode",
     "version": "0.0.1",
-
-    "description": "Switch between various search engines in one click",
+    "applications": {
+        "gecko": {
+            "id": "{59e590fc-6635-45fe-89c7-af637eb4b9c0}"
+        }
+    },
+    "description": "Copy selection or links as Org-mode format text.",
     "icons": {
         "256": "img/icon.png"
     },
-    "page_action": {
+    "browser_action": {
       "browser_style": true,
-      "default_icon": {
-        "256": "img/icon.png"
-      },
-      "default_title": "Switch Engine!"
+      "default_icon": "img/icon.png",
+      "default_title": "Copy as Org-mode!"
     },
     "background": {
         "scripts": ["dist/background.js"]
     },
-    "permissions": ["activeTab", "clipboardWrite", "contextMenus", "storage"],
+    "permissions": ["activeTab", "clipboardWrite", "menus", "storage"],
     "commands": {
-        "_execute_page_action": {
+        "_execute_browser_action": {
             "suggested_key": {
                 "default": "Ctrl+Alt+O",
                 "linux": "Ctrl+Alt+O"

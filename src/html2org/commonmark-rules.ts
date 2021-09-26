@@ -1,4 +1,3 @@
-import { text } from 'stream/consumers'
 import { CustomNode } from './node'
 import { Rule } from './rules'
 import { Html2OrgOptions } from './turndown'

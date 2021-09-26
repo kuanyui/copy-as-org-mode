@@ -22,6 +22,7 @@ const config = {
             // { test: /\.pug$/, loader: 'pug-plain-loader' },
             // { test: /\.styl(us)?$/, use: [ 'vue-style-loader', 'css-loader', 'stylus-loader' ] },
             { test: /\.(gif|svg|jpg|png)$/, loader: "file-loader" },
+
             // { test: /\.css$/, use: ['style-loader', 'css-loader'] }
         ]
     },
