@@ -2,6 +2,8 @@
  * The collapseWhitespace function is adapted from collapse-whitespace
  * by Luc Thevenard.
  *
+ *  @see https://github.com/lucthev/collapse-whitespace
+ *
  * The MIT License (MIT)
  *
  * Copyright (c) 2014 Luc Thevenard <lucthevenard@gmail.com>
@@ -25,11 +27,14 @@
  * THE SOFTWARE.
  */
 
+import { CustomNode } from "./node"
+
+type NodeJudgeFn = (node: Node) => boolean
 interface CollapseWhitespaceOptions {
-  element: root,
-  isBlock: isBlock,
-  isVoid: isVoid,
-  isPre: options.preformattedCode ? isPreOrCode : null
+  element: Node,
+  isBlock: NodeJudgeFn,
+  isVoid: NodeJudgeFn,
+  isPre: NodeJudgeFn | null,
 }
 
 /**
@@ -37,25 +42,28 @@ interface CollapseWhitespaceOptions {
  *
  * @param {Object} options
  */
-function collapseWhitespace (options) {
-  var element = options.element
-  var isBlock = options.isBlock
-  var isVoid = options.isVoid
-  var isPre = options.isPre || function (node) {
+export default function collapseWhitespace (options: CollapseWhitespaceOptions) {
+  let element = options.element
+  let isBlock = options.isBlock
+  let isVoid = options.isVoid
+  let isPre = options.isPre || function (node) {
     return node.nodeName === 'PRE'
   }
 
   if (!element.firstChild || isPre(element)) return
 
-  var prevText = null
-  var keepLeadingWs = false
+  let prevText: Text | null = null
+  let keepLeadingWs: boolean = false
 
-  var prev = null
-  var node = next(prev, element, isPre)
+  let prev = null
+  let node = next(prev, element, isPre)
 
   while (node !== element) {
-    if (node.nodeType === 3 || node.nodeType === 4) { // Node.TEXT_NODE or Node.CDATA_SECTION_NODE
-      var text = node.data.replace(/[ \r\n\t]+/g, ' ')
+    if (!node) { break }
+
+    if (node.nodeType === Node.TEXT_NODE || node.nodeType === Node.CDATA_SECTION_NODE) { // Node.TEXT_NODE or Node.CDATA_SECTION_NODE
+      const textNode: Text = node as Text
+      let text = textNode.data.replace(/[ \r\n\t]+/g, ' ')
 
       if ((!prevText || / $/.test(prevText.data)) &&
           !keepLeadingWs && text[0] === ' ') {
@@ -68,10 +76,10 @@ function collapseWhitespace (options) {
         continue
       }
 
-      node.data = text
+      textNode.data = text
 
-      prevText = node
-    } else if (node.nodeType === 1) { // Node.ELEMENT_NODE
+      prevText = textNode
+    } else if (node.nodeType === Node.ELEMENT_NODE) { // Node.ELEMENT_NODE
       if (isBlock(node) || node.nodeName === 'BR') {
         if (prevText) {
           prevText.data = prevText.data.replace(/ $/, '')
@@ -112,9 +120,12 @@ function collapseWhitespace (options) {
  * @param {Node} node
  * @return {Node} node
  */
-function remove (node) {
+function remove (node: Node) {
   var next = node.nextSibling || node.parentNode
-
+  if (!node.parentNode) {
+    console.warn('[To Developer] parentNode is not existed, so this node cannot be remove from DOM.')
+    return null
+  }
   node.parentNode.removeChild(node)
 
   return next
@@ -129,7 +140,8 @@ function remove (node) {
  * @param {Function} isPre
  * @return {Node}
  */
-function next (prev, current, isPre) {
+function next(prev: Node | null, current: Node | null, isPre: NodeJudgeFn) {
+  if (current === null) { return null }
   if ((prev && prev.parentNode === current) || isPre(current)) {
     return current.nextSibling || current.parentNode
   }
@@ -137,4 +149,4 @@ function next (prev, current, isPre) {
   return current.firstChild || current.nextSibling || current.parentNode
 }
 
-export default collapseWhitespace
+

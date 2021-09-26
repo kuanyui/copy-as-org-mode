@@ -1,3 +1,8 @@
+/**
+ * FIXME: UNUSED CURRENTLY.
+ * Because I'm not planning to make this run under Node.js
+ */
+
 /*
  * Set up window for Node.js
  */
@@ -70,5 +75,10 @@ function shouldUseActiveX () {
 }
 
 
-const parser: DOMParser = canParseHTMLNatively() ? root.DOMParser : createHTMLParser()
-export default parser
+// export default function getDOMParserCtor(): DOMParser {
+//   const parser: DOMParser = canParseHTMLNatively() ? root.DOMParser : createHTMLParser()
+//   return parser
+// }
+
+const AvailableParser: DOMParser = canParseHTMLNatively() ? root.DOMParser : createHTMLParser()
+export default AvailableParser

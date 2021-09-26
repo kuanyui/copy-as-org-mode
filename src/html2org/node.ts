@@ -11,7 +11,7 @@ export interface CustomNode extends HTMLElement {
   }
   parentNode: CustomNode
 }
-export default function CustomNodeConstructor(node: HTMLElement, options: Html2OrgOptions): CustomNode {
+export default function CustomNodeConstructor(node: Node, options: Html2OrgOptions): CustomNode {
   const _node: CustomNode = node as unknown as CustomNode
   _node.isBlock = isBlock(node)
   _node.isCode = node.nodeName === 'CODE' || _node.parentNode.isCode
@@ -21,7 +21,7 @@ export default function CustomNodeConstructor(node: HTMLElement, options: Html2O
 }
 
 
-function isBlank (node: HTMLElement) {
+function isBlank (node: Node) {
   return (
     !isVoid(node) &&
     !isMeaningfulWhenBlank(node) &&

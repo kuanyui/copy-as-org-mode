@@ -36,7 +36,7 @@ export function isVoid (node: Node) {
   return is(node, voidElements)
 }
 
-export function hasVoid (node: HTMLElement) {
+export function hasVoid (node: Node) {
   return has(node, voidElements)
 }
 
@@ -49,7 +49,7 @@ export function isMeaningfulWhenBlank (node: Node) {
   return is(node, meaningfulWhenBlankElements)
 }
 
-export function hasMeaningfulWhenBlank (node: HTMLElement) {
+export function hasMeaningfulWhenBlank (node: Node) {
   return has(node, meaningfulWhenBlankElements)
 }
 
@@ -57,11 +57,12 @@ function is (node: Node, tagNames: string[]) {
   return tagNames.indexOf(node.nodeName) >= 0
 }
 
-function has (node: HTMLElement, tagNames: string[]) {
+function has(node: Node, tagNames: string[]) {
+  const el: HTMLElement = node as HTMLElement
   return (
-    node.getElementsByTagName &&
+    el.getElementsByTagName &&
     tagNames.some(function (tagName) {
-      return node.getElementsByTagName(tagName).length
+      return el.getElementsByTagName(tagName).length
     })
   )
 }

@@ -1,10 +1,9 @@
 import COMMONMARK_RULES from './commonmark-rules'
-import Rules, { RuleReplacementFn } from './rules'
+import Rules, { Rule, RuleFilter, RuleReplacementFn } from './rules'
 import { trimLeadingNewlines, trimTrailingNewlines } from './utilities'
 import RootNode from './root-node'
 import CustomNodeConstructor, { CustomNode } from './node'
-var reduce = Array.prototype.reduce
-var escapes = [
+var escapes: [RegExp, string][] = [
   [/\\/g, '\\\\'],
   [/\*/g, '\\*'],
   [/^-/g, '\\-'],
@@ -33,7 +32,7 @@ export type h2o_preformatted_code_t = boolean
 
 
 export interface Html2OrgOptions {
-  rules: COMMONMARK_RULES,
+  rules: Record<string, Rule>,
   headingStyle: h2o_opt_heading_style_t,
   hr: h2o_hr_t,
   bulletListMarker: h2o_bullet_marker_t,
@@ -55,7 +54,6 @@ const DEFAULT_OPTION: Html2OrgOptions = {
   hr: '* * *',
   bulletListMarker: '*',
   codeBlockStyle: 'indented',
-  fence: '```',
   emDelimiter: '_',
   strongDelimiter: '**',
   linkStyle: 'inlined',
@@ -97,7 +95,7 @@ export default class TurndownService {
 
     if (input === '') return ''
 
-    var output = process.call(this, new RootNode(input, this.options))
+    var output = process.call(this, RootNode(input, this.options))
     return postProcess.call(this, output)
   }
 
@@ -129,7 +127,7 @@ export default class TurndownService {
    * @type Object
    */
 
-  addRule (key: string, rule: object) {
+  addRule (key: string, rule: Rule) {
     this.rules.add(key, rule)
     return this
   }
@@ -142,7 +140,7 @@ export default class TurndownService {
    * @type Object
    */
 
-  keep (filter) {
+  keep (filter: RuleFilter) {
     this.rules.keep(filter)
     return this
   }
@@ -155,7 +153,7 @@ export default class TurndownService {
    * @type Object
    */
 
-  remove (filter) {
+  remove (filter: RuleFilter) {
     this.rules.remove(filter)
     return this
   }
@@ -169,7 +167,7 @@ export default class TurndownService {
    */
 
   escape (str: string) {
-    return escapes.reduce(function (accumulator, escape) {
+    return escapes.reduce(function (accumulator: string, escape) {
       return accumulator.replace(escape[0], escape[1])
     }, str)
   }
@@ -185,14 +183,14 @@ export default class TurndownService {
 
 function process (parentNode: Node) {
   var self = this
-  return reduce.call(parentNode.childNodes, function (output, node) {
-    node = new CustomNodeConstructor(node, self.options)
+  return Array.prototype.reduce.call(parentNode.childNodes, function (output: string, node: Node): string {
+    const customNode = CustomNodeConstructor(node, self.options)
 
     var replacement = ''
-    if (node.nodeType === 3) {
-      replacement = node.isCode ? node.nodeValue : self.escape(node.nodeValue)
-    } else if (node.nodeType === 1) {
-      replacement = replacementForNode.call(self, node)
+    if (customNode.nodeType === 3) {
+      replacement = customNode.isCode ? customNode.nodeValue : self.escape(customNode.nodeValue)
+    } else if (customNode.nodeType === 1) {
+      replacement = replacementForNode.call(self, customNode)
     }
 
     return join(output, replacement)

@@ -10,10 +10,10 @@ export interface Rule {
   replacement: RuleReplacementFn
 }
 
-export type RuleReplacementFn =
-((content: string) => string) |
-((content: string, node: CustomNode) => string) |
-((content: string, node: CustomNode, options: Html2OrgOptions) => string)
+export type RuleReplacementFn = (content: string, node: CustomNode, options: Html2OrgOptions) => string   // FIXME: Magic.... see commonmark-rules
+// ((content: string) => string) |
+// ((content: string, node: CustomNode) => string) |
+// ((content: string, node: CustomNode, options: Html2OrgOptions) => string)
 
 export type RuleFilter =
   string |

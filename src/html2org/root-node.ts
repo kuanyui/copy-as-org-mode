@@ -1,5 +1,4 @@
 import collapseWhitespace from './collapse-whitespace'
-import HTMLParser from './html-parser'
 import { Html2OrgOptions } from './turndown'
 import { isBlock, isVoid } from './utilities'
 
@@ -17,6 +16,7 @@ export default function RootNode (input: string | Node, options: Html2OrgOptions
   } else {
     root = input.cloneNode(true)
   }
+  if (!root) { throw new Error('ERROR: Why root node is not existed?') }
   collapseWhitespace({
     element: root,
     isBlock: isBlock,
@@ -26,10 +26,9 @@ export default function RootNode (input: string | Node, options: Html2OrgOptions
 
   return root
 }
-
-let _htmlParser: HTMLParser
+let _htmlParser: DOMParser
 function htmlParser () {
-  _htmlParser = _htmlParser || new HTMLParser()
+  _htmlParser = _htmlParser || new window.DOMParser()
   return _htmlParser
 }
 

@@ -1,7 +1,10 @@
+import { text } from 'stream/consumers'
+import { CustomNode } from './node'
+import { Rule } from './rules'
 import { Html2OrgOptions } from './turndown'
 import { repeat } from './utilities'
 
-let rules = {
+let rules: Record<string, Rule> = {
   paragraph: {
     filter: 'p',
 
@@ -61,11 +64,13 @@ let rules = {
         .replace(/^\n+/, '') // remove leading newlines
         .replace(/\n+$/, '\n') // replace trailing newlines with just a single one
         .replace(/\n/gm, '\n    ') // indent
-      var prefix = options.bulletListMarker + '   '
-      var parent = node.parentNode
+      let prefix = options.bulletListMarker + '   '
+      const parent = node.parentNode
+      if (!parent) { return 'ERROR: Why does <li> has no parentNode?' }
       if (parent.nodeName === 'OL') {
-        var start = parent.getAttribute('start')
-        var index = Array.prototype.indexOf.call(parent.children, node)
+        const parentEl: HTMLElement = parent as HTMLElement
+        const start = parentEl.getAttribute('start')
+        const index = Array.prototype.indexOf.call(parent.children, node)
         prefix = (start ? Number(start) + index : index + 1) + '.  '
       }
       return (
@@ -74,39 +79,47 @@ let rules = {
     }
   },
   indentedCodeBlock: {
-    filter: function (node: Node, options: Html2OrgOptions): string {
+    filter: function (node: CustomNode, options: Html2OrgOptions) {
       return (
         options.codeBlockStyle === 'indented' &&
         node.nodeName === 'PRE' &&
-        node.firstChild &&
+        !!node.firstChild &&
         node.firstChild.nodeName === 'CODE'
       )
     },
 
     replacement: function (content: string, node: Node, options: Html2OrgOptions): string {
+      const firstChild = node.firstChild
+      if (!firstChild) { return 'ERROR: indentedCodeBlock: has no firstChild' }
+      const textContent = firstChild.textContent
+      if (!textContent) { return 'ERROR: indentedCodeBlock: firstChild has no textContent' }
       return (
         '\n\n    ' +
-        node.firstChild.textContent.replace(/\n/g, '\n    ') +
+        textContent.replace(/\n/g, '\n    ') +
         '\n\n'
       )
     }
   },
   fencedCodeBlock: {
-    filter: function (node: CustomNode, options: Html2OrgOptions): string {
+    filter: function (node: CustomNode, options: Html2OrgOptions) {
       return (
         options.codeBlockStyle === 'fenced' &&
         node.nodeName === 'PRE' &&
-        node.firstChild &&
+        !!node.firstChild &&
         node.firstChild.nodeName === 'CODE'
       )
     },
 
-    replacement: function (content: string, node, options: Html2OrgOptions): string {
-      var className = node.firstChild.getAttribute('class') || ''
+    replacement: function (content, node, options): string {
+      const firstChild = node.firstChild
+      if (!firstChild) { return 'ERROR: fencedCodeBlock: has no firstChild' }
+      const textContent = firstChild.textContent
+      if (!textContent) { return 'ERROR: fencedCodeBlock: firstChild has no textContent' }
+      var className = (firstChild as Element).getAttribute('class') || ''
       var language = (className.match(/language-(\S+)/) || [null, ''])[1]
-      var code = node.firstChild.textContent
+      var code: string = textContent
 
-      var fenceChar = options.fence.charAt(0)
+      var fenceChar = '`'
       var fenceSize = 3
       var fenceInCodeRegex = new RegExp('^' + fenceChar + '{3,}', 'gm')
 
@@ -138,63 +151,63 @@ let rules = {
       return (
         options.linkStyle === 'inlined' &&
         node.nodeName === 'A' &&
-        node.getAttribute('href')
+        node.hasAttribute('href')
       )
     },
 
-    replacement: function (content: string, node) {
+    replacement: function (content: string, node: CustomNode) {
       var href = node.getAttribute('href')
-      var title = cleanAttribute(node.getAttribute('title'))
+      var title = cleanAttribute(node.getAttribute('title') || '')
       if (title) title = ' "' + title + '"'
       return '[' + content + '](' + href + title + ')'
     }
   },
-  referenceLink: {
-    filter: function (node, options: Html2OrgOptions): string {
-      return (
-        options.linkStyle === 'referenced' &&
-        node.nodeName === 'A' &&
-        node.getAttribute('href')
-      )
-    },
+  // referenceLink: {
+  //   filter: function (node, options: Html2OrgOptions): boolean {
+  //     return (
+  //       options.linkStyle === 'referenced' &&
+  //       node.nodeName === 'A' &&
+  //       node.hasAttribute('href')
+  //     )
+  //   },
 
-    replacement: function (content: string, node, options: Html2OrgOptions): string {
-      var href = node.getAttribute('href')
-      var title = cleanAttribute(node.getAttribute('title'))
-      if (title) title = ' "' + title + '"'
-      var replacement
-      var reference
+  //   replacement: function (content: string, node, options: Html2OrgOptions): string {
+  //     var href = node.getAttribute('href')
+  //     var title = cleanAttribute(node.getAttribute('title'))
+  //     if (title) title = ' "' + title + '"'
+  //     var replacement
+  //     var reference
 
-      switch (options.linkReferenceStyle) {
-        case 'collapsed':
-          replacement = '[' + content + '][]'
-          reference = '[' + content + ']: ' + href + title
-          break
-        case 'shortcut':
-          replacement = '[' + content + ']'
-          reference = '[' + content + ']: ' + href + title
-          break
-        default:
-          var id = this.references.length + 1
-          replacement = '[' + content + '][' + id + ']'
-          reference = '[' + id + ']: ' + href + title
-      }
+  //     switch (options.linkReferenceStyle) {
+  //       case 'collapsed':
+  //         replacement = '[' + content + '][]'
+  //         reference = '[' + content + ']: ' + href + title
+  //         break
+  //       case 'shortcut':
+  //         replacement = '[' + content + ']'
+  //         reference = '[' + content + ']: ' + href + title
+  //         break
+  //       default:
+  //         var id = this.references.length + 1
+  //         replacement = '[' + content + '][' + id + ']'
+  //         reference = '[' + id + ']: ' + href + title
+  //     }
 
-      this.references.push(reference)
-      return replacement
-    },
+  //     this.references.push(reference)
+  //     return replacement
+  //   },
 
-    references: [],
+  //   references: [],
 
-    append: function (options: Html2OrgOptions): string {
-      var references = ''
-      if (this.references.length) {
-        references = '\n\n' + this.references.join('\n') + '\n\n'
-        this.references = [] // Reset references
-      }
-      return references
-    }
-  },
+  //   append: function (options: Html2OrgOptions): string {
+  //     var references = ''
+  //     if (this.references.length) {
+  //       references = '\n\n' + this.references.join('\n') + '\n\n'
+  //       this.references = [] // Reset references
+  //     }
+  //     return references
+  //   }
+  // },
   emphasis: {
     filter: ['em', 'i'],
 
@@ -235,9 +248,9 @@ let rules = {
     filter: 'img',
 
     replacement: function (content: string, node) {
-      var alt = cleanAttribute(node.getAttribute('alt'))
+      var alt = cleanAttribute(node.getAttribute('alt') || '')
       var src = node.getAttribute('src') || ''
-      var title = cleanAttribute(node.getAttribute('title'))
+      var title = cleanAttribute(node.getAttribute('title') || '')
       var titlePart = title ? ' "' + title + '"' : ''
       return src ? '![' + alt + ']' + '(' + src + titlePart + ')' : ''
     }
@@ -246,7 +259,7 @@ let rules = {
 
 
 
-function cleanAttribute (attribute) {
+function cleanAttribute (attribute: string): string {
   return attribute ? attribute.replace(/(\n+\s*)+/g, '\n') : ''
 }
 
