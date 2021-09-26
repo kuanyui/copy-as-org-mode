@@ -7,7 +7,7 @@ table {
 }
 
 h2:before {
-    content: '■ ';
+    content: '▶ ';
     /* background-image: url('../img/icon.png');
     background-size: 20px 20px;
     position:absolute;
@@ -19,10 +19,10 @@ td, th {
     padding: 0.2rem 1rem;
 }
 th {
-    border-bottom: black solid 1px;
+    border-bottom: #777 solid 2px;
 }
 tr {
-    border-bottom: gray dotted 1px;
+    border-bottom: #777 dotted 1px;
 }
 button {
     font-size: 1.2em;
@@ -83,4 +83,14 @@ body {
     margin: 0;
     padding: 1em 1em 100%;
     -moz-user-select: none;
+}
+
+pre, code {
+    background: var(--in-content-button-background-mixed);
+    border: 1px solid var(--in-content-border-hover-mixed);
+    color: var(--in-content-text-color);
+}
+pre {
+    font-size: 0.8rem;
+    padding: 0 0.4rem;
 }

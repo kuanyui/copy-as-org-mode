@@ -157,7 +157,7 @@
   button,
   select {
     background: var(--in-content-button-background-mixed);
-    border: 0 none transparent;
+    border: 1px solid var(--in-content-border-hover-mixed);
     color: var(--in-content-text-color);
   }
   button:hover,
