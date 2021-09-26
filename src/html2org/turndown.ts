@@ -181,16 +181,15 @@ export default class TurndownService {
  * @type String
  */
 
-function process (parentNode: Node) {
-  var self = this
-  return Array.prototype.reduce.call(parentNode.childNodes, function (output: string, node: Node): string {
-    const customNode = CustomNodeConstructor(node, self.options)
+function process (this: TurndownService, parentNode: Node) {
+  return Array.prototype.reduce.call(parentNode.childNodes, (output: string, node: Node): string => {
+    const customNode = CustomNodeConstructor(node, this.options)
 
-    var replacement = ''
+    let replacement: string = ''
     if (customNode.nodeType === 3) {
-      replacement = customNode.isCode ? customNode.nodeValue : self.escape(customNode.nodeValue)
+      replacement = customNode.isCode ? customNode.nodeValue || '' : this.escape(customNode.nodeValue || '')
     } else if (customNode.nodeType === 1) {
-      replacement = replacementForNode.call(self, customNode)
+      replacement = replacementForNode.call(this, customNode)
     }
 
     return join(output, replacement)
@@ -224,7 +223,7 @@ function postProcess (output: string) {
  * @type String
  */
 
-function replacementForNode (node: HTMLElement) {
+function replacementForNode (this: TurndownService, node: CustomNode) {
   var rule = this.rules.forNode(node)
   var content = process.call(this, node)
   var whitespace = node.flankingWhitespace
