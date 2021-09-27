@@ -21,7 +21,7 @@ var escapes: [RegExp, string][] = [
 
 /** -, _, or * repeated > 3 times */
 type h2o_heading_marker_t = '*'
-export type h2o_hr_t = string
+type h2o_hr_t = `-----`
 type h2o_ul_marker_t = '-' | '+'
 type h2o_ol_marker_t = '.' | ')'
 type h2o_code_delimiter_t = '=' | '~'
@@ -59,7 +59,7 @@ export interface Html2OrgOptions {
 const DEFAULT_OPTION: Readonly<Html2OrgOptions> = {
   rules: COMMONMARK_RULES,
   headingMarker: '*',
-  hr: '* * *',
+  hr: '-----',
   unorderedListMarker: '-',
   orderedListMarker: '.',
   codeDelimiter: '=',

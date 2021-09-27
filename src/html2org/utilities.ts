@@ -66,3 +66,19 @@ function has(node: Node, tagNames: string[]) {
     })
   )
 }
+
+export function wrapInlineMarkWithSpace(textContent: string, node: Node, delimiterMark: string): string {
+  textContent = textContent.replace(/\r?\n|\r/g, ' ').trim()
+  let lSpace = ''
+  let rSpace = ''
+  const previous = node.previousSibling
+  if (previous && !previous.textContent!.endsWith(' ')) {
+    lSpace = ' '
+  }
+  const next = node.nextSibling
+  if (next && !next.textContent!.endsWith(' ')) {
+    rSpace = ' '
+  }
+  const ch = delimiterMark
+  return  lSpace + ch + textContent + ch + rSpace
+}

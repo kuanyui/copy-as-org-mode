@@ -1,7 +1,7 @@
 import { CustomNode } from './node'
 import { Rule } from './rules'
 import { Html2OrgOptions } from './turndown'
-import { repeat } from './utilities'
+import { repeat, wrapInlineMarkWithSpace } from './utilities'
 
 let rules: Record<string, Rule> = {
   paragraph: {
@@ -218,16 +218,22 @@ let rules: Record<string, Rule> = {
       return node.nodeName === 'CODE' && !isCodeBlock
     },
 
-    replacement: function (content: string): string {
+    replacement: function (content, node, options): string {
       if (!content) return ''
-      content = content.replace(/\r?\n|\r/g, ' ')
-
-      var extraSpace = /^`|^ .*?[^ ].* $|`$/.test(content) ? ' ' : ''
-      var delimiter = '`'
-      var matches = content.match(/`+/gm) || []
-      while (matches.indexOf(delimiter) !== -1) delimiter = delimiter + '`'
-
-      return delimiter + extraSpace + content + extraSpace + delimiter
+      // return wrapInlineMarkWithSpace(content, node, options.codeDelimiter)
+      content = content.replace(/\r?\n|\r/g, ' ').trim()
+      let lSpace = ''
+      let rSpace = ''
+      const previous = node.previousSibling
+      if (previous && !previous.textContent!.endsWith(' ')) {
+        lSpace = ' '
+      }
+      const next = node.nextSibling
+      if (next && !next.textContent!.endsWith(' ')) {
+        rSpace = ' '
+      }
+      var ch = options.codeDelimiter
+      return  lSpace + ch + content + ch + rSpace
     }
   },
   image: {
