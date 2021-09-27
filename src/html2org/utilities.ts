@@ -139,7 +139,7 @@ function guessLangId(cssClassName: string): string {
 }
 
 const LANGS: Record<string, string> = {
-  "bash": "bash|sh|zsh",
+  "bash": "bash|sh|zsh|shell",
   "clojure": "clojure|clj",
   "coffee": "coffee|coffeescript|cson|iced",
   "css": "css",
