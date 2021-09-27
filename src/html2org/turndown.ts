@@ -124,9 +124,9 @@ export default class TurndownService {
     for (const node of parentNode.childNodes) {
       const customNode = CustomNodeConstructor(node, this.options)
       let replacement: string = ''
-      if (customNode.nodeType === 3) {
+      if (customNode.nodeType === Node.TEXT_NODE) {
         replacement = customNode.isCode ? customNode.nodeValue || '' : this.escape(customNode.nodeValue || '')
-      } else if (customNode.nodeType === 1) {
+      } else if (customNode.nodeType === Node.ELEMENT_NODE) {
         replacement = this.replacementForNode(customNode)
       }
       output = join(output, replacement)
@@ -346,7 +346,9 @@ function canConvert (input: string | HTMLElement): String|Object|Array<any>|Bool
     input !== null && (
       typeof input === 'string' ||
       (input.nodeType && (
-        input.nodeType === 1 || input.nodeType === 9 || input.nodeType === 11
+        input.nodeType === Node.ELEMENT_NODE ||
+        input.nodeType === Node.DOCUMENT_NODE ||
+        input.nodeType === Node.DOCUMENT_FRAGMENT_NODE
       ))
     )
   )

@@ -78,11 +78,11 @@ function isFlankedByWhitespace (side: 'left' | 'right', node: Node, options: Htm
   }
 
   if (sibling) {
-    if (sibling.nodeType === 3) {
+    if (sibling.nodeType === Node.TEXT_NODE) {
       isFlanked = regExp.test(sibling.nodeValue || '')
     } else if (options.preformattedCode && sibling.nodeName === 'CODE') {
       isFlanked = false
-    } else if (sibling.nodeType === 1 && !isBlock(sibling)) {
+    } else if (sibling.nodeType === Node.ELEMENT_NODE && !isBlock(sibling)) {
       isFlanked = regExp.test(sibling.textContent || '')
     }
   }
