@@ -23,8 +23,8 @@ export type RuleFilter =
 
 export default class Rules {
   options: Html2OrgOptions
-  _keep: Rule[]
-  _remove: Rule[]
+  private _keep: Rule[]
+  private _remove: Rule[]
   blankRule: Rule
   keepReplacement: RuleReplacementFn
   defaultRule: Rule
@@ -67,14 +67,14 @@ export default class Rules {
       }
     })
   }
+  /** Get rule for Node */
+  forNode (node: CustomNode): Rule {
+    if (node.isBlank) { return this.blankRule }
 
-  forNode (node: CustomNode) {
-    if (node.isBlank) return this.blankRule
-    var rule
-
-    if ((rule = findRule(this.array, node, this.options))) return rule
-    if ((rule = findRule(this._keep, node, this.options))) return rule
-    if ((rule = findRule(this._remove, node, this.options))) return rule
+    let rule
+    if ((rule = findRule(this.array, node, this.options))) { return rule }
+    if ((rule = findRule(this._keep, node, this.options))) { return rule }
+    if ((rule = findRule(this._remove, node, this.options))) { return rule }
 
     return this.defaultRule
   }

@@ -115,6 +115,24 @@ export default class TurndownService {
 
   /**
    * Add one or more plugins
+   *
+   * Use a plugin, or an array of plugins. Example:
+   * ```js
+   * // Import plugins from turndown-plugin-gfm
+   * var turndownPluginGfm = require('turndown-plugin-gfm')
+   * var gfm = turndownPluginGfm.gfm
+   * var tables = turndownPluginGfm.tables
+   * var strikethrough = turndownPluginGfm.strikethrough
+   *
+   * // Use the gfm plugin
+   * turndownService.use(gfm)
+   *
+   * // Use the table and strikethrough plugins only
+   * turndownService.use([tables, strikethrough])
+   * ```
+   *
+   * `use` returns the `TurndownService` instance for chaining.
+   *
    * @public
    * @param {Function|Array} plugin The plugin or array of plugins to add
    * @returns The Turndown instance for chaining
@@ -134,6 +152,22 @@ export default class TurndownService {
 
   /**
    * Adds a rule
+   *
+   * The `key` parameter is a unique name for the rule for easy reference. Example:
+   *
+   * ```js
+   * turndownService.addRule('strikethrough', {
+   *   filter: ['del', 's', 'strike'],
+   *   replacement: function (content) {
+   *     return '~' + content + '~'
+   *   }
+   * })
+   * ```
+   *
+   * `addRule` returns the `TurndownService` instance for chaining.
+   *
+   * See **Extending with Rules** in README
+   *
    * @public
    * @param {String} key The unique key of the rule
    * @param {Object} rule The rule
@@ -148,6 +182,24 @@ export default class TurndownService {
 
   /**
    * Keep a node (as HTML) that matches the filter
+   *
+   * Determines which elements are to be kept and rendered as HTML. By default,
+   * Turndown does not keep any elements. The filter parameter works like a rule
+   * filter (see section on filters belows). Example:
+   *
+   * ```js
+   * turndownService.keep(['del', 'ins'])
+   * turndownService.turndown('<p>Hello <del>world</del><ins>World</ins></p>') // 'Hello <del>world</del><ins>World</ins>'
+   * ```
+   *
+   * This will render `<del>` and `<ins>` elements as HTML when converted.
+   *
+   * `keep` can be called multiple times, with the newly added keep filters
+   * taking precedence over older ones. Keep filters will be overridden by the
+   * standard CommonMark rules and any added rules. To keep elements that are
+   * normally handled by those rules, add a rule with the desired behaviour.
+   *
+   * `keep` returns the `TurndownService` instance for chaining.
    * @public
    * @param {String|Array|Function} filter The unique key of the rule
    * @returns The Turndown instance for chaining
@@ -160,7 +212,25 @@ export default class TurndownService {
   }
 
   /**
-   * Remove a node that matches the filter
+   * Remove a node that matches the filter Determines which elements are to be
+   * removed altogether i.e. converted to an empty string. By default, Turndown
+   * does not remove any elements. The filter parameter works like a rule filter
+   * (see section on filters belows). Example:
+   *
+   * ```js
+   * turndownService.remove('del')
+   * turndownService.turndown('<p>Hello <del>world</del><ins>World</ins></p>') // 'Hello World'
+   * ```
+   *
+   * This will remove `<del>` elements (and contents).
+   *
+   * `remove` can be called multiple times, with the newly added remove filters
+   * taking precedence over older ones. Remove filters will be overridden by the
+   * keep filters,  standard CommonMark rules, and any added rules. To remove
+   * elements that are normally handled by those rules, add a rule with the
+   * desired behaviour.
+   *
+   * `remove` returns the `TurndownService` instance for chaining.
    * @public
    * @param {String|Array|Function} filter The unique key of the rule
    * @returns The Turndown instance for chaining
