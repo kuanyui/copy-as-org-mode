@@ -21,10 +21,12 @@ export default function RootNode (input: string | Node, options: Html2OrgOptions
       `,
       'text/html'
     )
-    root = doc.getElementById('html2org-root')
-    // FIXME: This `htmlToElem` can solve disappeared newlines of codeblock in https://kuanyui.github.io, but will create duplicated element on this document
-    // root = htmlToElem('<div id="turndown-root">' + input + '</div>')
-    // console.log('Why newlines in <pre> disappeared....',input, root)
+    root = doc.getElementById('html2org-root')!
+    root.querySelectorAll('pre').forEach(el => {
+      // NOTE: DOMParser + innerText is a fucking shit and some newlines will disappeared in Element.innerText / Node.textContent .  So add \n to each <br/>
+      // @see https://stackoverflow.com/questions/56082077/is-there-some-way-to-render-br-tags-with-javascripts-domparser
+      el.innerHTML = el.innerHTML.replace(/< *?br *?\/? *?>/gi, '<br />\n')
+    })
   } else {
     root = input.cloneNode(true)
   }
