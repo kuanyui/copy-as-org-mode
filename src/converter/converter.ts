@@ -12,7 +12,12 @@ interface ConversionResult {
 export async function convertSelectionToOrgMode(options: MyStorage): Promise<ConversionResult> {
     const html = await getSelectionAsCleanHtml(options)
     var turndownService = new TurndownService({
-        unorderedListMarker: options.ulBulletChar
+        unorderedListMarker: options.ulBulletChar,
+        orderedListMarker: options.olBulletChar,
+        codeDelimiter: options.codeChar,
+
+        codeBlockStyle: options.codeBlockStyle,
+
     })
     const orgStr = turndownService.turndown(html)
     return {

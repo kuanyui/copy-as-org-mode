@@ -115,7 +115,8 @@ class StorageManager {
 export const storageManager = new StorageManager()
 
 
-export function copyToClipboard (text: string, html: string) {
+export function copyToClipboard(text: string, html: string) {
+    if (text === 'ERROR') { return }
     // var textBlob = new Blob([text], { type: 'text/plain' });
     // var htmlBlob = new Blob([html], { type: 'text/html' });
     // var data = [
