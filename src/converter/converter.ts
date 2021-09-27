@@ -15,7 +15,7 @@ export async function convertSelectionToOrgMode(options: MyStorage): Promise<Con
         unorderedListMarker: options.ulBulletChar,
         orderedListMarker: options.olBulletChar,
         codeDelimiter: options.codeChar,
-
+        listIndentSize: options.listIndentSize,
         codeBlockStyle: options.codeBlockStyle,
 
     })

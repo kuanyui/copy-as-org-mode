@@ -31,12 +31,16 @@ html
     link(rel="stylesheet" type="text/css" href="./options_ui_style/options_ui.css")
   form
     div
-      h2 Inline Syntax
+      h2 List Syntax
       table
+        +row_select('listIndentSize', {'2': '2', '4': '4' })
+          span= "Indent size of nested list item (<li>)"
         +row_select('ulBulletChar', {'-': '- unordered item', '+': '+ unordered item' })
           span= "Mark for unordered list (<ul>)"
         +row_select('olBulletChar', {'.': '1. ordered item', ')': '1) ordered item' })
           span= "Mark for ordered list (<ol>)"
+      h2 Inline Syntax
+      table
         +row_select('codeChar', {'=': '=code=', '~': '~code~' })
           span= "Mark for inline code (<code>)"
 

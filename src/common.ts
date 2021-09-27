@@ -1,3 +1,4 @@
+export type list_indent_t = number
 export type ul_mark_t = '-' | '+'
 export type ol_mark_t = '.' | ')'
 export type code_mark_t = '=' | '~'
@@ -10,6 +11,8 @@ export type source_link_text_fmt_t =
     `${string}%u${string}`
 
 export interface MyStorage {
+    /** Indent size for nested list item */
+    listIndentSize: list_indent_t,
     /** The character of `ul > li` in Org-mode */
     ulBulletChar: ul_mark_t
     /** The character of `ul > li` in Org-mode */
@@ -66,6 +69,7 @@ class StorageManager {
     }
     getDefaultData(): MyStorage {
         return {
+            listIndentSize: 2,
             ulBulletChar: '-',
             olBulletChar: '.',
             codeChar: '=',
@@ -74,7 +78,7 @@ class StorageManager {
             insertReferenceLink: {
                 enabled: false,
                 pos: 'append',
-                format: `Source Link: [[%t][%u]]`
+                format: `-----\nReference: [[%t][%u]]`
             },
             titleBlackList: '',
             convertImageAsDataUrl: false,
@@ -86,19 +90,14 @@ class StorageManager {
     }
     /** Get data object from LocalStorage */
     getData(): Promise<MyStorage> {
-        // FIXME: PREPARE FOR MIGRATION
         return this.area.get().then((_d) => {
             const d = _d as unknown as MyStorage
-            // Too lazy to do migration ....
-            if (
-                !d ||
-                d.ulBulletChar === undefined
-            ) {
+            if (!d) {
                 const defaultValue = storageManager.getDefaultData()
                 storageManager.setData(defaultValue)
                 return defaultValue
             }
-            return d
+            return Object.assign(storageManager.getDefaultData(), d)
         }).catch((err) => {
             console.error('Error when getting settings from browser.storage:', err)
             return storageManager.getDefaultData()

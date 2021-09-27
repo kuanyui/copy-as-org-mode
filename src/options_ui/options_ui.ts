@@ -46,6 +46,7 @@ function setCheckboxValue(id: string, checked: boolean) {
 
 async function loadFromLocalStorage() {
     const d = await storageManager.getData()
+    setSelectValue('listIndentSize', d.listIndentSize + '')
     setSelectValue('ulBulletChar', d.ulBulletChar)
     setSelectValue('olBulletChar', d.olBulletChar)
     setSelectValue('codeChar', d.codeChar)
@@ -63,6 +64,7 @@ q<HTMLButtonElement>('resetBtn').onclick=resetToDefault
 
 async function saveFormToLocalStorage() {
     storageManager.setData({
+        listIndentSize: ~~getSelectValue('listIndentSize'),
         ulBulletChar: getSelectValue('ulBulletChar') as any,
         olBulletChar: getSelectValue('olBulletChar') as any,
         codeChar: getSelectValue('codeChar') as any,

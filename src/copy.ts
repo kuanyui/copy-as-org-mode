@@ -1,4 +1,4 @@
-import { copyToClipboard, storageManager } from "./common";
+import { copyToClipboard, MyStorage, storageManager } from "./common";
 import { convertSelectionToOrgMode } from "./converter/converter";
 
 
@@ -12,17 +12,23 @@ async function main() {
     if (options.titleBlackList !== "") {
       title = replaceTitleBlackList(title, options.titleBlackList);
     }
-    let text = `[[${document.URL}][${title}]]`;
+    const url = document.URL
+    let ref = getFormattedReferenceLink(title, url, options)
     let html = `<a href="${document.URL}">${title}</a>`;
-    let selection = await convertSelectionToOrgMode(options);
+    let text = ''
+    const result = await convertSelectionToOrgMode(options)
     // console.log('Selection ===>', selection)
-    if (selection.output !== "") {
+    if (result.output !== "") {
       if (options.insertReferenceLink.enabled) {
-        text += `\n\n${selection.output}`;
-        html += `<br><br><blockquote>${selection.html}</blockquote>`;
+        if (options.insertReferenceLink.pos === 'append') {
+          text = result.output + '\n\n' + ref
+        } else {
+          text = ref + '\n\n' + result.output
+        }
+        html += `<br><br><blockquote>${result.html}</blockquote>`;
       } else {
-        text = selection.output;
-        html = selection.html;
+        text = result.output;
+        html = result.html;
       }
     }
     copyToClipboard(text, html);
@@ -32,3 +38,11 @@ async function main() {
 }
 
 main();
+
+function getFormattedReferenceLink(title: string, url: string, options: MyStorage): string {
+  const template = options.insertReferenceLink.format
+  let s: string = template
+  s = s.replaceAll('%t', title)
+  s = s.replaceAll('%u', url)
+  return s
+}
