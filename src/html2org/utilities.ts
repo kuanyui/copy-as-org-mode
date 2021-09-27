@@ -54,7 +54,7 @@ export function hasMeaningfulWhenBlank (node: Node) {
 }
 
 function is (node: Node, tagNames: string[]) {
-  return tagNames.indexOf(node.nodeName) >= 0
+  return tagNames.includes(node.nodeName)
 }
 
 function has(node: Node, tagNames: string[]) {
