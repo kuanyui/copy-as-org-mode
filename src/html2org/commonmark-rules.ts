@@ -72,6 +72,16 @@ let rules: Record<string, Rule> = {
       )
     }
   },
+  checkboxInList: {
+    filter: function (node) {
+      const el = node as unknown as HTMLInputElement
+      return el.type === 'checkbox' && !!el.parentNode && el.parentNode.nodeName === 'LI'
+    },
+    replacement: function (content, node) {
+      const el = node as unknown as HTMLInputElement
+      return (el.checked ? '[X]' : '[ ]') + ' '
+    }
+  },
   colonCodeBlock: {
     filter: function (node: CustomNode, options: Html2OrgOptions) {
       return (
