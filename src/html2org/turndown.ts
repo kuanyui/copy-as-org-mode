@@ -107,9 +107,9 @@ export default class TurndownService {
       )
     }
 
-    if (input === '') return ''
+    if (input === '') { return '' }
 
-    var output = this.process(RootNode(input, this.options))
+    var output = this.processChildrenOfNode(RootNode(input, this.options))
     return this.postProcess(output)
   }
   /**
@@ -119,7 +119,7 @@ export default class TurndownService {
   * @returns A Markdown representation of the node
   * @type String
   */
-  private process (parentNode: Node): string {
+  private processChildrenOfNode (parentNode: Node): string {
     let output: string = ''
     for (const node of parentNode.childNodes) {
       const customNode = CustomNodeConstructor(node, this.options)
@@ -134,17 +134,20 @@ export default class TurndownService {
     return output
   }
   /**
-   * Converts an element node to its Markdown equivalent
+   * Converts an element node to its Markdown equivalent.
+   *
+   * Apply suitable rule on Node.
+   *
    * @private
    * @param {HTMLElement} node The node to convert
-   * @returns A Markdown representation of the node
+   * @returns **A Markdown representation of the node**
    * @type String
    */
-  private replacementForNode (node: CustomNode) {
+  private replacementForNode (node: CustomNode): string {
     var rule = this.rules.forNode(node)
-    var content = this.process(node)
+    var content = this.processChildrenOfNode(node)
     var whitespace = node.flankingWhitespace
-    if (whitespace.leading || whitespace.trailing) content = content.trim()
+    if (whitespace.leading || whitespace.trailing) { content = content.trim() }
     return (
       whitespace.leading +
       rule.replacement(content, node, this.options) +
@@ -158,7 +161,7 @@ export default class TurndownService {
  * @returns A trimmed version of the ouput
  * @type String
  */
-  private postProcess (output: string) {
+  private postProcess (output: string): string {
     // this.rules.forEach((rule) => {
     //   if (typeof rule.append === 'function') {  // I didn't find any document about `Rule.append` nor find any reference to this symbol, so remove this
     //     output = join(output, rule.append(this.options))
