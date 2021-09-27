@@ -224,7 +224,13 @@ let rules: Record<string, Rule> = {
     },
 
     replacement: function (content, node, options): string {
-      return wrapInlineMarkWithSpace(content, node, options.codeDelimiter)
+      let ch = options.codeDelimiter
+      if (content.includes('=') && content.includes('~')) {
+        return `\n\n: ${content} \n\n`
+      }
+      else if (ch === '=' && content.includes('=')) { ch = '~' }
+      else if (ch === '~' && content.includes('~')) { ch = '~' }
+      return wrapInlineMarkWithSpace(content, node, ch)
     }
   },
   image: {
