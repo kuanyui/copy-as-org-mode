@@ -67,8 +67,22 @@ function has(node: Node, tagNames: string[]) {
   )
 }
 
+/**
+ *
+ * @param textContent
+ * @param node
+ * @param delimiterMark
+ * @param supportMultipleLines Some tags cannot include \n in Org-mode. (ex:
+ * =code=). And though *bold* supports multiple line, they still cannot contains
+ * multiple \n in a row. And the single \n will be replaced with a space.
+ * @returns
+ */
 export function wrapInlineMarkWithSpace(textContent: string, node: Node, delimiterMark: string): string {
-  textContent = textContent.replace(/\r?\n|\r/g, ' ').trim()
+  // if (!supportMultipleLines) {
+  //   textContent = textContent.replace(/\r?\n|\r/g, ' ')
+  // }
+  textContent = textContent.trim()
+  if (textContent === '') { return '' }
   let lSpace = ''
   let rSpace = ''
   const previous = node.previousSibling

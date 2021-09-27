@@ -196,18 +196,28 @@ let rules: Record<string, Rule> = {
     filter: ['em', 'i'],
 
     replacement: function (content: string, node, options: Html2OrgOptions): string {
-      content = content.trim()
-      if (!content) { return '' }
-      return options.italicDelimiter + content + options.italicDelimiter
+      return wrapInlineMarkWithSpace(content, node, options.italicDelimiter)
     }
   },
-  bold: { // FIXME: extra space
+  bold: {
     filter: ['strong', 'b'],
 
     replacement: function (content: string, node, options: Html2OrgOptions): string {
-      content = content.trim()
-      if (!content) { return '' }
-      return options.boldDelimiter + content + options.boldDelimiter
+      return wrapInlineMarkWithSpace(content, node, options.boldDelimiter)
+    }
+  },
+  strike: {
+    filter: ['strike', 's', 'del'],
+
+    replacement: function (content: string, node, options: Html2OrgOptions): string {
+      return wrapInlineMarkWithSpace(content, node, options.strikeDelimiter)
+    }
+  },
+  underline: {
+    filter: 'u',
+
+    replacement: function (content: string, node, options: Html2OrgOptions): string {
+      return wrapInlineMarkWithSpace(content, node, options.underlineDelimiter)
     }
   },
   code: {
@@ -219,21 +229,7 @@ let rules: Record<string, Rule> = {
     },
 
     replacement: function (content, node, options): string {
-      if (!content) return ''
-      // return wrapInlineMarkWithSpace(content, node, options.codeDelimiter)
-      content = content.replace(/\r?\n|\r/g, ' ').trim()
-      let lSpace = ''
-      let rSpace = ''
-      const previous = node.previousSibling
-      if (previous && !previous.textContent!.endsWith(' ')) {
-        lSpace = ' '
-      }
-      const next = node.nextSibling
-      if (next && !next.textContent!.endsWith(' ')) {
-        rSpace = ' '
-      }
-      var ch = options.codeDelimiter
-      return  lSpace + ch + content + ch + rSpace
+      return wrapInlineMarkWithSpace(content, node, options.codeDelimiter, false)
     }
   },
   image: {
