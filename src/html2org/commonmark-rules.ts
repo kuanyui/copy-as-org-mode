@@ -1,7 +1,7 @@
 import { CustomNode } from './node'
 import { Rule } from './rules'
 import { Html2OrgOptions } from './turndown'
-import { repeat, wrapInlineMarkWithSpace } from './utilities'
+import { judgeCodeblockLanguage, repeat, wrapInlineMarkWithSpace } from './utilities'
 
 let rules: Record<string, Rule> = {
   paragraph: {
@@ -30,8 +30,7 @@ let rules: Record<string, Rule> = {
     filter: 'blockquote',
 
     replacement: function (content: string): string {
-      content = content.replace(/^\n+|\n+$/g, '')
-      content = content.replace(/^/gm, '> ')
+      // content = content.replace(/^/gm, '  ')  // indentation
       return '\n\n#+begin_quote\n' +
       content +
       '\n#+end_quote\n\n'
@@ -54,18 +53,19 @@ let rules: Record<string, Rule> = {
     filter: 'li',
 
     replacement: function (content: string, node: Node, options: Html2OrgOptions): string {
+      const indent = Array(options.listIndentSize).fill(' ').join('')
       content = content
         .replace(/^\n+/, '') // remove leading newlines
         .replace(/\n+$/, '\n') // replace trailing newlines with just a single one
-        .replace(/\n/gm, '\n    ') // indent
-      let prefix = options.unorderedListMarker + '   '
+        .replace(/\n/gm, '\n' + indent) // indent
+      let prefix = options.unorderedListMarker + ' '
       const parent = node.parentNode
       if (!parent) { return 'ERROR: Why does <li> has no parentNode?' }
       if (parent.nodeName === 'OL') {
         const parentEl: HTMLElement = parent as HTMLElement
         const start = parentEl.getAttribute('start')
         const index = Array.prototype.indexOf.call(parent.children, node)
-        prefix = (start ? Number(start) + index : index + 1) + options.orderedListMarker + '  '
+        prefix = (start ? Number(start) + index : index + 1) + options.orderedListMarker + ' '
       }
       return (
         prefix + content + (node.nextSibling && !/\n$/.test(content) ? '\n' : '')
@@ -77,8 +77,7 @@ let rules: Record<string, Rule> = {
       return (
         options.codeBlockStyle === 'colon' &&
         node.nodeName === 'PRE' &&
-        !!node.firstChild &&
-        node.firstChild.nodeName === 'CODE'
+        judgeCodeblockLanguage(node) !== ''
       )
     },
 
@@ -99,24 +98,20 @@ let rules: Record<string, Rule> = {
       return (
         options.codeBlockStyle === 'beginEnd' &&
         node.nodeName === 'PRE' &&
-        !!node.firstChild &&
-        node.firstChild.nodeName === 'CODE'
+        judgeCodeblockLanguage(node) !== ''
       )
     },
 
     replacement: function (content, node, options): string {
-      const firstChild = node.firstChild
-      if (!firstChild) { return 'ERROR: beginEndCodeBlock: has no firstChild' }
-      const textContent = firstChild.textContent
-      if (!textContent) { return 'ERROR: beginEndCodeBlock: firstChild has no textContent' }
-      let className = (firstChild as Element).getAttribute('class') || ''
-      let language = (className.match(/language-(\S+)/) || [null, ''])[1]
-      if (language) { language = ' ' + language }
-      let code: string = textContent
-
+      const textContent = node.innerText
+      if (!textContent === null) { return 'ERROR: beginEndCodeBlock: firstChild has no textContent' }
+      let langId = judgeCodeblockLanguage(node)
+      if (langId) { langId = ' ' + langId }
+      // FIXME: Newlines of textContent are all disappeared in this page: https://kuanyui.github.io/2017/08/16/macros-for-qproperty/
+      console.log('取られたコード', textContent, node)
       return (
-        '\n\n#+begin_src'  + language + '\n' +
-        code.replace(/\n$/, '') +
+        '\n\n#+begin_src'  + langId + '\n' +
+        textContent +
         '\n#+end_src\n\n'
       )
     }
@@ -229,7 +224,7 @@ let rules: Record<string, Rule> = {
     },
 
     replacement: function (content, node, options): string {
-      return wrapInlineMarkWithSpace(content, node, options.codeDelimiter, false)
+      return wrapInlineMarkWithSpace(content, node, options.codeDelimiter)
     }
   },
   image: {

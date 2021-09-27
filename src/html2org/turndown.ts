@@ -33,12 +33,13 @@ type h2o_strike_delimiter_t = '+'
 type h2o_link_style_t = 'inlined' | 'referenced'  // TODO: NOT IMPLEMENTED YET
 type h2o_link_ref_style_t = `full` | `collapsed` | `shortcut`  // TODO: NOT IMPLEMENTED YET
 type h2o_preformatted_code_t = boolean
-
+type h2o_list_indent_size_t = number
 
 export interface Html2OrgOptions {
   rules: Record<string, Rule>,
   headingMarker: h2o_heading_marker_t,
   hr: h2o_hr_t,
+  listIndentSize: h2o_list_indent_size_t,
   unorderedListMarker: h2o_ul_marker_t,
   orderedListMarker: h2o_ol_marker_t,
   codeBlockStyle: h2o_code_block_style_t,
@@ -60,6 +61,7 @@ const DEFAULT_OPTION: Readonly<Html2OrgOptions> = {
   rules: COMMONMARK_RULES,
   headingMarker: '*',
   hr: '-----',
+  listIndentSize: 2,
   unorderedListMarker: '-',
   orderedListMarker: '.',
   codeDelimiter: '=',

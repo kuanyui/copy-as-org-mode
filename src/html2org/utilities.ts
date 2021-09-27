@@ -96,3 +96,91 @@ export function wrapInlineMarkWithSpace(textContent: string, node: Node, delimit
   const ch = delimiterMark
   return  lSpace + ch + textContent + ch + rSpace
 }
+
+/**
+ *
+ * @param nodeOfPre: node of `<pre>`
+ * @return if not a code block, return empty string.
+ */
+export function judgeCodeblockLanguage(nodeOfPre: Node): string {
+  let langId: string = ''
+  const preEl = nodeOfPre as HTMLPreElement
+  langId = guessLangId(preEl.className)
+  if (langId) { return langId }
+  const parentEl = nodeOfPre.parentElement!
+  langId = guessLangId(parentEl.className)
+  if (langId) { return langId }
+  const firstChildEl = nodeOfPre.firstChild as HTMLElement
+  if (firstChildEl && firstChildEl.nodeType === Node.ELEMENT_NODE) {
+    langId = guessLangId(firstChildEl.className)
+    if (langId) { return langId }
+  }
+  // search parents in a paranoid way
+  for (const classPatt of ['highlight', 'lang']) {
+    const el = preEl.closest(`[class*=${classPatt}]`)
+    if (el) {
+      langId = guessLangId(el.className)
+      if (langId) { return langId }
+    }
+  }
+  return ''
+}
+
+function guessLangId(cssClassName: string): string {
+  for (const id in LANGS) {
+    const _patt: string = LANGS[id]
+    const patt = new RegExp(`\\b${_patt}\\b`)
+    if (cssClassName.match(patt)) {
+      console.log('Guessed!', id, cssClassName)
+      return id
+    }
+  }
+  return ''
+}
+
+const LANGS: Record<string, string> = {
+  "bash": "bash|sh|zsh",
+  "clojure": "clojure|clj",
+  "coffee": "coffee|coffeescript|cson|iced",
+  "css": "css",
+  "dart": "dart",
+  "erl": "erl|erlang",
+  "haskell": "hs|haskell",
+  "html": "html|xml|xsl|xhtml|rss|atom|xjb|xsd|plist|wsf|svg",
+  "http": "http|https",
+  "ini": "ini|toml",
+  "java": "java|jsp",
+  "js": "js|javascript|jsx|mjs|cjs",
+  "json": "json",
+  "kotlin": "kotlin|kt",
+  "latex": "latex|tex",
+  "less": "less",
+  "lisp": "lisp",
+  "lua": "lua",
+  "makefile": "makefile|mk|mak",
+  "markdown": "markdown|md|mkdown|mkd",
+  "matlab": "matlab",
+  "objectivec": "objectivec|mm|objc|obj-c",
+  "ocaml": "ocaml|ml",
+  "pascal": "pascal|delphi|dpr|dfm|pas|freepascal|lazarus|lpr|lfm",
+  "pl": "pl|perl|pm",
+  "php": "php",
+  "protobuf": "protobuf",
+  "py": "py|python|gyp|ipython",
+  "r": "r",
+  "rb": "rb|ruby|gemspec|podspec|thor|irb",
+  "rs": "rs|rust",
+  "scala": "scala",
+  "scheme": "scheme",
+  "scss": "scss",
+  "shell": "shell|console",
+  "sql": "sql",
+  "swift": "swift",
+  "typescript": "typescript|ts",
+  "vhdl": "vhdl",
+  "vbnet": "vbnet|vb",
+  "yaml": "yaml|yml",
+  "cs": "cs|csharp|c#",
+  "c": "c|h|cpp|hpp|c[+][+]|h[+][+]|cc|hh|cxx|hxx|c-like",
+  "go": "go|golang",
+}

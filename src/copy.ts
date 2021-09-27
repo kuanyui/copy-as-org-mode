@@ -15,7 +15,7 @@ async function main() {
     let text = `[[${document.URL}][${title}]]`;
     let html = `<a href="${document.URL}">${title}</a>`;
     let selection = await convertSelectionToOrgMode(options);
-    console.log('Selection ===>', selection)
+    // console.log('Selection ===>', selection)
     if (selection.output !== "") {
       if (options.insertReferenceLink.enabled) {
         text += `\n\n${selection.output}`;
