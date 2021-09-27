@@ -109,9 +109,66 @@ export default class TurndownService {
 
     if (input === '') return ''
 
-    var output = process.call(this, RootNode(input, this.options))
-    return postProcess.call(this, output)
+    var output = this.process(RootNode(input, this.options))
+    return this.postProcess(output)
   }
+  /**
+  * Reduces a DOM node down to its Markdown string equivalent
+  * @private
+  * @param {HTMLElement} parentNode The node to convert
+  * @returns A Markdown representation of the node
+  * @type String
+  */
+  private process (parentNode: Node): string {
+    let output: string = ''
+    for (const node of parentNode.childNodes) {
+      const customNode = CustomNodeConstructor(node, this.options)
+      let replacement: string = ''
+      if (customNode.nodeType === 3) {
+        replacement = customNode.isCode ? customNode.nodeValue || '' : this.escape(customNode.nodeValue || '')
+      } else if (customNode.nodeType === 1) {
+        replacement = this.replacementForNode(customNode)
+      }
+      output = join(output, replacement)
+    }
+    return output
+  }
+  /**
+   * Converts an element node to its Markdown equivalent
+   * @private
+   * @param {HTMLElement} node The node to convert
+   * @returns A Markdown representation of the node
+   * @type String
+   */
+  private replacementForNode (node: CustomNode) {
+    var rule = this.rules.forNode(node)
+    var content = this.process(node)
+    var whitespace = node.flankingWhitespace
+    if (whitespace.leading || whitespace.trailing) content = content.trim()
+    return (
+      whitespace.leading +
+      rule.replacement(content, node, this.options) +
+      whitespace.trailing
+    )
+  }
+  /**
+ * Appends strings as each rule requires and trims the output
+ * @private
+ * @param {String} output The conversion output
+ * @returns A trimmed version of the ouput
+ * @type String
+ */
+  private postProcess (output: string) {
+    // this.rules.forEach((rule) => {
+    //   if (typeof rule.append === 'function') {  // I didn't find any document about `Rule.append` nor find any reference to this symbol, so remove this
+    //     output = join(output, rule.append(this.options))
+    //   }
+    // })
+
+    return output.replace(/^[\t\r\n]+/, '').replace(/[\t\r\n\s]+$/, '')
+  }
+
+
 
   /**
    * Add one or more plugins
@@ -257,66 +314,6 @@ export default class TurndownService {
   }
 }
 
-/**
- * Reduces a DOM node down to its Markdown string equivalent
- * @private
- * @param {HTMLElement} parentNode The node to convert
- * @returns A Markdown representation of the node
- * @type String
- */
-
-function process (this: TurndownService, parentNode: Node): string {
-  let output: string = ''
-  for (const node of parentNode.childNodes) {
-    const customNode = CustomNodeConstructor(node, this.options)
-    let replacement: string = ''
-    if (customNode.nodeType === 3) {
-      replacement = customNode.isCode ? customNode.nodeValue || '' : this.escape(customNode.nodeValue || '')
-    } else if (customNode.nodeType === 1) {
-      replacement = replacementForNode.call(this, customNode)
-    }
-    output = join(output, replacement)
-  }
-  return output
-}
-
-/**
- * Appends strings as each rule requires and trims the output
- * @private
- * @param {String} output The conversion output
- * @returns A trimmed version of the ouput
- * @type String
- */
-
-function postProcess (this: TurndownService, output: string) {
-  // this.rules.forEach((rule) => {
-  //   if (typeof rule.append === 'function') {  // I didn't find any document about `Rule.append` nor find any reference to this symbol, so remove this
-  //     output = join(output, rule.append(this.options))
-  //   }
-  // })
-
-  return output.replace(/^[\t\r\n]+/, '').replace(/[\t\r\n\s]+$/, '')
-}
-
-/**
- * Converts an element node to its Markdown equivalent
- * @private
- * @param {HTMLElement} node The node to convert
- * @returns A Markdown representation of the node
- * @type String
- */
-
-function replacementForNode (this: TurndownService, node: CustomNode) {
-  var rule = this.rules.forNode(node)
-  var content = process.call(this, node)
-  var whitespace = node.flankingWhitespace
-  if (whitespace.leading || whitespace.trailing) content = content.trim()
-  return (
-    whitespace.leading +
-    rule.replacement(content, node, this.options) +
-    whitespace.trailing
-  )
-}
 
 /**
  * Joins replacement to the current output with appropriate number of new lines
