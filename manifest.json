@@ -23,7 +23,7 @@
     "background": {
         "scripts": ["dist/background.js"]
     },
-    "permissions": ["activeTab", "clipboardWrite", "menus", "storage"],
+    "permissions": ["activeTab", "clipboardWrite", "menus", "storage", "notifications"],
     "commands": {
         "_execute_browser_action": {
             "suggested_key": {

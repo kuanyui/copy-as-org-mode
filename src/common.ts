@@ -1,3 +1,21 @@
+export type my_msg_t = 'showNotification'
+export interface MyMsg_ShowNotification {
+    type: 'showNotification',
+    title: string
+    message: string
+}
+export type MyMsg = MyMsg_ShowNotification
+
+export class msgManager {
+    static sendToTab <T extends MyMsg> (tabId: number, msg: T) {
+        return browser.tabs.sendMessage(tabId, msg) as Promise<T | void>
+    }
+    static sendToBg <T extends MyMsg> (msg: T) {
+        return browser.runtime.sendMessage(msg)
+    }
+}
+
+
 export type list_indent_t = number
 export type ul_mark_t = '-' | '+'
 export type ol_mark_t = '.' | ')'
@@ -114,8 +132,15 @@ class StorageManager {
 export const storageManager = new StorageManager()
 
 
-export function copyToClipboard(text: string, html: string) {
-    if (text === 'ERROR') { return }
+export function copyToClipboard(text: string, html: string): boolean {
+    if (text === 'ERROR') {
+        msgManager.sendToBg({
+            type: "showNotification",
+            title: 'Oops...',
+            message: 'Found something cannot be processed correctly, please report a bug report.',
+        })
+        return false
+    }
     // var textBlob = new Blob([text], { type: 'text/plain' });
     // var htmlBlob = new Blob([html], { type: 'text/html' });
     // var data = [
@@ -131,7 +156,13 @@ export function copyToClipboard(text: string, html: string) {
     //     /* failure */
     //     }
     // );
+    msgManager.sendToBg({
+        type: "showNotification",
+        title: 'Success!',
+        message: 'Org-Mode Text Copied!',
+    })
     navigator.clipboard.writeText(text)
+    return true
   };
 
 export function imgToCanvasToDataUrl (imgEl: HTMLImageElement): Promise<string> {
