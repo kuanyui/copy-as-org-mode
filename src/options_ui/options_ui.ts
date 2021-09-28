@@ -1,21 +1,16 @@
 /**
- * Copyright (c) 2021 ono ono (kuanyui)
- * All rights reserved.
+ * Copyright (c) 2021 ono ono (kuanyui) All rights reserved.
  *
- * This project is released under  Mozilla Public License, v. 2.0 (MPL-2.0). Each
- * file under this directory is licensed under MPL-2.0 by default, if the file
- * includes no license information.
- *
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * https://mozilla.org/MPL/2.0/.
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0 (MPL-2.0). If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/.
  *
  * You may not remove or alter the substance of any license notices (including
  * copyright notices, patent notices, disclaimers of warranty, or limitations of
- * liability) contained within the Source Code Form of the Covered Software, except
- * that You may alter any license notices to the extent required to remedy known
- * factual inaccuracies. (Cited from MPL - 2.0, chapter 3.3)
+ * liability) contained within the Source Code Form of the Covered Software,
+ * except that You may alter any license notices to the extent required to
+ * remedy known factual inaccuracies. (Cited from MPL - 2.0, chapter 3.3)
  */
-
 
 import { MyStorage, storageManager } from "../common"
 
