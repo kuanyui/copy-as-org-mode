@@ -14,7 +14,7 @@
     "browser_action": {
       "browser_style": true,
       "default_icon": "img/icon.png",
-      "default_title": "Copy as Org-mode!"
+      "default_title": "Copy as Org-mode (Ctrl+Alt+O)"
     },
     "options_ui": {
         "page": "dist/options_ui.html",
