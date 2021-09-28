@@ -3,6 +3,7 @@ import Rules, { Rule, RuleFilter, RuleReplacementFn } from './rules'
 import { trimLeadingNewlines, trimTrailingNewlines } from './utilities'
 import RootNode from './root-node'
 import CustomNodeConstructor, { CustomNode } from './node'
+import { isTable, replacementForTable } from './table'
 var escapes: [RegExp, string][] = [
   [/\\/g, '\\\\'],
   [/\*/g, '\\*'],
@@ -114,12 +115,11 @@ export default class TurndownService {
   }
   /**
   * Reduces a DOM node down to its Markdown string equivalent
-  * @private
   * @param {HTMLElement} parentNode The node to convert
   * @returns A Markdown representation of the node
   * @type String
   */
-  private processChildrenOfNode (parentNode: Node): string {
+  processChildrenOfNode (parentNode: Node): string {
     let output: string = ''
     for (const node of parentNode.childNodes) {
       const customNode = CustomNodeConstructor(node, this.options)
@@ -138,12 +138,14 @@ export default class TurndownService {
    *
    * Apply suitable rule on Node.
    *
-   * @private
    * @param {HTMLElement} node The node to convert
    * @returns **A Markdown representation of the node**
    * @type String
    */
-  private replacementForNode (node: CustomNode): string {
+  replacementForNode(node: CustomNode): string {
+    if (isTable(node)) {
+      return replacementForTable(this, node)
+    }
     var rule = this.rules.forNode(node)
     var content = this.processChildrenOfNode(node)
     var whitespace = node.flankingWhitespace
