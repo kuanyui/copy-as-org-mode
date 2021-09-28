@@ -1,3 +1,10 @@
+
+/*
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+
 @import url(./ui-base.css);
 @import url(./ui-color.css);
 
@@ -39,11 +46,12 @@ textarea {
 
 
 
-/*
-==========================================
-Copied from treestyletab
-==========================================
-*/
+/**
+ * ==========================================
+ * Copied from treestyletab by piroor
+ * @see https://github.com/piroor/treestyletab/
+ * ==========================================
+ **/
 
 /*
 body {
@@ -69,6 +77,7 @@ body {
     font: caption;
     margin: 0;
     padding: 1em 1em 100%;
+    user-select: none;
     -moz-user-select: none;
 }
 
