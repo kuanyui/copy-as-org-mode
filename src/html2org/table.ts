@@ -91,7 +91,7 @@ function processRow(service: TurndownService, table: TableModel, row: HTMLTableR
     if (isTh(cell) || isTd(cell)) {
       const orgContent = service.processChildrenOfNode(cell)
       rowModel.push({
-        orgContent: orgContent.trim().replace(/\n/g, ' '),
+        orgContent: orgContent.trim().replace(/[\n|]/g, ' '),  // | is absolutely not allowed in org-mode's table cell
         colSpan: cell.colSpan,
         rowSpan: cell.rowSpan,
         inSection: inSection,

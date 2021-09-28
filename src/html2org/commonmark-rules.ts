@@ -229,8 +229,7 @@ let rules: Record<string, Rule> = {
     filter: function (node) {
       var hasSiblings = node.previousSibling || node.nextSibling
       var isCodeBlock = node.parentNode.nodeName === 'PRE' && !hasSiblings
-
-      return node.nodeName === 'CODE' && !isCodeBlock
+      return (node.nodeName === 'CODE' || node.nodeName === 'KBD') && !isCodeBlock
     },
 
     replacement: function (content, node, options): string {
@@ -240,6 +239,12 @@ let rules: Record<string, Rule> = {
       }
       else if (ch === '=' && content.includes('=')) { ch = '~' }
       else if (ch === '~' && content.includes('~')) { ch = '~' }
+      if (node.closest('table')) {
+        ch = '~'
+        if (content.includes('~')) {
+          return content  // give up...
+        }
+      }
       return wrapInlineMarkWithSpace(content, node, ch)
     }
   },
