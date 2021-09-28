@@ -187,12 +187,13 @@ export function copyToClipboard(text: string, html: string): boolean {
     //     /* failure */
     //     }
     // );
+
+    navigator.clipboard.writeText(text)
     msgManager.sendToBg({
         type: "showNotification",
         title: 'Success!',
         message: 'Org-Mode Text Copied!',
     })
-    navigator.clipboard.writeText(text)
     return true
   };
 

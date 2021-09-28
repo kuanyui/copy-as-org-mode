@@ -25,7 +25,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { copyToClipboard, MyStorage, storageManager } from "./common";
+import { copyToClipboard, MyStorage, source_link_text_fmt_t, storageManager } from "./common";
 import { convertSelectionToOrgMode } from "./converter/converter";
 
 async function main() {
@@ -37,25 +37,30 @@ async function main() {
       title = replaceTitleBlackList(title, options.titleBlackList);
     }
     const url = document.URL
-    let ref = getFormattedReferenceLink(title, url, options)
-    let html = `<a href="${document.URL}">${title}</a>`;
+    let htmlLink = `<a href="${document.URL}">${title}</a>`;
     let text = ''
     const result = await convertSelectionToOrgMode(options)
-    // console.log('Selection ===>', selection)
-    if (result.output !== "") {
+    console.log('selection result', result)
+    // If no selection found, copy the link of current page
+    if (result.output === "") {
+      const orgLink = getFormattedLink(title, url, '[[%u][%t]]')
+      copyToClipboard(orgLink, htmlLink)
+    } else {
+      const ref = getFormattedLink(title, url, options.insertReferenceLink.format)
       if (options.insertReferenceLink.enabled) {
         if (options.insertReferenceLink.pos === 'append') {
           text = result.output + '\n\n' + ref
         } else {
           text = ref + '\n\n' + result.output
         }
-        html += `<br><br><blockquote>${result.html}</blockquote>`;
+        htmlLink += `<br><br><blockquote>${result.html}</blockquote>`;
       } else {
         text = result.output;
-        html = result.html;
+        htmlLink = result.html;
       }
+      copyToClipboard(text, htmlLink);
     }
-    copyToClipboard(text, html);
+
   } catch (e) {
     console.error(e);
   }
@@ -63,8 +68,7 @@ async function main() {
 
 main();
 
-function getFormattedReferenceLink(title: string, url: string, options: MyStorage): string {
-  const template = options.insertReferenceLink.format
+function getFormattedLink(title: string, url: string, template: source_link_text_fmt_t): string {
   let s: string = template
   s = s.replaceAll('%t', title)
   s = s.replaceAll('%u', url)

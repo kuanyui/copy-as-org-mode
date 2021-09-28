@@ -83,28 +83,24 @@ browser.menus.create(
 browser.menus.onClicked.addListener((info, tab) => {
   const tabId = tab.id
   if (tabId === undefined) { console.error('[To Developer] tab.id is undefined??? What the fuck?'); return }
-    if (
-      info.menuItemId === "copy-selection-as-org-mode" ||
-      info.menuItemId === "copy-current-page-url-as-org-mode"
-    ) {
-      browser.tabs.executeScript(tabId, { file: "dist/copy.js" })
-    } else if (info.menuItemId === "copy-link-as-org-mode") {
-      browser.tabs.executeScript(tabId, { file: "dist/copy-link.js" }).then(() => {
-        if (!info.linkText) { throw new TypeError('[To Developer] info.linkText is undefined') }
-        if (!info.linkUrl) { throw new TypeError('[To Developer] info.linkUrl is undefined') }
-        const linkText = info.linkText.replace(/([\\`*_[\]<>])/g, "\\$1")
-        const linkUrl = info.linkUrl.replace(
-          /[\\!'()*]/g,
-          (c) => `%${c.charCodeAt(0).toString(16)}`
-        )
-        browser.tabs.sendMessage(tabId, {
-          text: `[[${linkUrl}][${linkText}]]`,  /// TODO: Rename: orgText
-          html: `<a href="${linkUrl}">${linkText}</a>`,
-        })
+  if ( info.menuItemId === "copy-selection-as-org-mode" || info.menuItemId === "copy-current-page-url-as-org-mode" ) {
+    browser.tabs.executeScript(tabId, { file: "dist/copy.js" })
+  } else if (info.menuItemId === "copy-link-as-org-mode") {
+    browser.tabs.executeScript(tabId, { file: "dist/copy-link.js" }).then(() => {
+      if (!info.linkText) { throw new TypeError('[To Developer] info.linkText is undefined') }
+      if (!info.linkUrl) { throw new TypeError('[To Developer] info.linkUrl is undefined') }
+      const linkText = info.linkText.replace(/([\\`*_[\]<>])/g, "\\$1")
+      const linkUrl = info.linkUrl.replace(
+        /[\\!'()*]/g,
+        (c) => `%${c.charCodeAt(0).toString(16)}`
+      )
+      browser.tabs.sendMessage(tabId, {
+        text: `[[${linkUrl}][${linkText}]]`,  /// TODO: Rename: orgText
+        html: `<a href="${linkUrl}">${linkText}</a>`,
       })
-    }
+    })
   }
-)
+})
 
 browser.browserAction.onClicked.addListener(() =>
   browser.tabs.executeScript(undefined, { file: "dist/copy.js" })
