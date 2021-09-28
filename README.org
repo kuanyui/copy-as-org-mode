@@ -1,22 +1,19 @@
-* Privacy Search Engine Switcher
-A WebExtension to switch current page between various search engines in just one click (or =Ctrl+Alt+N=), if you are too lazy to type =!b=, =!g= (especially on mobile) in DuckDuckGo.
+* Copy as Org-Mode
+A WebExtension to copy selected web page into Org-mode formatted text!
 
 * Install
-- [[https://addons.mozilla.org/en-US/firefox/addon/privacy-search-engine-switcher/][Mozilla Add-ons]]
+- [[https://addons.mozilla.org/en-US/firefox/addon/copy-as-org-mode/][Mozilla Add-ons]]
 
 * Screenshot
 [[https://addons.cdn.mozilla.net/user-media/previews/full/214/214819.png]]
 
 * Supported Browser
-- Firefox for Desktop >= 61
-- Firefox for Android >= 61
-
+- Firefox for Desktop >= 92
 
 * Requirements for Development
 - Node
 - web-ext
 - GNU Make
-- Python 3 (For HTTP server)
 
 * Development
 ** Prepare
@@ -48,19 +45,25 @@ make xpi-server
 make zip-repo
 #+END_SRC
 
-* Permission
 
 * Known Issues (Please feel free to open PR to fix them)
-- HTTPS is required. In HTTP connection, navigator, clipboard is unavailable.
+- HTTPS is required. In HTTP connection, =navigator.clipboard= is unavailable.
 - Nested mark (e.g. =*_+a+_*=) may has some issues.
 - =<pre>= may lost newlines in some page (e.g. https://kuanyui.github.io/2017/08/16/macros-for-qproperty/). I still cannot find the reason.
 
 * Acknowedgement
-- Main icon is from Breeze of KDE Project
+  This project referred, forked, or used some parts of the codes from the other projects:
+
+| Project URL                                                                             | Usage                                               | Licenses of Used Parts |
+|-----------------------------------------------------------------------------------------+-----------------------------------------------------+------------------------|
+| [[https://github.com/0x6b/copy-selection-as-markdown][0x6b/copy-selection-as-markdown]] | Main project structure; copy and selection handling | MIT                    |
+| [[https://github.com/mixmark-io/turndown][mixmark-io/turndown]]                         | Forked as HTML to Org-Mode converter                | MIT                    |
+| [[https://github.com/piroor/treestyletab/][piroor/treestyletab]]                        | The CSS for ~options_ui~ (settings page)            | MPL 2.0; MIT           |
+
 
 * TODOs
 - Customizable keyboard shortcuts.
-- More search engines.
+- Image to data URL?
 - Buttons for Fenix
 * License
 WTFPL 2.0
