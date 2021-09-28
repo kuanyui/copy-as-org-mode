@@ -92,11 +92,10 @@ browser.runtime.onMessage.addListener((_msg: any) => {
 })
 
 function showNotification(title: string, message: string) {
-  browser.notifications.create('', {
+  browser.notifications.create('default', {
     title: title,
-    // type: 'image' as any,
-    // imageUrl: '',
-    type: 'basic',
+    type: 'image' as any,
+    iconUrl: browser.extension.getURL("img/icon.png"),
     message: message,
 })
 }
