@@ -1,4 +1,4 @@
-/**
+/*!
  * The collapseWhitespace function is adapted from collapse-whitespace
  * by Luc Thevenard.
  *

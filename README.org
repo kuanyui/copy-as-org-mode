@@ -67,7 +67,6 @@ make zip-repo
 * TODOs
 - Customizable keyboard shortcuts.
 - Image to data URL?
-- Buttons for Fenix
 
 * License
 MPL-2.0.

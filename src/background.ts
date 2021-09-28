@@ -1,4 +1,4 @@
-/**
+/*!
  * This file is derived from copy-selection-as-markdown by 0x6b
  * https://github.com/0x6b/copy-selection-as-markdown
  *

@@ -1,5 +1,4 @@
-
-/**
+/*!
  * This file is derived from `turndown` by Dom Christie
  * @see https://github.com/mixmark-io/turndown
  *

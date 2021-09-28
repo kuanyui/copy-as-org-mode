@@ -23,7 +23,7 @@
       "dom.Iterable"
     ],
     "strict": true,
-    "removeComments": true,
+    "removeComments": false,
     "moduleResolution": "node",  // without this, vue cannot be import by TypeScript
   }
 }

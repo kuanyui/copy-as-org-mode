@@ -1,4 +1,4 @@
-/**
+/*!
  * Copyright (c) 2021 ono ono (kuanyui) All rights reserved.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public License,
