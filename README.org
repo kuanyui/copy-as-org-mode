@@ -2,6 +2,9 @@
 A WebExtension to copy selected web page into Org-mode formatted text!
 
 * Install
+  #+begin_quote
+  *This addon has been submitted to Mozilla Add-ons, but may be still unavailable in at the moment because it is still pending for manual reviewing by Mozilla. So please be patient until they approve the submission. DON'T OPEN ISSUE ABOUT THIS.*
+  #+end_quote
 - [[https://addons.mozilla.org/en-US/firefox/addon/copy-as-org-mode/][Mozilla Add-ons]]
 
 * Screenshot
