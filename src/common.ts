@@ -164,10 +164,11 @@ export function copyToClipboard(text: string, html: string): boolean {
             return false
         }
         if (window.location.protocol === 'http:') {
+            window.alert('Cannot Copy: Due to the limitation of WebExtension & Firefox, only HTTPS page supports clipboard. Sorry.')
             msgManager.sendToBg({
                 type: "showNotification",
                 title: 'Cannot Copy',
-                message: 'Due to the limitation of WebExtension, only HTTPS page supports clipboard. Sorry.',
+                message: 'Due to the limitation of WebExtension & Firefox, only HTTPS page supports clipboard. Sorry.',
             })
             return false
         }

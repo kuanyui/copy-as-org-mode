@@ -14,6 +14,9 @@ liability) contained within the Source Code Form of the Covered Software, except
 that You may alter any license notices to the extent required to remedy known
 factual inaccuracies. (Cited from MPL-2.0, chapter 3.3)
 
+You can get the source code of this software at
+https://github.com/kuanyui/copy-as-org-mode
+
 ----
 
 This project includes files licensed under different type licenses:
@@ -26,6 +29,13 @@ includes a license header in itself. If a file has no license header due to some
 reasons (for example, image files), please see a file named "license.txt" in
 closest parent directory. Otherwise please treat the file is licensed under the
 default license declared at the top of this file.
+
+| Project URL                                                                             | Usage                                               | Licenses of Used Parts |
+|-----------------------------------------------------------------------------------------+-----------------------------------------------------+------------------------|
+| [[https://github.com/0x6b/copy-selection-as-markdown][0x6b/copy-selection-as-markdown]] | Main project structure; copy and selection handling | MIT                    |
+| [[https://github.com/mixmark-io/turndown][mixmark-io/turndown]]                         | Forked as HTML to Org-Mode converter                | MIT                    |
+| [[https://github.com/piroor/treestyletab/][piroor/treestyletab]]                        | The CSS for ~options_ui~ (settings page)            | MPL 2.0; MIT           |
+
 
 -----
 

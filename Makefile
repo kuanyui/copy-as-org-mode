@@ -1,6 +1,6 @@
 .PHONY: dev build xpi xpi-server clear zip-repo
 
-NAME="DuckDuckGoQuack"
+NAME=Copy as Org-Mode
 BIN:="node_modules/.bin"
 XPI_DIR=../xpi
 
@@ -12,7 +12,7 @@ build: clear
 
 xpi: clear build
 	mkdir -p ${XPI_DIR}
-	zip -r -FS "${XPI_DIR}/${NAME}.xpi" dist/ img/ manifest.json README.org
+	zip -r -FS '${XPI_DIR}/${NAME}.xpi' dist/ img/ manifest.json README.org LICENSE package.json
 
 xpi-server: clear xpi
 	ifconfig | grep "inet " | grep --invert-match '127.0.0.1'
@@ -22,4 +22,4 @@ clear:
 	rm -rf dist/*
 
 zip-repo: clear
-	zip -r "../${NAME}-upload.zip" . -x .git/\* node_modules/\*
+	zip -r '../${NAME}-upload.zip' . -x .git/\* node_modules/\*
