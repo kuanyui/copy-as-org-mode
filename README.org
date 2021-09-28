@@ -65,5 +65,8 @@ make zip-repo
 - Customizable keyboard shortcuts.
 - Image to data URL?
 - Buttons for Fenix
+
 * License
-WTFPL 2.0
+MPL-2.0.
+
+See LICENSE for more information.
