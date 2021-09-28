@@ -32,7 +32,7 @@ browser.menus.create(
     id: "copy-selection-as-org-mode",
     title: "Copy Selection as Org-Mode",
     contexts: ["selection"],
-    documentUrlPatterns: ["<all_urls>"],
+    documentUrlPatterns: ["<all_urls>"],  // "https://*" not works...
   },
   () => {
     if (browser.runtime.lastError)
