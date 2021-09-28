@@ -54,6 +54,7 @@ async function loadFromLocalStorage() {
     setCheckboxValue('insertReferenceLink_enabled', d.insertReferenceLink.enabled)
     setSelectValue('insertReferenceLink_pos', d.insertReferenceLink.pos)
     setTextAreaValue('insertReferenceLink_format', d.insertReferenceLink.format)
+    setCheckboxValue('showNotificationWhenCopy', d.showNotificationWhenCopy)
 }
 
 async function resetToDefault() {
@@ -73,7 +74,8 @@ async function saveFormToLocalStorage() {
             enabled: getCheckboxValue('insertReferenceLink_enabled'),
             pos: getSelectValue('insertReferenceLink_pos') as any,
             format: getTextAreaValue('insertReferenceLink_format') as any,
-        }
+        },
+        showNotificationWhenCopy: getCheckboxValue('showNotificationWhenCopy'),
     })
 }
 

@@ -73,6 +73,9 @@ html
         tr.row
           td.nowrap: label(for="insertReferenceLink_format") Format #[br](#[code %t] means title, #[code %u] means URL.)
           td.w100: textarea(id="insertReferenceLink_format" rows='3')
+      h2 Experimental Options
+      table
+        +row_checkbox('showNotificationWhenCopy'): span Show notification when copy. (This may freeze browser, reason is unknown and I didn't find any issue about this after DuckDuckGoing.)
         //tr.row: td:
     //div
       h2 Advanced

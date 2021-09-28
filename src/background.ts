@@ -8,11 +8,11 @@ const STORAGE: MyStorage = storageManager.getDefaultData()
 console.log('[background] first time to get config from storage')
 storageManager.getData().then((obj) => {
     objectAssignPerfectly(STORAGE, obj)
-})
+  })
 
-storageManager.onDataChanged((changes) => {
+  storageManager.onDataChanged(async (changes) => {
     console.log('[background] storage changed!', changes)
-    STORAGE.ulBulletChar = changes.ulBulletChar.newValue
+    objectAssignPerfectly(STORAGE, await storageManager.getData())
 })
 browser.menus.create(
   {
@@ -92,10 +92,15 @@ browser.runtime.onMessage.addListener((_msg: any) => {
 })
 
 function showNotification(title: string, message: string) {
+  console.log('showNotification...')
+  if (!STORAGE.showNotificationWhenCopy) {
+    return
+  }
   browser.notifications.create('default', {
     title: title,
     type: 'image' as any,
-    iconUrl: browser.extension.getURL("img/icon.png"),
+    iconUrl: browser.runtime.getURL("img/icon.png"),
     message: message,
-})
+  })
+  console.log('showNotification finished.')
 }

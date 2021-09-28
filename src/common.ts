@@ -49,7 +49,9 @@ export interface MyStorage {
     }
     /** Remove matched string or RegExp pattern in the title */
     titleBlackList: string
-    convertImageAsDataUrl: boolean
+    convertImageAsDataUrl: boolean,
+    /** NOTE: Add this option because it seems browser.notifications may freezed browser... Donno why... */
+    showNotificationWhenCopy: boolean
 }
 
 
@@ -100,6 +102,7 @@ class StorageManager {
             },
             titleBlackList: '',
             convertImageAsDataUrl: false,
+            showNotificationWhenCopy: false,
         }
     }
     /** Set data object (can be partial) into LocalStorage. */
@@ -133,11 +136,24 @@ export const storageManager = new StorageManager()
 
 
 export function copyToClipboard(text: string, html: string): boolean {
+    if (window.location) {
+        if (window.location.protocol.startsWith('moz')) {  // FIXME: Donno why this is possible...
+            return false
+        }
+        if (window.location.protocol === 'http:') {
+            msgManager.sendToBg({
+                type: "showNotification",
+                title: 'Cannot Copy',
+                message: 'Due to the limitation of WebExtension, only HTTPS page supports clipboard. Sorry.',
+            })
+            return false
+        }
+    }
     if (text === 'ERROR') {
         msgManager.sendToBg({
             type: "showNotification",
             title: 'Oops...',
-            message: 'Found something cannot be processed correctly, please report a bug report.',
+            message: 'Found something cannot be processed correctly, please consider to send a bug report on GitHub.',
         })
         return false
     }
