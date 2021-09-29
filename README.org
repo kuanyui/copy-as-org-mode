@@ -3,7 +3,7 @@ A WebExtension to copy selected web page into Org-mode formatted text!
 
 #+begin_html
 <blockquote>
-I release all my software projects with <b><code>WTFPL</code>, <code>GPLv3</code>, <code>MIT</code>, or <code>MPL</code> licenses</b>. If my works are usable to you, please consider to donate to <b>reduce my business hours to make more free and open source projects for this world</b>:
+I develop and release <b>ALL</b> my open-source software projects <b>for free</b>, and license under <b><code>WTFPL</code>, <code>GPLv3</code>, <code>MIT</code>, or <code>MPL</code>. however, my "free time" is not free actually</b>. If my works are usable to you or make you happy, please consider to donate to <b>reduce my business hours to make more free and open-source projects for you and this world</b>:
 <ul>
   <li><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=G4F7NM38ADPEC&source=url"> <img width="24" height="24" src="https://raw.githubusercontent.com/kuanyui/kuanyui/main/img/paypal.svg"/>PayPal</a></li>
   <li><a href="https://liberapay.com/onoono"> <img width="24" height="24" src="https://raw.githubusercontent.com/kuanyui/kuanyui/main/img/liberapay.svg"/>LiberaPay</a></li>
@@ -12,6 +12,7 @@ I release all my software projects with <b><code>WTFPL</code>, <code>GPLv3</code
 Thanks for your contribution!
 </blockquote>
 #+end_html
+
 * Install
   #+begin_quote
   *This addon has been submitted to Mozilla Add-ons, but may be still unavailable in at the moment because it is still pending for manual reviewing by Mozilla. So please be patient until they approve the submission. DON'T OPEN ISSUE ABOUT THIS.*
