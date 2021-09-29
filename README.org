@@ -1,17 +1,17 @@
 * Copy as Org-Mode
 A WebExtension to copy selected web page into Org-mode formatted text!
 
-#+begin_quote
-I develop and release *ALL* my open-source software projects *for free*, and are all licensed under =WTFPL=, =GPL=, =MIT=, or =MPL=. *however, my "free time" is not free actually*. If my works are usable to you or make you happy, please consider to donate to *reduce my business hours to make more free and open-source projects for you and this world*:
 #+begin_html
+<blockquote>
+I develop and release <b>ALL</b> my open-source software projects <b>for free</b>, and are ALL licensed under <b><code>WTFPL</code>, <code>GPL</code>, <code>MIT</code>, or <code>MPL</code>. however, my "free time" is not free actually</b>. If my works are usable to you or make you happy, please consider to donate to <b>reduce my business hours to <i>make more free and open-source projects for you and this world</i></b>:
 <ul>
   <li><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=G4F7NM38ADPEC&source=url"> <img width="24" height="24" src="https://raw.githubusercontent.com/kuanyui/kuanyui/main/img/paypal.svg"/>PayPal</a></li>
   <li><a href="https://liberapay.com/onoono"> <img width="24" height="24" src="https://raw.githubusercontent.com/kuanyui/kuanyui/main/img/liberapay.svg"/>LiberaPay</a></li>
   <li><a href="https://www.patreon.com/onoono"> <img width="24" height="24" src="https://raw.githubusercontent.com/kuanyui/kuanyui/main/img/patreon.svg"/>Patreon</a></li>
 </ul>
-#+end_html
 Thanks for your contribution!
-#+end_quote
+</blockquote>
+#+end_html
 
 * Install
   #+begin_quote
