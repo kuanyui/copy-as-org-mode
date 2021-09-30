@@ -15,7 +15,7 @@
    that You may alter any license notices to the extent required to remedy known
    factual inaccuracies. (Cited from MPL - 2.0, chapter 3.3)
 
-mixin row_checkbox(id)
+mixin tablerow_checkbox(id)
   tr.row
     td(colspan="100%")
       label(for=id)
@@ -23,7 +23,7 @@ mixin row_checkbox(id)
         block
 
 //-  {1: 'one', 2: 'two', 3: 'three'}
-mixin row_select(id, optsObj={})
+mixin tablerow_select(id, optsObj={})
   tr.row
     td
       label(for=id)
@@ -33,13 +33,17 @@ mixin row_select(id, optsObj={})
         each text, key in optsObj
           option(value=key)= text
 
-mixin row_1_column(id, label)
+mixin tablerow_1_column(id, label)
   tr.row
     td
       label(for=id)= label
       block
 
-
+mixin line_radio(radioGroupName, value)
+  div
+    label
+      input(type='radio' name=radioGroupName value=value)
+      block
 
 doctype html
 html
@@ -52,15 +56,15 @@ html
       div (Note) Shortcut for copying the link of the current page or selection is #[code Ctrl+Alt+O].
       h2 List Syntax
       table
-        +row_select('listIndentSize', {'2': '2', '4': '4' })
+        +tablerow_select('listIndentSize', {'2': '2', '4': '4' })
           span= "Indent size of nested list item (<li>)"
-        +row_select('ulBulletChar', {'-': '- unordered item', '+': '+ unordered item' })
+        +tablerow_select('ulBulletChar', {'-': '- unordered item', '+': '+ unordered item' })
           span= "Mark for unordered list (<ul>)"
-        +row_select('olBulletChar', {'.': '1. ordered item', ')': '1) ordered item' })
+        +tablerow_select('olBulletChar', {'.': '1. ordered item', ')': '1) ordered item' })
           span= "Mark for ordered list (<ol>)"
       h2 Inline Syntax
       table
-        +row_select('codeChar', {'=': '=code=', '~': '~code~' })
+        +tablerow_select('codeChar', {'=': '=code=', '~': '~code~' })
           span= "Mark for inline code (<code>)"
 
       h2 Block Syntax
@@ -86,19 +90,20 @@ html
         tr
       h2 Links
       table
-        +row_checkbox('decodeUri')
+        +tablerow_checkbox('decodeUri')
           span use #[code decodeURI()] to process URL in #[code= '<a>'] and #[code= '<img>'] #[#decodeUriExample]
       h2 Reference Link
       table
-        +row_checkbox('insertReferenceLink_enabled'): span When copy selection, insert a link to the current page as reference
-        +row_select('insertReferenceLink_pos', {'prepend': 'Prepend', 'append': 'Append' })
+        +tablerow_checkbox('insertReferenceLink_enabled'): span When copy selection, insert a link to the current page as reference
+        +tablerow_select('insertReferenceLink_pos', {'prepend': 'Prepend', 'append': 'Append' })
           span= "Insertion position"
         tr.row
           td.nowrap: label(for="insertReferenceLink_format") Format #[br](#[code %t] means title, #[code %u] means URL.)
           td.w100: textarea(id="insertReferenceLink_format" rows='3')
-      h2 Experimental Options
-      table
-        +row_checkbox('showNotificationWhenCopy'): span Show notification when copy. (#[b On Linux, this may freeze Firefox sometime], reason is unknown yet and I didn't find any issue about this after DuckDuckGoing.)
+      h2 Show Notification When Copy
+      +line_radio('notificationMethod', 'none'): span Disabled
+      +line_radio('notificationMethod', 'windowAlert'): span Browser Alert Popup
+      +line_radio('notificationMethod', 'notificationApi'): span System Notification Popup (#[b On Linux, this may freeze Firefox sometime], reason is unknown yet and I didn't find any issue about this after DuckDuckGoing.)
         //tr.row: td:
     //div
       h2 Advanced

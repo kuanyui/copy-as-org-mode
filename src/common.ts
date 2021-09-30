@@ -35,6 +35,27 @@ export class msgManager {
     }
 }
 
+/**
+ * @param value current value, may be wrong
+ * @param availableValues All possible correct values. The first element is the default value.
+ * @return if value doesn't exist in availableValues, return availableValues[0]. else, return original value.
+ */
+function fixValue<T>(value: T, availableValues: T[]): T {
+    if (availableValues.includes(value)) { return value }
+    return availableValues[0]
+}
+
+function getAllKeyAsStringArray<T>(enumObj: T): Array<keyof T> {
+    const arr: Array<keyof T> = []
+    for (const k in enumObj) {
+        if (k.match(/^\d+$/)) { continue }
+        arr.push(k)
+    }
+    return arr
+}
+enum __NotificationMethod { none, notificationApi, windowAlert }
+export type notification_method_t = keyof typeof __NotificationMethod
+const ALL_NOTIFICATION_METHODS = getAllKeyAsStringArray(__NotificationMethod)
 
 export type list_indent_t = number
 export type ul_mark_t = '-' | '+'
@@ -73,7 +94,7 @@ export interface MyStorage {
     titleBlackList: string
     convertImageAsDataUrl: boolean,
     /** NOTE: Add this option because it seems browser.notifications may freezed browser... Donno why... */
-    showNotificationWhenCopy: boolean
+    notificationMethod: notification_method_t
 }
 
 
@@ -124,7 +145,7 @@ class StorageManager {
             },
             titleBlackList: '',
             convertImageAsDataUrl: false,
-            showNotificationWhenCopy: false,
+            notificationMethod: 'none',
             decodeUri: true,
         }
     }
@@ -141,6 +162,7 @@ class StorageManager {
                 storageManager.setData(defaultValue)
                 return defaultValue
             }
+            d.notificationMethod = fixValue(d.notificationMethod, ALL_NOTIFICATION_METHODS)
             return Object.assign(storageManager.getDefaultData(), d)
         }).catch((err) => {
             console.error('Error when getting settings from browser.storage:', err)

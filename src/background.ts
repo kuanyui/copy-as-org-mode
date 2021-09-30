@@ -80,8 +80,15 @@ browser.menus.create(
   }
 )
 
+let lastTriggerMenuTimeStamp: number = Date.now()
 browser.menus.onClicked.addListener((info, tab) => {
   console.warn('menus.onClicked ===>', info, tab)
+  // FIXME: FUCK. I donno why Firefox even execute copy.ts in   options_ui. This is totally nonsense. Lots of shitty internal   error messages but cannot be tracked in background's console. What  is the worst, it sometime send multiple duplicated events without  any reason out of control. FUCK. Now writ a debouncer as   workaround to fix the Fucking bug in Firefox .
+  if (Date.now() - lastTriggerMenuTimeStamp < 400) {
+    console.log(`[background] workaround for firefox's   bizarre behaviour.`)
+    return false
+  }
+  lastTriggerMenuTimeStamp = Date.now()
   const tabId = tab.id
   if (tabId === undefined) { console.error('[To Developer] tab.id is undefined??? What the fuck?'); return }
   if ( info.menuItemId === "copy-selection-as-org-mode" || info.menuItemId === "copy-current-page-url-as-org-mode" ) {
@@ -103,9 +110,10 @@ browser.menus.onClicked.addListener((info, tab) => {
   }
 })
 
-browser.browserAction.onClicked.addListener(() =>
+browser.browserAction.onClicked.addListener((tab) => {
+  console.log('[DEBUG] browserAction.onclicked', tab)
   browser.tabs.executeScript(undefined, { file: "dist/copy.js" })
-)
+})
 
 
 browser.runtime.onMessage.addListener((_msg: any) => {
@@ -124,8 +132,8 @@ browser.runtime.onMessage.addListener((_msg: any) => {
 })
 
 function showNotification(title: string, message: string) {
-  console.log('showNotification', Date.now(), title, message)
-  if (!STORAGE.showNotificationWhenCopy) {
+  console.log('showNotification(), method =', STORAGE.notificationMethod, Date.now(), title, message)
+  if (STORAGE.notificationMethod === 'windowAlert') {
     const safeTitle = title.replace(/[\n\r<>\\]/gi, '').replace(/["'`]/gi, "'")
     const safeMsg = message.replace(/[\n\r<>\\]/gi, '').replace(/["'`]/gi, "'")
     browser.tabs.executeScript(undefined, {
@@ -133,29 +141,53 @@ function showNotification(title: string, message: string) {
     })
     return
   }
-  console.log('showNotification...')
-  browser.notifications.create('default', {
-    title: title,
-    type: 'image' as any,
-    iconUrl: browser.runtime.getURL("img/icon.png"),
-    message: message,
-  })
-  console.log('showNotification finished.')
+  if (STORAGE.notificationMethod === 'notificationApi') {
+    console.log('showNotification...')
+    browser.notifications.create('default', {
+      title: title,
+      type: 'image' as any,
+      iconUrl: browser.runtime.getURL("img/icon.png"),
+      message: message,
+    })
+    console.log('showNotification finished.')
+  }
 }
 
 /** This function is for background script only */
 function bgCopyToClipboard(text: string, html?: string): boolean {
-  console.log('bgCopyToClipboard()', Date.now(), text)
+  console.log('bgCopyToClipboard()', Date.now(), 'text ===', text)
+  // if (window.location.protocol.startsWith('moz')) {
+  //   console.warn('in moz pages, skip.', text)
+  //   // FIXME: This really confuse me... I don't know why this could happen every time opening the options_ui
+  //   return false
+  // }
   if (!text) {
+    console.warn('text is empty, skip.', text)   // FIXME: Bug of Firefox? Shit...
+    // showNotification('Huh?', 'Got nothing to copy... ')
     return false
-    showNotification('Huh?', 'Got nothing to copy... ')
   }
   if (text === 'ERROR') {
+    console.warn('[bgCopyToClipboard()] text has something wrong, skip.', text)
     showNotification('Oops...', 'Found something cannot be processed correctly, please consider to send a bug report on GitHub.')
     return false
   }
+
+  console.warn('[bgCopyToClipboard()] run navigator.clipboard.writeText()...')
   navigator.clipboard.writeText(text)
   const digest = text.substr(0, 60)
   showNotification('Success!', 'Org-Mode Text Copied:' + digest)
   return true
 }
+
+
+
+function createDebounceFn(fn: () => any, debounceDurationMs: number): () => void {
+  let timeoutId: number
+  return () => {
+    window.clearTimeout(timeoutId)
+    timeoutId = window.setTimeout(() => {
+      fn()
+    }, debounceDurationMs)
+  }
+}
+

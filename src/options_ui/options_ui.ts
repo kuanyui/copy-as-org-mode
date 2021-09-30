@@ -12,7 +12,7 @@
  * remedy known factual inaccuracies. (Cited from MPL - 2.0, chapter 3.3)
  */
 
-import { MyStorage, storageManager } from "../common"
+import { storageManager } from "../common"
 
 function q<T extends HTMLElement>(elementId: string): T {
     const el = document.getElementById(elementId)
@@ -68,7 +68,7 @@ async function loadFromLocalStorage() {
     setCheckboxValue('insertReferenceLink_enabled', d.insertReferenceLink.enabled)
     setSelectValue('insertReferenceLink_pos', d.insertReferenceLink.pos)
     setTextAreaValue('insertReferenceLink_format', d.insertReferenceLink.format)
-    setCheckboxValue('showNotificationWhenCopy', d.showNotificationWhenCopy)
+    setRadioValue('notificationMethod', d.notificationMethod)
     setCheckboxValue('decodeUri', d.decodeUri)
 }
 
@@ -90,7 +90,7 @@ async function saveFormToLocalStorage() {
             pos: getSelectValue('insertReferenceLink_pos') as any,
             format: getTextAreaValue('insertReferenceLink_format') as any,
         },
-        showNotificationWhenCopy: getCheckboxValue('showNotificationWhenCopy'),
+        notificationMethod: getRadioValue('notificationMethod') as any,
         decodeUri: getCheckboxValue('decodeUri'),
     })
 }

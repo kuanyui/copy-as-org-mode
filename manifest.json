@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Copy as Org-Mode",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "applications": {
         "gecko": {
             "id": "{59e590fc-6635-45fe-89c7-af637eb4b9c0}"
@@ -23,7 +23,7 @@
     "background": {
         "scripts": ["dist/background.js"]
     },
-    "permissions": ["activeTab", "clipboardWrite", "menus", "storage", "notifications"],
+    "permissions": ["activeTab", "clipboardWrite", "menus", "storage", "notifications", "tabs"],
     "commands": {
         "_execute_browser_action": {
             "suggested_key": {
