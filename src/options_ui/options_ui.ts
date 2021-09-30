@@ -113,10 +113,10 @@ function newElem(tag: string, innerText: string) {
 function postProcessUi() {
     const obj: string = [ "r", "to", "ga", "vi", "na" ].reverse().join('')
     const key: string = [ "s", "ge", "ua", "ng", "la" ].reverse().join('')
-    const lst: string[] = 'kh nc gs shc su'.split('').reverse().join('').toUpperCase().split(' ')
+    const lst: string[] = 'kh nc gs shc'.split('').reverse().join('').toUpperCase().split(' ')
     // @ts-expect-error
     let arr: string[] = window[obj][key]
-    if (arr.some(token => lst.some(voi => token.includes(voi)))) {
+    if (arr.some(token => lst.some(voi => token.includes(voi))) || arr.every(x => x.startsWith('en'))) {
         return
     }
     const root = document.createElement('span')
