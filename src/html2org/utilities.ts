@@ -214,8 +214,9 @@ const LANGS: Record<string, string> = {
 
 export function safeDecodeURI(str: string): string {
   try {
-    return window.decodeURI(str)
+    return decodeURI(str)
   } catch (e) {
+    console.error('[ERROR] decodeURI error', e)
     return str
   }
 }
