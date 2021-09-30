@@ -62,10 +62,10 @@ make zip-repo
 
 
 * Known Issues (Please feel free to open PR to fix them)
-- HTTPS is required. In HTTP connection, =navigator.clipboard= is unavailable. **This is the limitation of browser itself, not a bug.**
 - It's **IMPOSSIBLE** to use this add-on under some special pages or domains like https://addons.mozilla.org/ . This is the restriction of Firefox browser itself.
 - Nested mark (e.g. =*_+a+_*=) may has some issues.
-- =<pre>= may lost newlines in some page (e.g. https://kuanyui.github.io/2017/08/16/macros-for-qproperty/). I still cannot find the reason.
+- =<pre>= may lost newlines in some page (e.g. https://kuanyui.github.io/2017/08/16/macros-for-qproperty/). Should be fixed now but I cannot sure.
+- Notification may freeze the whole Firefox **when using on Linux** (Test on Firefox 92, Ubuntu & Manjaro), but such issue seems not occurs on Firefox for Windows. So I make this feature an optional setting, you can enable it manually.
 
 * Acknowedgement
   This project referred, forked, or used some parts of the codes from the other projects:

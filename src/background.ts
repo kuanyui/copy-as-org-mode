@@ -81,6 +81,7 @@ browser.menus.create(
 )
 
 browser.menus.onClicked.addListener((info, tab) => {
+  console.warn('menus.onClicked ===>', info, tab)
   const tabId = tab.id
   if (tabId === undefined) { console.error('[To Developer] tab.id is undefined??? What the fuck?'); return }
   if ( info.menuItemId === "copy-selection-as-org-mode" || info.menuItemId === "copy-current-page-url-as-org-mode" ) {
@@ -109,16 +110,30 @@ browser.browserAction.onClicked.addListener(() =>
 
 browser.runtime.onMessage.addListener((_msg: any) => {
   const msg = _msg as MyMsg
-  if (msg.type === 'showNotification') {
-    showNotification(msg.title, msg.message)
+  switch (msg.type) {
+    case 'showNotification': {
+      showNotification(msg.title, msg.message)
+      break
+    }
+    case 'copyStringToClipboard': {
+      console.log('listener: copy request', Date.now())
+      bgCopyToClipboard(msg.org, msg.html)
+      break
+    }
   }
 })
 
 function showNotification(title: string, message: string) {
-  console.log('showNotification...')
+  console.log('showNotification', Date.now(), title, message)
   if (!STORAGE.showNotificationWhenCopy) {
+    const safeTitle = title.replace(/[\n\r<>\\]/gi, '').replace(/["'`]/gi, "'")
+    const safeMsg = message.replace(/[\n\r<>\\]/gi, '').replace(/["'`]/gi, "'")
+    browser.tabs.executeScript(undefined, {
+      code: `window.alert("[${safeTitle}] ${safeMsg}");`
+    })
     return
   }
+  console.log('showNotification...')
   browser.notifications.create('default', {
     title: title,
     type: 'image' as any,
@@ -126,4 +141,21 @@ function showNotification(title: string, message: string) {
     message: message,
   })
   console.log('showNotification finished.')
+}
+
+/** This function is for background script only */
+function bgCopyToClipboard(text: string, html?: string): boolean {
+  console.log('bgCopyToClipboard()', Date.now(), text)
+  if (!text) {
+    return false
+    showNotification('Huh?', 'Got nothing to copy... ')
+  }
+  if (text === 'ERROR') {
+    showNotification('Oops...', 'Found something cannot be processed correctly, please consider to send a bug report on GitHub.')
+    return false
+  }
+  navigator.clipboard.writeText(text)
+  const digest = text.substr(0, 60)
+  showNotification('Success!', 'Org-Mode Text Copied:' + digest)
+  return true
 }

@@ -25,8 +25,14 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { copyToClipboard } from "./common";
+import { msgManager } from "./common";
 
-browser.runtime.onMessage.addListener((message: any) =>
-  copyToClipboard(message.text, message.html)
-);
+browser.runtime.onMessage.addListener((message: any) => {
+  // copyToClipboard(message.text, message.html)
+  console.warn('copy-link.ts executed.')
+  msgManager.sendToBg({
+    type: 'copyStringToClipboard',
+    org: message.text,
+    html: message.html
+  })
+})

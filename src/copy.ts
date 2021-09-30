@@ -25,9 +25,9 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { copyToClipboard, MyStorage, source_link_text_fmt_t, storageManager } from "./common";
+import { msgManager, source_link_text_fmt_t, storageManager } from "./common";
 import { convertSelectionToOrgMode } from "./converter/converter";
-
+console.warn('copy.ts executed')
 async function main() {
   try {
     console.log('main() in copy.ts')
@@ -37,14 +37,20 @@ async function main() {
       title = replaceTitleBlackList(title, options.titleBlackList);
     }
     const url = document.URL
+    /** Unused currently, actually */
     let htmlLink = `<a href="${document.URL}">${title}</a>`;
     let text = ''
     const result = await convertSelectionToOrgMode(options)
-    console.log('selection result', result)
+    // console.log('selection result', result)
     // If no selection found, copy the link of current page
     if (result.output === "") {
       const orgLink = getFormattedLink(title, url, '[[%u][%t]]')
-      copyToClipboard(orgLink, htmlLink)
+      msgManager.sendToBg({
+        type: 'copyStringToClipboard',
+        org: orgLink,
+        html: htmlLink
+      })
+      return
     } else {
       const ref = getFormattedLink(title, url, options.insertReferenceLink.format)
       if (options.insertReferenceLink.enabled) {
@@ -58,7 +64,12 @@ async function main() {
         text = result.output;
         htmlLink = result.html;
       }
-      copyToClipboard(text, htmlLink);
+      msgManager.sendToBg({
+        type: 'copyStringToClipboard',
+        org: text,
+        html: htmlLink
+      })
+      return
     }
 
   } catch (e) {

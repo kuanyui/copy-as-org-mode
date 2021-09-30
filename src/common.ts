@@ -12,14 +12,20 @@
  * remedy known factual inaccuracies. (Cited from MPL - 2.0, chapter 3.3)
  */
 
-export type my_msg_t = 'showNotification'
+export type my_msg_t = 'showNotification' | 'copyStringToClipboard'
 export interface MyMsg_ShowNotification {
     type: 'showNotification',
     title: string
     message: string
 }
-export type MyMsg = MyMsg_ShowNotification
-
+export interface MyMsg_CopyStringToClipboard {
+    type: 'copyStringToClipboard',
+    org: string
+    html?: string
+}
+export type MyMsg =
+    MyMsg_ShowNotification |
+    MyMsg_CopyStringToClipboard
 export class msgManager {
     static sendToTab <T extends MyMsg> (tabId: number, msg: T) {
         return browser.tabs.sendMessage(tabId, msg) as Promise<T | void>
@@ -152,53 +158,6 @@ class StorageManager {
 export const storageManager = new StorageManager()
 
 
-export function copyToClipboard(text: string, html: string): boolean {
-    if (window.location) {
-        if (window.location.protocol.startsWith('moz')) {  // FIXME: Donno why this is possible...
-            return false
-        }
-        if (window.location.protocol === 'http:') {
-            window.alert('Cannot Copy: Due to the limitation of WebExtension & Firefox, only HTTPS page supports clipboard. Sorry.')
-            msgManager.sendToBg({
-                type: "showNotification",
-                title: 'Cannot Copy',
-                message: 'Due to the limitation of WebExtension & Firefox, only HTTPS page supports clipboard. Sorry.',
-            })
-            return false
-        }
-    }
-    if (text === 'ERROR') {
-        msgManager.sendToBg({
-            type: "showNotification",
-            title: 'Oops...',
-            message: 'Found something cannot be processed correctly, please consider to send a bug report on GitHub.',
-        })
-        return false
-    }
-    // var textBlob = new Blob([text], { type: 'text/plain' });
-    // var htmlBlob = new Blob([html], { type: 'text/html' });
-    // var data = [
-    //     new ClipboardItem({ 'text/plain': Promise.resolve(textBlob) }),
-    //     new ClipboardItem({ 'text/html': Promise.resolve(htmlBlob) })
-    // ];
-//
-    // navigator.clipboard.write(data).then(
-    //     function () {
-    //     /* success */
-    //     },
-    //     function () {
-    //     /* failure */
-    //     }
-    // );
-
-    navigator.clipboard.writeText(text)
-    msgManager.sendToBg({
-        type: "showNotification",
-        title: 'Success!',
-        message: 'Org-Mode Text Copied!',
-    })
-    return true
-  };
 
 export function imgToCanvasToDataUrl (imgEl: HTMLImageElement): Promise<string> {
     return new Promise((resolve) => {
