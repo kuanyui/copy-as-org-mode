@@ -82,11 +82,20 @@ body {
 }
 
 pre, code {
+    font-size: 0.8rem;
     background: var(--in-content-button-background-mixed);
     border: 1px solid var(--in-content-border-hover-mixed);
     color: var(--in-content-text-color);
 }
 pre {
-    font-size: 0.8rem;
     padding: 0 0.4rem;
+}
+
+.label-highlight:hover {
+    animation: blinker 0.5s steps(1) infinite;
+    cursor: pointer;
+}
+
+@keyframes blinker {
+    50% { opacity: 0.2; }
 }

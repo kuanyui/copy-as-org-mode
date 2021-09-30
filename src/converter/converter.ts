@@ -44,7 +44,7 @@ export async function convertSelectionToOrgMode(options: MyStorage): Promise<Con
         codeDelimiter: options.codeChar,
         listIndentSize: options.listIndentSize,
         codeBlockStyle: options.codeBlockStyle,
-
+        decodeUri: options.decodeUri,
     })
     const orgStr = turndownService.turndown(html)
     return {

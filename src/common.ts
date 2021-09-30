@@ -61,6 +61,8 @@ export interface MyStorage {
         pos: source_link_insert_pos_t,
         format: source_link_text_fmt_t
     }
+    /** process uri with window.decodeURI() */
+    decodeUri: boolean,
     /** Remove matched string or RegExp pattern in the title */
     titleBlackList: string
     convertImageAsDataUrl: boolean,
@@ -117,6 +119,7 @@ class StorageManager {
             titleBlackList: '',
             convertImageAsDataUrl: false,
             showNotificationWhenCopy: false,
+            decodeUri: true,
         }
     }
     /** Set data object (can be partial) into LocalStorage. */

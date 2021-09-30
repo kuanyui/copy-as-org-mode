@@ -171,8 +171,11 @@ let rules: Record<string, Rule> = {
       )
     },
 
-    replacement: function (content: string, node: CustomNode) {
-      let href = decodeURI(node.getAttribute('href') || '')   // Get rid of URL like "/%E7%B5%B6%E5%AF%BE%E7%8E%8B%E6%94%BF"
+    replacement: function (content: string, node: CustomNode, options: Html2OrgOptions) {
+      let href = node.getAttribute('href') || ''
+      if (options.decodeUri) {
+        href = decodeURI(href)
+      }
       let title = cleanAttribute(node.getAttribute('title') || '')
       if (title) {
         title = ' "' + title + '"'
@@ -280,9 +283,12 @@ let rules: Record<string, Rule> = {
   image: {
     filter: 'img',
 
-    replacement: function (content: string, node) {
+    replacement: function (content: string, node, options) {
       var alt = cleanAttribute(node.getAttribute('alt') || '')
       var src = node.getAttribute('src') || ''
+      if (options.decodeUri) {
+        src = decodeURI(src)
+      }
       var title = cleanAttribute(node.getAttribute('title') || '')
       var titlePart = title ? ' "' + title + '"' : ''
       return src ? '![' + alt + ']' + '(' + src + titlePart + ')' : ''

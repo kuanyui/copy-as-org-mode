@@ -82,6 +82,7 @@ export interface Html2OrgOptions {
   linkReferenceStyle: h2o_link_ref_style_t,
   br: '  ',
   preformattedCode: false,
+  decodeUri: boolean,
   blankReplacement: RuleReplacementFn
   keepReplacement: RuleReplacementFn
   defaultReplacement: RuleReplacementFn
@@ -104,6 +105,7 @@ const DEFAULT_OPTION: Readonly<Html2OrgOptions> = {
   linkReferenceStyle: 'full',
   br: '  ',
   preformattedCode: false,
+  decodeUri: true,
   blankReplacement: function (content, node) {
     return node.isBlock ? '\n\n' : ''
   },
