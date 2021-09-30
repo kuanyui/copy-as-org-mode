@@ -211,3 +211,11 @@ const LANGS: Record<string, string> = {
   "c": "c|h|cpp|hpp|c[+][+]|h[+][+]|cc|hh|cxx|hxx|c-like",
   "go": "go|golang",
 }
+
+export function safeDecodeURI(str: string): string {
+  try {
+    return window.decodeURI(str)
+  } catch (e) {
+    return str
+  }
+}

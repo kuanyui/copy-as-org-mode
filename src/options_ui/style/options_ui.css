@@ -92,10 +92,10 @@ pre {
 }
 
 .label-highlight:hover {
-    animation: blinker 0.5s steps(1) infinite;
+    animation: blinker 0.2s steps(1) infinite;
     cursor: pointer;
 }
 
 @keyframes blinker {
-    50% { opacity: 0.2; }
+    50% { opacity: 0.5; }
 }

@@ -30,7 +30,7 @@
 import { CustomNode } from './node'
 import { Rule } from './rules'
 import { Html2OrgOptions } from './turndown'
-import { judgeCodeblockLanguage, repeat, wrapInlineMarkWithSpace } from './utilities'
+import { judgeCodeblockLanguage, repeat, safeDecodeURI, wrapInlineMarkWithSpace } from './utilities'
 
 let rules: Record<string, Rule> = {
   paragraph: {
@@ -174,7 +174,7 @@ let rules: Record<string, Rule> = {
     replacement: function (content: string, node: CustomNode, options: Html2OrgOptions) {
       let href = node.getAttribute('href') || ''
       if (options.decodeUri) {
-        href = decodeURI(href)
+        href = safeDecodeURI(href)
       }
       let title = cleanAttribute(node.getAttribute('title') || '')
       if (title) {
@@ -287,7 +287,7 @@ let rules: Record<string, Rule> = {
       var alt = cleanAttribute(node.getAttribute('alt') || '')
       var src = node.getAttribute('src') || ''
       if (options.decodeUri) {
-        src = decodeURI(src)
+        src = safeDecodeURI(src)
       }
       var title = cleanAttribute(node.getAttribute('title') || '')
       var titlePart = title ? ' "' + title + '"' : ''

@@ -123,7 +123,7 @@ function postProcessUi() {
     const exampleUri = "%E3%81%82%E3%82%8A%E3%81%8C%E3%81%A8%E3%81%86%E6%97%A5%E6%9C%AC"
     root.appendChild(newElem('span', '(For example, '))
     root.appendChild(newElem('code', exampleUri))
-    root.appendChild(newElem('span', ' will be converterd to '))
+    root.appendChild(newElem('span', ' will be converted to '))
     root.appendChild(newElem('code', decodeURI(exampleUri)))
     root.appendChild(newElem('span', ')'))
     const mountPoint = document.querySelector('#decodeUriExample')!
