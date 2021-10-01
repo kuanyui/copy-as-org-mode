@@ -101,9 +101,9 @@ html
           td.nowrap: label(for="insertReferenceLink_format") Format #[br](#[code %t] means title, #[code %u] means URL.)
           td.w100: textarea(id="insertReferenceLink_format" rows='3')
       h2 Show Notification When Copy
+      +line_radio('notificationMethod', 'inPagePopup'): span In-page notification
+      +line_radio('notificationMethod', 'notificationApi'): span System notification popup (#[b On Linux, this may freeze Firefox sometime], reason is unknown yet and I didn't find any issue about this after DuckDuckGoing.)
       +line_radio('notificationMethod', 'none'): span Disabled
-      +line_radio('notificationMethod', 'windowAlert'): span Browser Alert Popup
-      +line_radio('notificationMethod', 'notificationApi'): span System Notification Popup (#[b On Linux, this may freeze Firefox sometime], reason is unknown yet and I didn't find any issue about this after DuckDuckGoing.)
         //tr.row: td:
     //div
       h2 Advanced

@@ -25,14 +25,20 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { msgManager } from "./common";
+import { msgManager, MyMsg } from "./common";
+import { inPageNotify } from "./inpage-notify";
 
-browser.runtime.onMessage.addListener((message: any) => {
-  // copyToClipboard(message.text, message.html)
-  console.warn('copy-link.ts executed.')
-  msgManager.sendToBg({
-    type: 'copyStringToClipboard',
-    org: message.text,
-    html: message.html
-  })
+
+browser.runtime.onMessage.addListener((_msg: any) => {
+  const msg: MyMsg = _msg
+  if (msg.type === 'showInPageNotification') {
+    inPageNotify(msg.title, msg.message)
+  }
+  // copyToClipboard(msg.text, msg.html)
+  // console.warn('copy-link.ts executed.')
+  // msgManager.sendToBg({
+  //   type: 'copyStringToClipboard',
+  //   org: msg.text,
+  //   html: msg.html
+  // })
 })

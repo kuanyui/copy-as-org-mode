@@ -12,9 +12,9 @@
  * remedy known factual inaccuracies. (Cited from MPL - 2.0, chapter 3.3)
  */
 
-export type my_msg_t = 'showNotification' | 'copyStringToClipboard'
+export type my_msg_t = 'showBgNotification' | 'showInPageNotification' | 'copyStringToClipboard'
 export interface MyMsg_ShowNotification {
-    type: 'showNotification',
+    type: 'showBgNotification' | 'showInPageNotification',
     title: string
     message: string
 }
@@ -28,7 +28,7 @@ export type MyMsg =
     MyMsg_CopyStringToClipboard
 export class msgManager {
     static sendToTab <T extends MyMsg> (tabId: number, msg: T) {
-        return browser.tabs.sendMessage(tabId, msg) as Promise<T | void>
+        return browser.tabs.sendMessage(tabId , msg) as Promise<T | void>
     }
     static sendToBg <T extends MyMsg> (msg: T) {
         return browser.runtime.sendMessage(msg)
@@ -53,7 +53,9 @@ function getAllKeyAsStringArray<T>(enumObj: T): Array<keyof T> {
     }
     return arr
 }
-enum __NotificationMethod { none, notificationApi, windowAlert }
+
+/** First item is default. DON'T REORDER */
+enum __NotificationMethod { inPagePopup, notificationApi, none }
 export type notification_method_t = keyof typeof __NotificationMethod
 const ALL_NOTIFICATION_METHODS = getAllKeyAsStringArray(__NotificationMethod)
 
@@ -145,7 +147,7 @@ class StorageManager {
             },
             titleBlackList: '',
             convertImageAsDataUrl: false,
-            notificationMethod: 'none',
+            notificationMethod: 'inPagePopup',
             decodeUri: true,
         }
     }

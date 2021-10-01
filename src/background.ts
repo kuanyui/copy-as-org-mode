@@ -25,7 +25,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { MyStorage, storageManager, objectAssignPerfectly, MyMsg } from "./common";
+import { MyStorage, storageManager, objectAssignPerfectly, MyMsg, msgManager } from "./common";
 import { safeDecodeURI } from "./html2org/utilities";
 
 
@@ -80,18 +80,17 @@ browser.menus.create(
       console.log(`Error: ${browser.runtime.lastError}`)
   }
 )
-
 let lastTriggerMenuTimeStamp: number = Date.now()
 browser.menus.onClicked.addListener((info, tab) => {
-  console.warn('menus.onClicked ===>', info, lastTriggerMenuTimeStamp)
-  // FIXME: FUCK. I donno why Firefox even execute copy.ts in   options_ui. This is totally nonsense. Lots of shitty internal   error messages but cannot be tracked in background's console. What  is the worst, it sometime send multiple duplicated events without  any reason out of control. FUCK. Now writ a debouncer as   workaround to fix the Fucking bug in Firefox .
+  // console.warn('menus.onClicked ===> time delta = ', Date.now() - lastTriggerMenuTimeStamp)
+  // FIXME: FUCK. I donno why Firefox even execute copy.ts in   options_ui. This is totally nonsense. Lots of shitty internal error messages but cannot be tracked in background's console. What is the worse, it sometime send multiple duplicated events without any reason out of control. And the worst is, this Date.now() are wrong between event emitted. FUCK YOU FIREFOX.
   if (Date.now() - lastTriggerMenuTimeStamp < 400) {
     console.log(`[background] workaround for firefox's   bizarre behaviour.`)
     return false
   }
   lastTriggerMenuTimeStamp = Date.now()
   const tabId = tab.id
-  if (tabId === undefined) { console.error('[To Developer] tab.id is undefined??? What the fuck?'); return }
+  if (tabId === undefined) { console.error('[To Developer] tab.id is undefined???'); return }
   if ( info.menuItemId === "copy-selection-as-org-mode" || info.menuItemId === "copy-current-page-url-as-org-mode" ) {
     browser.tabs.executeScript(tabId, { file: "dist/copy.js" })
   } else if (info.menuItemId === "copy-link-as-org-mode") {
@@ -105,10 +104,7 @@ browser.menus.onClicked.addListener((info, tab) => {
       if (STORAGE.decodeUri) {
         linkUrl = safeDecodeURI(linkUrl)
       }
-      browser.tabs.sendMessage(tabId, {
-        text: `[[${linkUrl}][${linkText}]]`,  /// TODO: Rename: orgText
-        html: `<a href="${linkUrl}">${linkText}</a>`,
-      })
+      bgCopyToClipboard( `[[${linkUrl}][${linkText}]]`, `<a href="${linkUrl}">${linkText}</a>` )
     })
   }
 })
@@ -122,8 +118,8 @@ browser.browserAction.onClicked.addListener((tab) => {
 browser.runtime.onMessage.addListener((_msg: any) => {
   const msg = _msg as MyMsg
   switch (msg.type) {
-    case 'showNotification': {
-      showNotification(msg.title, msg.message)
+    case 'showBgNotification': {
+      showBgNotification(msg.title, msg.message)
       break
     }
     case 'copyStringToClipboard': {
@@ -134,25 +130,32 @@ browser.runtime.onMessage.addListener((_msg: any) => {
   }
 })
 
-function showNotification(title: string, message: string) {
-  console.log('showNotification(), method =', STORAGE.notificationMethod, Date.now(), title, message)
-  if (STORAGE.notificationMethod === 'windowAlert') {
+function showBgNotification(title: string, message: string) {
+  console.log('showBgNotification(), method =', STORAGE.notificationMethod, Date.now(), title, message)
+  if (STORAGE.notificationMethod === 'inPagePopup') {
     const safeTitle = title.replace(/[\n\r<>\\]/gi, '').replace(/["'`]/gi, "'")
     const safeMsg = message.replace(/[\n\r<>\\]/gi, '').replace(/["'`]/gi, "'")
-    browser.tabs.executeScript(undefined, {
-      code: `window.alert("[${safeTitle}] ${safeMsg}");`
+    browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
+      for (const tab of tabs) {
+        if (tab.id === undefined) { return }
+        msgManager.sendToTab(tab.id, {
+          type: 'showInPageNotification',
+          title: title,
+          message: message,
+        })
+      }
     })
     return
   }
   if (STORAGE.notificationMethod === 'notificationApi') {
-    console.log('showNotification...')
+    console.log('showBgNotification...')
     browser.notifications.create('default', {
       title: title,
       type: 'image' as any,
       iconUrl: browser.runtime.getURL("img/icon.png"),
       message: message,
     })
-    console.log('showNotification finished.')
+    console.log('showBgNotification finished.')
   }
 }
 
@@ -166,19 +169,22 @@ function bgCopyToClipboard(text: string, html?: string): boolean {
   // }
   if (!text) {
     console.warn('text is empty, skip.', text)   // FIXME: Bug of Firefox? Shit...
-    // showNotification('Huh?', 'Got nothing to copy... ')
+    // showBgNotification('Huh?', 'Got nothing to copy... ')
     return false
   }
   if (text === 'ERROR') {
     console.warn('[bgCopyToClipboard()] text has something wrong, skip.', text)
-    showNotification('Oops...', 'Found something cannot be processed correctly, please consider to send a bug report on GitHub.')
+    showBgNotification('Oops...', 'Found something cannot be processed correctly, please consider to send a bug report on GitHub.')
     return false
   }
 
   console.warn('[bgCopyToClipboard()] run navigator.clipboard.writeText()...')
   navigator.clipboard.writeText(text)
-  const digest = text.substr(0, 60)
-  showNotification('Success!', 'Org-Mode Text Copied:' + digest)
+  let digest = text.substr(0, 140)
+  if (text.length > 140) {
+    digest += '...'
+  }
+  showBgNotification('Org-Mode Text Copied Successfully!', digest)
   return true
 }
 
