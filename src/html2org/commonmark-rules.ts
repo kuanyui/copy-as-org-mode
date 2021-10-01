@@ -290,8 +290,7 @@ let rules: Record<string, Rule> = {
         src = safeDecodeURI(src)
       }
       var title = cleanAttribute(node.getAttribute('title') || '')
-      var titlePart = title ? ' "' + title + '"' : ''
-      return src ? '![' + alt + ']' + '(' + src + titlePart + ')' : ''
+      return '[[' + src + ']]'
     }
   }
 }
