@@ -166,7 +166,7 @@ let rules: Record<string, Rule> = {
   inlineLink: {
     filter: function (node: HTMLElement, options: Html2OrgOptions): boolean {
       return (
-        options.linkStyle === 'inlined' &&
+        // options.linkStyle === 'inlined' &&
         node.nodeName === 'A' &&
         node.hasAttribute('href')
       )
@@ -182,6 +182,7 @@ let rules: Record<string, Rule> = {
      * So remove it directly.
      */
     replacement: function (content: string, node: CustomNode, options: Html2OrgOptions) {
+
       if (content === '') { return '' } // For example, Github's H1/H2/H3... has invisible # link
       let href = node.getAttribute('href') || ''
       if (options.decodeUri) {
@@ -190,6 +191,18 @@ let rules: Record<string, Rule> = {
       let title = cleanAttribute(node.getAttribute('title') || '')
       if (title) {
         title = ' "' + title + '"'
+      }
+      // When <a> contains exactly only one Node and it's <img>
+      if (node.childNodes.length === 1) {
+        const child = node.firstChild!
+        if (child.nodeName === 'IMG') {
+          const img = child as HTMLImageElement
+          if (href === img.src) {
+            return `[[${href}]]`
+          }
+          const imgSrc = options.decodeUri ? safeDecodeURI(img.src) :img.src
+          return `[[${href}][${imgSrc}]]`  // Org-mode's canonical syntax for Image + Link
+        }
       }
       return `[[${href}][${content}]]`
     }
