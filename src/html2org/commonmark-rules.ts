@@ -50,8 +50,9 @@ let rules: Record<string, Rule> = {
     filter: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
 
     replacement: function (content: string, node: Node, options: Html2OrgOptions): string {
+      if (content === '') { return '' }
       var hLevel = Number(node.nodeName.charAt(1))
-
+      console.log('[DEBUG] <h>', content)
       return '\n\n' + repeat(options.headingMarker, hLevel) + ' ' + content + '\n\n'
     }
   },
@@ -171,7 +172,17 @@ let rules: Record<string, Rule> = {
       )
     },
 
+    /**
+     * NOTE: The reason of remove empty <a>
+     * In Github, Node.childNodes may return an array contains duplicated <h2>
+     * (They are actually the same <h2> in DOM...):
+     * ```js
+     * [ "<h1></h1>", "<h2><a id=\"user-content-prepare\" class=\"anchor\" aria-hidden=\"true\" href=\"https://github.com/kuanyui/copy-as-org-mode#prepare\"><svg class=\"octicon octicon-link\" viewBox=\"0 0 16 16\" version=\"1.1\" width=\"16\" height=\"16\" aria-hidden=\"true\"></svg></a></h2>", "<h2>Prepare</h2>", "<div class=\"highlight highlight-source-shell position-relative overflow-auto\"><pre></pre></div>" ]
+     * ```
+     * So remove it directly.
+     */
     replacement: function (content: string, node: CustomNode, options: Html2OrgOptions) {
+      if (content === '') { return '' } // For example, Github's H1/H2/H3... has invisible # link
       let href = node.getAttribute('href') || ''
       if (options.decodeUri) {
         href = safeDecodeURI(href)
@@ -282,7 +293,7 @@ let rules: Record<string, Rule> = {
   },
   image: {
     filter: 'img',
-
+    // TODO: alt & title
     replacement: function (content: string, node, options) {
       var alt = cleanAttribute(node.getAttribute('alt') || '')
       var src = node.getAttribute('src') || ''

@@ -152,6 +152,9 @@ export default class TurndownService {
   */
   processChildrenOfNode (parentNode: Node): string {
     let output: string = ''
+    // @ts-ignore
+    // NOTE: Github's MD/Org renderer will add #segment link to titles, but Node.childNodes will return the same <h1> 2 times...
+    // console.log('parentNode.childNodes ===' ,Array.from(parentNode.childNodes).map(node => node.outerHTML))
     for (const node of parentNode.childNodes) {
       const customNode = CustomNodeConstructor(node, this.options)
       let replacement: string = ''
@@ -178,6 +181,13 @@ export default class TurndownService {
       return replacementForTable(this, node)
     }
     var rule = this.rules.forNode(node)
+    // if (node.nodeType === Node.ELEMENT_NODE) {
+    //   console.log('[NODE] ELEMENT', node.outerHTML)
+    // } else if (node.nodeType === Node.TEXT_NODE) {
+    //   console.log('[NODE] TEXT', node.outerHTML)
+    // } else {
+    //   console.log('[NODE] UNKNOWN', node.outerHTML)
+    // }
     var content = this.processChildrenOfNode(node)
     var whitespace = node.flankingWhitespace
     if (whitespace.leading || whitespace.trailing) { content = content.trim() }

@@ -103,7 +103,6 @@ browser.menus.onClicked.addListener((info, tab) => {
       let linkUrl = info.linkUrl
       console.log('Options ===>', STORAGE)
       if (STORAGE.decodeUri) {
-        console.log('幹, decodeURI')
         linkUrl = safeDecodeURI(linkUrl)
       }
       browser.tabs.sendMessage(tabId, {
