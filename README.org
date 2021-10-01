@@ -38,7 +38,7 @@ Thanks for your contribution!
 * Known Issues (Please feel free to open PR to fix them)
 - It's *IMPOSSIBLE* to use this add-on under some special pages or domains like https://addons.mozilla.org/ . This is the restriction of Firefox browser itself.
 - Nested mark (e.g. =*_+a+_*=) may has some issues for org-mode renderer. *This is the limitation of org-mode's syntax & renderer, I cannot do anything for it*.
-- The child HTML elements in =<a>= (e.g. =<img>=) may cannot be handled properly. *This is the limitation of org-mode's syntax, I cannot do anything for it*.
+- Some children HTML elements, for example, =<img>=, in =<a>=, may cannot be handled properly. *This is the limitation of org-mode's syntax, I cannot do anything for it*. *I've not decided which workaround should I use currently.*
 - =<pre>= may lost newlines in some page (e.g. https://kuanyui.github.io/2017/08/16/macros-for-qproperty/). Should be fixed now but I cannot sure.
 - Notification may freeze the whole Firefox *when using on Linux* (Test on Firefox 92, Ubuntu & Manjaro), but such issue seems not occurs on Firefox for Windows. So I make this feature an optional setting, you can enable it manually.
 
