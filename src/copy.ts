@@ -26,7 +26,8 @@
  */
 
 import { msgManager, source_link_text_fmt_t, storageManager } from "./common";
-import { convertSelectionToOrgMode } from "./converter/converter";
+import { getSelectionAndConvertToOrgMode } from "./converter/selection";
+import { safeDecodeURI } from "./html2org/utilities";
 console.warn('copy.ts executed')
 async function main() {
   try {
@@ -36,11 +37,14 @@ async function main() {
     if (options.titleBlackList !== "") {
       title = replaceTitleBlackList(title, options.titleBlackList);
     }
-    const url = document.URL
+    let url = document.URL
+    if (options.decodeUri) {
+      url = safeDecodeURI(url)
+    }
     /** Unused currently, actually */
-    let htmlLink = `<a href="${document.URL}">${title}</a>`;
+    let htmlLink = `<a href="${url}">${title}</a>`;
     let text = ''
-    const result = await convertSelectionToOrgMode(options)
+    const result = await getSelectionAndConvertToOrgMode(options)
     // console.log('selection result', result)
     // If no selection found, copy the link of current page
     if (result.output === "") {

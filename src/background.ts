@@ -26,6 +26,7 @@
  */
 
 import { MyStorage, storageManager, objectAssignPerfectly, MyMsg } from "./common";
+import { safeDecodeURI } from "./html2org/utilities";
 
 
 /** This can be modify */
@@ -82,7 +83,7 @@ browser.menus.create(
 
 let lastTriggerMenuTimeStamp: number = Date.now()
 browser.menus.onClicked.addListener((info, tab) => {
-  console.warn('menus.onClicked ===>', info, tab)
+  console.warn('menus.onClicked ===>', info, lastTriggerMenuTimeStamp)
   // FIXME: FUCK. I donno why Firefox even execute copy.ts in   options_ui. This is totally nonsense. Lots of shitty internal   error messages but cannot be tracked in background's console. What  is the worst, it sometime send multiple duplicated events without  any reason out of control. FUCK. Now writ a debouncer as   workaround to fix the Fucking bug in Firefox .
   if (Date.now() - lastTriggerMenuTimeStamp < 400) {
     console.log(`[background] workaround for firefox's   bizarre behaviour.`)
@@ -98,10 +99,13 @@ browser.menus.onClicked.addListener((info, tab) => {
       if (!info.linkText) { throw new TypeError('[To Developer] info.linkText is undefined') }
       if (!info.linkUrl) { throw new TypeError('[To Developer] info.linkUrl is undefined') }
       const linkText = info.linkText.replace(/([\\`*_[\]<>])/g, "\\$1")
-      const linkUrl = info.linkUrl.replace(
-        /[\\!'()*]/g,
-        (c) => `%${c.charCodeAt(0).toString(16)}`
-      )
+      // const linkUrl = info.linkUrl.replace( /[\\!'()*]/g, (c) => `%${c.charCodeAt(0).toString(16)}` )
+      let linkUrl = info.linkUrl
+      console.log('Options ===>', STORAGE)
+      if (STORAGE.decodeUri) {
+        console.log('幹, decodeURI')
+        linkUrl = safeDecodeURI(linkUrl)
+      }
       browser.tabs.sendMessage(tabId, {
         text: `[[${linkUrl}][${linkText}]]`,  /// TODO: Rename: orgText
         html: `<a href="${linkUrl}">${linkText}</a>`,

@@ -31,12 +31,43 @@
 // @ts-ignore
 import * as url from 'url'
 import { imgToCanvasToDataUrl, MyStorage } from '../common';
+import TurndownService from "../html2org/turndown";
+
+interface ConversionResult {
+    /** Org-Mode formatted text */
+    output: string
+    /** Clean HTML. See selection.ts */
+    html: string
+}
+
+/**
+ *
+ * @returns If not found selection in page, return empty string.
+ */
+export async function getSelectionAndConvertToOrgMode(options: MyStorage): Promise<ConversionResult> {
+    const htmlStr: string = await getSelectionAsCleanHtml(options)
+    var turndownService = new TurndownService({
+        unorderedListMarker: options.ulBulletChar,
+        orderedListMarker: options.olBulletChar,
+        codeDelimiter: options.codeChar,
+        listIndentSize: options.listIndentSize,
+        codeBlockStyle: options.codeBlockStyle,
+        decodeUri: options.decodeUri,
+    })
+    const orgStr = turndownService.turndown(htmlStr)
+    return {
+        html: htmlStr,
+        output: orgStr
+    }
+}
 
 /** Process or resolve img.src, a.href in HTML.
  *
  * Resolve URL, for example: ///image/foo.jpg  ->  https://domain.com/image/foo.jpg
  *
  * Or convert into Base64 data URL.
+ *
+ * @return if not found selection in page, return empty string.
  */
 export async function getSelectionAsCleanHtml (options: MyStorage): Promise<string> {
 
@@ -63,8 +94,8 @@ export async function getSelectionAsCleanHtml (options: MyStorage): Promise<stri
     }
 
     if (selection.rangeCount === 0) {
-        console.error('[To Developer] getSelection().rangeCount is 0. WHYYYYYYY? WRYYYYYY')
-        return 'ERROR'
+        console.log('[INFO] document.getSelection().rangeCount is 0. Return empty string.')
+        return ''
     }
 
     const container = document.createElement("div");
