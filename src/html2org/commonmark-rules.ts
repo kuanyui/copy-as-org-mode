@@ -281,6 +281,20 @@ let rules: Record<string, Rule> = {
       return wrapInlineMarkWithSpace(content, node, options.underlineDelimiter)
     }
   },
+  sup: {
+    filter: 'sup',
+
+    replacement: function (content: string, node, options: Html2OrgOptions): string {
+      return '^{' + content + '}'
+    }
+  },
+  sub: {
+    filter: 'sub',
+
+    replacement: function (content: string, node, options: Html2OrgOptions): string {
+      return '_{' + content + '}'
+    }
+  },
   code: {
     filter: function (node) {
       var hasSiblings = node.previousSibling || node.nextSibling
