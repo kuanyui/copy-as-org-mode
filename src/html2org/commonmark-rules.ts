@@ -32,7 +32,14 @@ import { Rule } from './rules'
 import { Html2OrgOptions } from './turndown'
 import { judgeCodeblockLanguage, repeat, safeDecodeURI, wrapInlineMarkWithSpace } from './utilities'
 
-let rules: Record<string, Rule> = {
+// https://stackoverflow.com/questions/49538199/is-it-possible-to-infer-the-keys-of-a-record-in-typescript
+function createRulesObject<T extends { [ruleName: string]: Rule }>(rulesObject: T): T {
+  return rulesObject
+}
+type RulesKeys<Obj, K = keyof Obj> = Obj extends Record<infer K, any> ? K : never
+type rule_name_t = RulesKeys<typeof rules>
+
+let rules = createRulesObject({
   paragraph: {
     filter: 'p',
 
@@ -207,52 +214,6 @@ let rules: Record<string, Rule> = {
       return `[[${href}][${content}]]`
     }
   },
-  // referenceLink: {
-  //   filter: function (node, options: Html2OrgOptions): boolean {
-  //     return (
-  //       options.linkStyle === 'referenced' &&
-  //       node.nodeName === 'A' &&
-  //       node.hasAttribute('href')
-  //     )
-  //   },
-
-  //   replacement: function (content: string, node, options: Html2OrgOptions): string {
-  //     var href = node.getAttribute('href')
-  //     var title = cleanAttribute(node.getAttribute('title'))
-  //     if (title) title = ' "' + title + '"'
-  //     var replacement
-  //     var reference
-
-  //     switch (options.linkReferenceStyle) {
-  //       case 'collapsed':
-  //         replacement = '[' + content + '][]'
-  //         reference = '[' + content + ']: ' + href + title
-  //         break
-  //       case 'shortcut':
-  //         replacement = '[' + content + ']'
-  //         reference = '[' + content + ']: ' + href + title
-  //         break
-  //       default:
-  //         var id = this.references.length + 1
-  //         replacement = '[' + content + '][' + id + ']'
-  //         reference = '[' + id + ']: ' + href + title
-  //     }
-
-  //     this.references.push(reference)
-  //     return replacement
-  //   },
-
-  //   references: [],
-
-  //   append: function (options: Html2OrgOptions): string {
-  //     var references = ''
-  //     if (this.references.length) {
-  //       references = '\n\n' + this.references.join('\n') + '\n\n'
-  //       this.references = [] // Reset references
-  //     }
-  //     return references
-  //   }
-  // },
   italic: {
     filter: ['em', 'i'],
 
@@ -331,8 +292,7 @@ let rules: Record<string, Rule> = {
       return '[[' + src + ']]'
     }
   }
-}
-
+})
 
 
 function cleanAttribute (attribute: string): string {

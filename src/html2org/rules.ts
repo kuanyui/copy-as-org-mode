@@ -117,12 +117,12 @@ export default class Rules {
 function findRule (rules: Rule[], node: CustomNode, options: Html2OrgOptions) {
   for (var i = 0; i < rules.length; i++) {
     var rule = rules[i]
-    if (filterValue(rule, node, options)) return rule
+    if (ruleIsForNode(rule, node, options)) { return rule }
   }
   return void 0
 }
 
-function filterValue (rule: Rule, node: CustomNode, options: Html2OrgOptions) {
+export function ruleIsForNode (rule: Rule, node: CustomNode, options: Html2OrgOptions): boolean {
   var filter = rule.filter
   if (typeof filter === 'string') {
     if (filter === node.nodeName.toLowerCase()) return true
@@ -133,4 +133,5 @@ function filterValue (rule: Rule, node: CustomNode, options: Html2OrgOptions) {
   } else {
     throw new TypeError('`filter` needs to be a string, array, or function')
   }
+  return false
 }
