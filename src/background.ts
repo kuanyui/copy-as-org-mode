@@ -149,7 +149,7 @@ function showBgNotification(title: string, message: string) {
         msgManager.sendToTab(tab.id, {
           type: 'showInPageNotification',
           title: title,
-          message: getDigest(message, 600),
+          message: getDigest(message, 800),
         })
       }
     })

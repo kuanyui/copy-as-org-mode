@@ -12,7 +12,7 @@ export function inPageNotify(title: string, msg: string) {
     rootEl.style.top = '16px'
     rootEl.style.right = '16px'
     rootEl.style.width = '550px'
-    rootEl.style.height = '200px'
+    rootEl.style.height = '260px'
     rootEl.style.padding = '16px'
     rootEl.style.backgroundColor = '#c3f0e1' // '#77AA99'
     rootEl.style.color = '#2d4f28'
@@ -21,16 +21,17 @@ export function inPageNotify(title: string, msg: string) {
     rootEl.style.borderWidth = '1px'
     rootEl.style.cursor = 'pointer'
     rootEl.style.overflowY = 'auto'
+    rootEl.title = 'Click to close'
     function close() { rootEl.remove() }
     rootEl.onclick = close
     window.setTimeout(() => {
         close()
-    }, 12000)
+    }, 16000)
     // title
     const titleEl = document.createElement('b')
     titleEl.style.display = 'flex'
     titleEl.style.alignItems = 'center'
-    titleEl.style.fontSize = '1.2rem'
+    titleEl.style.fontSize = '1.2em'
     titleEl.innerText = title
     // icon
     const imgEl = document.createElement('img')
@@ -41,7 +42,7 @@ export function inPageNotify(title: string, msg: string) {
     // content
     const contentEl = document.createElement('p')
     contentEl.style.display = 'block'
-    contentEl.style.whiteSpace = 'pre'
+    contentEl.style.whiteSpace = 'pre-wrap'
     contentEl.style.fontFamily = 'monospace'
     contentEl.style.fontSize = '0.8em'
     contentEl.innerText = msg
