@@ -59,15 +59,39 @@ function setTextAreaValue(id: string, value: string) {
     q<HTMLTextAreaElement>(id).value = value
 }
 function getContentEditableValue(id: string): string {
-    let str = q<HTMLDivElement>(id).innerText
-    if (str[str.length - 1] === '\n') {
-        str = str.slice(0,-1)
-    }
-    console.log('GET contentEditable ====>', str)
-    return str
+    let node = q<HTMLDivElement>(id)
+    const plaintext = nodeToText(node)
+    return plaintext
 }
 function setContentEditableValue(id: string, value: string) {
     q<HTMLDivElement>(id).innerText =value
+}
+
+/**
+ * Yet another workaround for the fucking stupid DOM API.
+ * For Firefox only. Not tested on Chromium.
+ */
+function nodeToText(node: Node): string {
+    let str = ''
+    for (let i = 0; i < node.childNodes.length; i++) {
+        const child = node.childNodes[i]
+        if (child.nodeType === Node.TEXT_NODE) {
+            str += child.textContent
+            continue
+        } else if (child.nodeName === 'BR') {
+            if (i !== node.childNodes.length - 1) {
+                str += '\n'
+            }
+            continue
+        } else if (child.nodeType === Node.ELEMENT_NODE) {
+            str += nodeToText(child)
+            if (child.nodeName === 'DIV') {
+                str += '\n'
+            }
+            continue
+        }
+    }
+    return str
 }
 
 

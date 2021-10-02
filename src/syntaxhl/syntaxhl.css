@@ -4,7 +4,7 @@
 }
 
 .syntaxhl-renderer, .syntaxhl-editor {
-    padding: 16px;
+    padding: 6px;
     top: 0;
     left: 0;
     right: 0;
@@ -19,6 +19,7 @@
     position: relative;
     -webkit-text-fill-color: transparent; /* make text transparent */
     text-fill-color: transparent; /* One day, hopefully? */
+    cursor: text;
     /* color: hsl(100, 95%, 95%); // But keep caret colored */
 }
 .syntaxhl-editor:focus {
