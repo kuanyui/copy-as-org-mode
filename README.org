@@ -33,7 +33,7 @@ Thanks for your contribution!
 - Paragraph =<p>=, Horizontal splitter  =--------=
 - Quoteblock =#+begin_quote= , Codeblock (=: one line code...= or =#+begin_src= + auto guess language ID. e.g. =js=, =c=, =shell=)
 - =*bold*=, =/italic/=, =_underline_=, =+strike+=, ~=verbatim=~, =~code~=, =_{sub}=, =^{sup}=
-- =[[link url][link title]]=, =[[a.href][img.src]]= (Notice: multiple =<img>= elements+ other elements in =a= is not supported by org-mode syntax. I have serveral plans as workaround for this but haven't decided which one is better, hence not implemented this yet..)
+- =[[link url][link title]]=, =[[a.href][img.src]]= (Notice: multiple =<img>= elements + other elements wrapped in =<a>= element is not supported by org-mode syntax. I have serveral plans as workaround for this but haven't decided which one is better, hence not implemented this yet..)
 - =[[imgSrc]]= (Notice: I haven't decide how to deal with HTML =title= and =alt= attribute)
 
 * Known Issues (Please feel free to open PR to fix them)
