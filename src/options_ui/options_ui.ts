@@ -12,7 +12,8 @@
  * remedy known factual inaccuracies. (Cited from MPL - 2.0, chapter 3.3)
  */
 
-import { storageManager } from "../common"
+import { storageManager } from "../options"
+
 
 function q<T extends HTMLElement>(elementId: string): T {
     const el = document.getElementById(elementId)

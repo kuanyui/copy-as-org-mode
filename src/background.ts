@@ -25,12 +25,13 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { MyStorage, storageManager, objectAssignPerfectly, MyMsg, msgManager } from "./common";
+import { MyMsg, msgManager } from "./common";
 import { safeDecodeURI } from "./html2org/utilities";
+import { CopyAsOrgModeOptions, objectAssignPerfectly, storageManager } from "./options";
 
 
 /** This can be modify */
-const STORAGE: MyStorage = storageManager.getDefaultData()
+const STORAGE: CopyAsOrgModeOptions = storageManager.getDefaultData()
 
 // Storage
 console.log('[background] first time to get config from storage')

@@ -30,7 +30,8 @@
 // https://github.com/defunctzombie/node-url/issues/41
 // @ts-ignore
 import * as url from 'url'
-import { imgToCanvasToDataUrl, MyStorage } from '../common';
+import { imgToCanvasToDataUrl } from '../common';
+import { CopyAsOrgModeOptions } from '../options';
 import TurndownService from "../html2org/turndown";
 
 interface ConversionResult {
@@ -44,7 +45,7 @@ interface ConversionResult {
  *
  * @returns If not found selection in page, return empty string.
  */
-export async function getSelectionAndConvertToOrgMode(options: MyStorage): Promise<ConversionResult> {
+export async function getSelectionAndConvertToOrgMode(options: CopyAsOrgModeOptions): Promise<ConversionResult> {
     const htmlStr: string = await getSelectionAsCleanHtml(options)
     var turndownService = new TurndownService({
         unorderedListMarker: options.ulBulletChar,
@@ -69,7 +70,7 @@ export async function getSelectionAndConvertToOrgMode(options: MyStorage): Promi
  *
  * @return if not found selection in page, return empty string.
  */
-export async function getSelectionAsCleanHtml (options: MyStorage): Promise<string> {
+export async function getSelectionAsCleanHtml (options: CopyAsOrgModeOptions): Promise<string> {
 
     let selection = document.getSelection();
     if (!selection) {

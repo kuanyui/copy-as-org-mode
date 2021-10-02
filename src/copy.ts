@@ -25,10 +25,11 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { msgManager, MyMsg, source_link_text_fmt_t, storageManager } from "./common";
+import { msgManager, MyMsg } from "./common";
 import { getSelectionAndConvertToOrgMode } from "./converter/selection";
 import { safeDecodeURI } from "./html2org/utilities";
 import { inPageNotify } from "./inpage-notify";
+import { source_link_text_fmt_t, storageManager } from "./options";
 
 browser.runtime.onMessage.addListener((_msg: any) => {
   const msg: MyMsg = _msg
