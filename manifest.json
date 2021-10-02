@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Copy as Org-Mode",
-    "version": "0.0.6",
+    "version": "0.0.7",
     "applications": {
         "gecko": {
             "id": "{59e590fc-6635-45fe-89c7-af637eb4b9c0}"
