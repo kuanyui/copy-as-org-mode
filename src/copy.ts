@@ -57,7 +57,7 @@ async function main() {
     // console.log('selection result', result)
     // If no selection found, copy the link of current page
     if (result.output === "") {
-      const orgLink = getFormattedLink(title, url, '[[%u][%t]]')
+      const orgLink = getFormattedLink(title, url, '[[%url%][%title%]]')
       msgManager.sendToBg({
         type: 'copyStringToClipboard',
         org: orgLink,
@@ -93,9 +93,26 @@ async function main() {
 main();
 
 function getFormattedLink(title: string, url: string, template: source_link_text_fmt_t): string {
+  let weekdayFmt: Intl.DateTimeFormatOptions['weekday'] = 'short'  // 'Sat'
+  if (navigator.language.match(/^(ja|zh)/)) {
+    weekdayFmt = 'narrow'  // '土'
+  }
+  const d = new Date()
+  const YYYY = d.getFullYear() // YYYY
+  const MM = d.getMonth() + 1  // 0-11
+  const DD = d.getDate()       // 1-31
+  const HH = d.getHours().toString().padStart(2, '0')      // 0-23
+  const mm = d.getSeconds().toString().padStart(2, '0')    // 0-59
+  const ss = d.getSeconds().toString().padStart(2, '0')    // 0-59
+  const dd = d.toLocaleString("default", { weekday: weekdayFmt })
+  const fmttedDate = `${YYYY}-${MM}-${DD} ${dd}`
+  const fmttedTime = `${HH}:${mm}`
+  const fmttedDatTime = fmttedDate + ' ' + fmttedTime
   let s: string = template
-  s = s.replaceAll('%t', title)
-  s = s.replaceAll('%u', url)
+  s = s.replaceAll('%title%', title)
+  s = s.replaceAll('%url%', url)
+  s = s.replaceAll('%date%', fmttedDate)
+  s = s.replaceAll('%datetime%', fmttedDatTime)
   return s
 }
 

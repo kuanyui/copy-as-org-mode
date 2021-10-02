@@ -98,8 +98,16 @@ html
         +tablerow_select('insertReferenceLink_pos', {'prepend': 'Prepend', 'append': 'Append' })
           span= "Insertion position"
         tr.row
-          td.nowrap: label(for="insertReferenceLink_format") Format #[br](#[code %t] means title, #[code %u] means URL.)
-          td.w100: textarea(id="insertReferenceLink_format" rows='3')
+          td.nowrap: label(for="insertReferenceLink_format")
+            div Reference Format
+            div: u: b Available tokens
+            div: i(style="font-size: 0.7rem;") (move mouse on them for help)
+            ul
+              li: code(title="The title of current page") %title%
+              li: code(title="The URL of current page") %url%
+              li: code(title="Current date. Format is in Org-mode standard timestamp `YYYY-MM-DD W`.") %date%
+              li: code(title="Current date & time. Format is in Org-mode standard `YYYY-MM-DD W HH:mm`.") %datetime%
+          td.w100: textarea(id="insertReferenceLink_format" rows='5')
       h2 Show Notification When Copy
       +line_radio('notificationMethod', 'inPagePopup'): span In-page notification
       +line_radio('notificationMethod', 'notificationApi'): span System notification popup (#[b On Linux, this may freeze Firefox sometime], reason is unknown yet and I didn't find any issue about this after DuckDuckGoing.)

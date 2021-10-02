@@ -42,6 +42,7 @@ Thanks for your contribution!
 - Some children HTML elements, for example, =<img>=, in =<a>=, may cannot be handled properly. *This is the limitation of org-mode's syntax*. *I've not decided which workaround should I use currently.*
 - =<pre>= may lost newlines in some page (e.g. https://kuanyui.github.io/2017/08/16/macros-for-qproperty/). Should be fixed now but I cannot sure.
 - Notification may freeze the whole Firefox *when using on Linux* (Test on Firefox 92, Ubuntu & Manjaro), but such issue seems not occurs on Firefox for Windows. So I make this feature an optional setting, you can enable it manually.
+
 * Permissions
 
   #+begin_quote

@@ -65,11 +65,15 @@ export type ol_mark_t = '.' | ')'
 export type code_mark_t = '=' | '~'
 export type codeblock_style_t = 'colon' | 'beginEnd'
 export type source_link_insert_pos_t = 'prepend' | 'append'
+type fmt_template_token_t =
+    '%title%' |
+    '%url%' |
+    '%date%' |
+    '%datetime%'
+
 export type source_link_text_fmt_t =
-    `${string}%t${string}%u${string}` |
-    `${string}%u${string}%t${string}` |
-    `${string}%t${string}` |
-    `${string}%u${string}`
+    `${string}${fmt_template_token_t}${string}`
+
 
 export interface MyStorage {
     /** Indent size for nested list item */
@@ -143,7 +147,7 @@ class StorageManager {
             insertReferenceLink: {
                 enabled: false,
                 pos: 'append',
-                format: `-----\nReference: [[%t][%u]]`
+                format: '-----\nOriginal Reference: [[%title%][%url%]]\nRetrieved at [%datetime%]'
             },
             titleBlackList: '',
             convertImageAsDataUrl: false,
