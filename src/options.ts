@@ -130,7 +130,7 @@ class StorageManager {
             insertReferenceLink: {
                 enabled: false,
                 pos: 'append',
-                format: '-----\nOriginal Reference: [[%title%][%url%]]\n(Retrieved at [%datetime%])'
+                format: '-----\nOriginal Reference: [[%title%][%url%]]\n(Retrieved at [%datetime%])\n'
             },
             titleBlackList: '',
             convertImageAsDataUrl: false,
@@ -139,7 +139,8 @@ class StorageManager {
         }
     }
     /** Set data object (can be partial) into LocalStorage. */
-    setData(d: Partial<CopyAsOrgModeOptions>): void {
+    setDataPartially(d: Partial<CopyAsOrgModeOptions>): void {
+        console.log('[SET] TO STORAGE', deepCopy(d))
         this.area.set(deepCopy(d))
     }
     /** Get data object from LocalStorage */
@@ -147,10 +148,10 @@ class StorageManager {
         return this.area.get().then((_ori) => {
             /** may be malformed */
             const ori = _ori as unknown as CopyAsOrgModeOptions
-            console.log('ORIGINAL', ori)
+            console.log('[GET] ORIGINAL', deepCopy(ori))
             const DEFAULT = this.getDefaultData()
             if (!ori) {
-                this.setData(DEFAULT)
+                this.setDataPartially(DEFAULT)
                 return DEFAULT
             }
             const fixed = this.getDefaultData()
@@ -191,7 +192,7 @@ class StorageManager {
             // ==================================
             // MIGRATION ENDS
             // ==================================
-            console.log('FIXED', fixed)
+            console.log('[GET] FIXED', fixed)
             return fixed
         }).catch((err) => {
             console.error('Error when getting settings from browser.storage:', err)

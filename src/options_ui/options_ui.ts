@@ -13,6 +13,7 @@
  */
 
 import { storageManager } from "../options"
+import { initSyntaxhlElements } from "../syntaxhl/syntaxhl"
 
 
 function q<T extends HTMLElement>(elementId: string): T {
@@ -45,17 +46,28 @@ function setRadioValue(radioGroupName: string, value: string) {
         }
     }
 }
+function getCheckboxValue(id: string): boolean {
+    return q<HTMLInputElement>(id).checked
+}
+function setCheckboxValue(id: string, checked: boolean) {
+    q<HTMLInputElement>(id).checked = checked
+}
 function getTextAreaValue(id: string): string {
     return q<HTMLTextAreaElement>(id).value
 }
 function setTextAreaValue(id: string, value: string) {
     q<HTMLTextAreaElement>(id).value = value
 }
-function getCheckboxValue(id: string): boolean {
-    return q<HTMLInputElement>(id).checked
+function getContentEditableValue(id: string): string {
+    let str = q<HTMLDivElement>(id).innerText
+    if (str[str.length - 1] === '\n') {
+        str = str.slice(0,-1)
+    }
+    console.log('GET contentEditable ====>', str)
+    return str
 }
-function setCheckboxValue(id: string, checked: boolean) {
-    q<HTMLInputElement>(id).checked = checked
+function setContentEditableValue(id: string, value: string) {
+    q<HTMLDivElement>(id).innerText =value
 }
 
 
@@ -68,19 +80,19 @@ async function loadFromLocalStorage() {
     setRadioValue('codeBlockStyle', d.codeBlockStyle)
     setCheckboxValue('insertReferenceLink_enabled', d.insertReferenceLink.enabled)
     setSelectValue('insertReferenceLink_pos', d.insertReferenceLink.pos)
-    setTextAreaValue('insertReferenceLink_format', d.insertReferenceLink.format)
+    setContentEditableValue('insertReferenceLink_format', d.insertReferenceLink.format)
     setRadioValue('notificationMethod', d.notificationMethod)
     setCheckboxValue('decodeUri', d.decodeUri)
 }
 
 async function resetToDefault() {
-    storageManager.setData(storageManager.getDefaultData())
+    storageManager.setDataPartially(storageManager.getDefaultData())
     await loadFromLocalStorage()
 }
 q<HTMLButtonElement>('resetBtn').onclick=resetToDefault
 
 async function saveFormToLocalStorage() {
-    storageManager.setData({
+    storageManager.setDataPartially({
         listIndentSize: ~~getSelectValue('listIndentSize'),
         ulBulletChar: getSelectValue('ulBulletChar') as any,
         olBulletChar: getSelectValue('olBulletChar') as any,
@@ -89,7 +101,7 @@ async function saveFormToLocalStorage() {
         insertReferenceLink: {
             enabled: getCheckboxValue('insertReferenceLink_enabled'),
             pos: getSelectValue('insertReferenceLink_pos') as any,
-            format: getTextAreaValue('insertReferenceLink_format') as any,
+            format: getContentEditableValue('insertReferenceLink_format') as any,
         },
         notificationMethod: getRadioValue('notificationMethod') as any,
         decodeUri: getCheckboxValue('decodeUri'),
@@ -102,6 +114,13 @@ function watchForm() {
     form.addEventListener('change', (ev) => {
         console.log(ev)
         saveFormToLocalStorage()
+    })
+    const contentEditableElArr = document.querySelectorAll(".syntaxhl-editor")
+    contentEditableElArr.forEach((el: Element) => {
+        el.addEventListener('input', (ev) => {
+            console.log('contentEditableChanged', ev)
+            saveFormToLocalStorage()
+        })
     })
 }
 
@@ -140,6 +159,7 @@ async function main() {
     postProcessUi()
     await loadFromLocalStorage()
     watchForm()
+    initSyntaxhlElements()
 }
 
 main()

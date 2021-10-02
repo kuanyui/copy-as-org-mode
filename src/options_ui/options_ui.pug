@@ -50,6 +50,7 @@ html
   head
     meta(charset='utf-8')
     link(rel="stylesheet" type="text/css" href="./options_ui_style/options_ui.css")
+    link(rel="stylesheet" type="text/css" href="./options_ui_style/syntaxhl.css")
   form
     div
       h2 General
@@ -107,7 +108,7 @@ html
               li: code(title="The URL of current page") %url%
               li: code(title="Current date. Format is in Org-mode standard timestamp `YYYY-MM-DD W`.") %date%
               li: code(title="Current date & time. Format is in Org-mode standard `YYYY-MM-DD W HH:mm`.") %datetime%
-          td.w100: textarea(id="insertReferenceLink_format" rows='8')
+          td.w100: div.syntaxhl-editor(id="insertReferenceLink_format" data-lang-id="template" rows='8')
       h2 Show Notification When Copy
       +line_radio('notificationMethod', 'inPagePopup'): span In-page notification
       +line_radio('notificationMethod', 'notificationApi'): span System notification popup (#[b On Linux, this may freeze Firefox sometime], reason is unknown yet and I didn't find any issue about this after DuckDuckGoing.)

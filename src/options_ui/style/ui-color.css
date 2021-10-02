@@ -138,16 +138,19 @@
     color: var(--in-content-link-color-active);
   }
 
+  [contenteditable="true"],
   textarea,
   input {
     background: var(--in-content-box-background);
     border: thin solid var(--in-content-box-border-color-mixed);
     color: var(--in-content-text-color);
   }
+  [contenteditable="true"]:hover,
   textarea:hover,
   input:hover {
     border-color: var(--in-content-border-hover-mixed);
   }
+  [contenteditable="true"]:focus,
   textarea:focus,
   input:focus {
     border-color: var(--in-content-border-focus);

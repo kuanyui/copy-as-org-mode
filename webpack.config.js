@@ -74,6 +74,7 @@ const config = {
       new CopyPlugin([
         // { from: 'src/options_ui/options_ui.css', to: 'options_ui.css', force: true, toType: 'file' },
         { from: 'src/options_ui/style/', to: 'options_ui_style/', force: true, toType: 'dir' },
+        { from: 'src/syntaxhl/syntaxhl.css', to: 'options_ui_style/syntaxhl.css', force: true, toType: 'file' },
         // { from: 'img/', to: 'img/', force: true, toType: 'dir' },
         // { from: 'manifest.json', to: 'manifest.json', force: true, toType: 'file' },
       ]),
