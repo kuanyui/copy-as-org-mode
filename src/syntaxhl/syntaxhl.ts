@@ -7,7 +7,13 @@ type lang_id_t = 'template'
 type LangSyntaxObj = {[tokenClassName: string]: RegExp}
 const LANGS_SYNTAX: Record<lang_id_t, LangSyntaxObj> = {
     template: {
-        rplc: /(%(:?title|url|date|datetime)%)/g,
+        blkh: /(^#\+(?:begin|end)_(?:src|quote|example|html|verse|center)(?: .*)?$)/gi,
+        hr: /(^-----+$)/g,
+        outl: /(^\*+ .*)/g,   // **** outline
+        comt: /(^# .+$)/g,    // # comment
+        link: /(\[\[.+?\]\[.+?\]\])/g, // [[][]]
+        // time: /([<]%date(?:time)?%[>]|\[%date(?:time)?%\])/g,   // <YYYY-MM-DD W HH:mm>
+        rplc: /(%(?:title|url|date|datetime)%)/g,  // replaceKeyword %title%
     },
 }
 
@@ -16,11 +22,14 @@ function syntaxhl(el: HTMLElement) {
 
     if(!langId) { throw new Error('[To Developer] Please add data-lang-id="template"') }
     const langObj = LANGS_SYNTAX[langId]
-    let html = el.innerHTML;
-    Object.keys(langObj).forEach(function(tokenClassName) {
-        html = html.replace(langObj[tokenClassName], `<span class=${langId}_${tokenClassName}>$1</span>`);
+    const htmlLines = el.innerHTML.split('<br>')
+    console.log('HTML===', htmlLines)
+    Object.keys(langObj).forEach(function (tokenClassName) {
+        for (let i = 0;i < htmlLines.length;i++) {
+            htmlLines[i] = htmlLines[i].replace(langObj[tokenClassName], `<span class=${langId}_${tokenClassName}>$1</span>`);
+        }
     });
-    el.nextElementSibling!.innerHTML = html
+    el.nextElementSibling!.innerHTML = htmlLines.join('<br>')
 };
 
 export function initSyntaxhlElements() {

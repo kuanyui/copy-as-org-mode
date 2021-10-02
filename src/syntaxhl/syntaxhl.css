@@ -38,4 +38,10 @@
 }
 
 /* JS */
+.syntaxhl-wrapper .template_blkh { display: inline-block; background-color: #1f5b87; color: #ffffff; }
+.syntaxhl-wrapper .template_hr {  color: #777777; }
+.syntaxhl-wrapper .template_comt { color: #777777; }
+.syntaxhl-wrapper .template_outl { color: #ff8722; font-weight: bold; }
+.syntaxhl-wrapper .template_link { color: #5fafd7; }
 .syntaxhl-wrapper .template_rplc { color: #ff4ea3; }
+.syntaxhl-wrapper .template_time { color: #ff4ea3; }
