@@ -14,9 +14,6 @@ Thanks for your contribution!
 #+end_html
 
 * Install
-  #+begin_quote
-  *This addon has been submitted to Mozilla Add-ons, but may be still unavailable in at the moment because it is still pending for manual reviewing by Mozilla. So please be patient until they approve the submission. DON'T OPEN ISSUE ABOUT THIS.*
-  #+end_quote
 - [[https://addons.mozilla.org/en-US/firefox/addon/copy-as-org-mode/][Mozilla Add-ons]]
 
 * Screenshot
@@ -45,7 +42,19 @@ Thanks for your contribution!
 - Some children HTML elements, for example, =<img>=, in =<a>=, may cannot be handled properly. *This is the limitation of org-mode's syntax*. *I've not decided which workaround should I use currently.*
 - =<pre>= may lost newlines in some page (e.g. https://kuanyui.github.io/2017/08/16/macros-for-qproperty/). Should be fixed now but I cannot sure.
 - Notification may freeze the whole Firefox *when using on Linux* (Test on Firefox 92, Ubuntu & Manjaro), but such issue seems not occurs on Firefox for Windows. So I make this feature an optional setting, you can enable it manually.
+* Permissions
 
+  #+begin_quote
+  This software is created by a paranoid^{TM} free-software & open-source enthusiast, would never collect your any data. Feel free to review the whold code base if doubt.
+  #+end_quote
+
+| Permission (in ~manifest.json~) | Description                                        | Will show a permission warning when install? |
+|---------------------------------+----------------------------------------------------+----------------------------------------------|
+| ~activeTab~                     | Insert HTML parser to current active tab.          | No                                           |
+| ~menus~                         | Add items to context menu.                         | No                                           |
+| ~clipboardWrite~                | Copy org-mode text into clipboard.                 | Yes                                          |
+| ~notifications~                 | Show notification via OS when copy (optional).     | Yes                                          |
+| ~storage~                       | Store preferences in ~sync~ (Mozilla Sync account) | No                                           |
 
 * Development
 ** Prepare
