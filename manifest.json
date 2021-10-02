@@ -19,7 +19,7 @@
     "options_ui": {
         "page": "dist/options_ui.html",
         "browser_style": true,
-        "open_in_tab": true
+        "open_in_tab": false
       },
     "background": {
         "scripts": ["dist/background.js"]

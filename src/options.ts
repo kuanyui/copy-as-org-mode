@@ -146,6 +146,7 @@ class StorageManager {
     /** Get data object from LocalStorage */
     getData(): Promise<CopyAsOrgModeOptions> {
         return this.area.get().then((_ori) => {
+            let needSave = false
             /** may be malformed */
             const ori = _ori as unknown as CopyAsOrgModeOptions
             console.log('[GET] ORIGINAL', deepCopy(ori))
@@ -154,29 +155,31 @@ class StorageManager {
                 this.setDataPartially(DEFAULT)
                 return DEFAULT
             }
-            const fixed = this.getDefaultData()
+            const final = this.getDefaultData()
             // Removed deprecated fields
-            for (const _expectedKey in fixed) {
+            for (const _expectedKey in final) {
                 const expectedKey = _expectedKey as keyof CopyAsOrgModeOptions
-                if (ori[expectedKey] !== undefined) {
+                if (ori[expectedKey] !== undefined) {  // expectedKey found in gotten object
                     // @ts-ignore
-                    fixed[expectedKey] = ori[expectedKey]
+                    final[expectedKey] = ori[expectedKey]
+                } else {
+                    needSave = true
                 }
             }
             // ==================================
             // Some fixes when no API Level. (This should be deprecated in future)
             // ==================================
             if (ori.apiLevel === undefined) {
-                fixed.notificationMethod = fixValue(fixed.notificationMethod, ALL_NOTIFICATION_METHODS)
-                fixed.insertReferenceLink.format = DEFAULT.insertReferenceLink.format
-                fixed.apiLevel = 1
+                final.notificationMethod = fixValue(final.notificationMethod, ALL_NOTIFICATION_METHODS)
+                final.insertReferenceLink.format = DEFAULT.insertReferenceLink.format
+                final.apiLevel = 1
             }
             // ==================================
             // MIGRATION BEGINS
             // ==================================
             migrateLoop:
-            while (fixed.apiLevel !== DEFAULT.apiLevel) {
-                switch (fixed.apiLevel) {
+            while (final.apiLevel !== DEFAULT.apiLevel) {
+                switch (final.apiLevel) {
                     case undefined: {
                         continue migrateLoop
                     }
@@ -185,15 +188,18 @@ class StorageManager {
                         break
                     }
                     default: {
-                        assertUnreachable(fixed.apiLevel)
+                        assertUnreachable(final.apiLevel)
                     }
                 }
             }
             // ==================================
             // MIGRATION ENDS
             // ==================================
-            console.log('[GET] FIXED', fixed)
-            return fixed
+            console.log('[GET] FIXED', final)
+            if (needSave) {
+                this.setDataPartially(final)
+            }
+            return final
         }).catch((err) => {
             console.error('Error when getting settings from browser.storage:', err)
             return this.getDefaultData()
