@@ -100,11 +100,11 @@ function getFormattedLink(title: string, url: string, template: source_link_text
   }
   const d = new Date()
   const YYYY = d.getFullYear() // YYYY
-  const MM = d.getMonth() + 1  // 0-11
-  const DD = d.getDate()       // 1-31
-  const HH = d.getHours().toString().padStart(2, '0')      // 0-23
-  const mm = d.getSeconds().toString().padStart(2, '0')    // 0-59
-  const ss = d.getSeconds().toString().padStart(2, '0')    // 0-59
+  const MM = (d.getMonth() + 1).toString().padStart(2, '0') // 0-11
+  const DD = d.getDate().toString().padStart(2, '0')        // 1-31
+  const HH = d.getHours().toString().padStart(2, '0')       // 0-23
+  const mm = d.getSeconds().toString().padStart(2, '0')     // 0-59
+  const ss = d.getSeconds().toString().padStart(2, '0')     // 0-59
   const dd = d.toLocaleString("default", { weekday: weekdayFmt })
   const fmttedDate = `${YYYY}-${MM}-${DD} ${dd}`
   const fmttedTime = `${HH}:${mm}`
