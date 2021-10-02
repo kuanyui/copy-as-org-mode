@@ -20,6 +20,8 @@ xpi-server: clear xpi
 
 clear:
 	rm -rf dist/*
+	rm -f '../${NAME}-upload.zip'
+	rm -f '${XPI_DIR}/${NAME}.xpi'
 
 zip-repo: clear
 	zip -r '../${NAME}-upload.zip' . -x .git/\* node_modules/\*
