@@ -58,7 +58,7 @@ function getAllKeyAsStringArray<T>(enumObj: T): Array<keyof T> {
 enum __NotificationMethod { inPagePopup, notificationApi, none }
 export type notification_method_t = keyof typeof __NotificationMethod
 const ALL_NOTIFICATION_METHODS = getAllKeyAsStringArray(__NotificationMethod)
-
+export type api_level_t = undefined | 1
 export type list_indent_t = number
 export type ul_mark_t = '-' | '+'
 export type ol_mark_t = '.' | ')'
@@ -76,6 +76,7 @@ export type source_link_text_fmt_t =
 
 
 export interface MyStorage {
+    apiLevel: api_level_t,
     /** Indent size for nested list item */
     listIndentSize: list_indent_t,
     /** The character of `ul > li` in Org-mode */
@@ -114,6 +115,7 @@ type TypedStorageChange<T> = {
 type TypedChangeDict<T> = { [K in keyof T]: TypedStorageChange<T[K]> }
 
 
+function assertUnreachable (x: never) { x }
 export function objectAssignPerfectly<T>(target: T, newValue: T) {
     return Object.assign(target, newValue)
 }
@@ -124,7 +126,6 @@ export function deepCopy<T>(x: T): T {
 export function storageSetSync (d: Partial<MyStorage>): void {
     browser.storage.sync.set(d)
 }
-
 class StorageManager {
     area: browser.storage.StorageArea
     constructor() {
@@ -138,6 +139,7 @@ class StorageManager {
     }
     getDefaultData(): MyStorage {
         return {
+            apiLevel: 1,
             listIndentSize: 2,
             ulBulletChar: '-',
             olBulletChar: '.',
@@ -147,7 +149,7 @@ class StorageManager {
             insertReferenceLink: {
                 enabled: false,
                 pos: 'append',
-                format: '-----\nOriginal Reference: [[%title%][%url%]]\nRetrieved at [%datetime%]'
+                format: '-----\nOriginal Reference: [[%title%][%url%]]\n(Retrieved at [%datetime%])'
             },
             titleBlackList: '',
             convertImageAsDataUrl: false,
@@ -163,12 +165,35 @@ class StorageManager {
     getData(): Promise<MyStorage> {
         return this.area.get().then((_d) => {
             const d = _d as unknown as MyStorage
+            const DEFAULT = storageManager.getDefaultData()
             if (!d) {
-                const defaultValue = storageManager.getDefaultData()
-                storageManager.setData(defaultValue)
-                return defaultValue
+                storageManager.setData(DEFAULT)
+                return DEFAULT
             }
-            d.notificationMethod = fixValue(d.notificationMethod, ALL_NOTIFICATION_METHODS)
+            // ==================================
+            // MIGRATION BEGINS
+            // ==================================
+            migrateLoop:
+            while (d.apiLevel !== DEFAULT.apiLevel) {
+                switch (d.apiLevel) {
+                    case undefined: {
+                        d.notificationMethod = fixValue(d.notificationMethod, ALL_NOTIFICATION_METHODS)
+                        d.insertReferenceLink.format = DEFAULT.insertReferenceLink.format
+                        d.apiLevel = 1
+                        continue migrateLoop
+                    }
+                    case 1: {
+                        // Latest
+                        break
+                    }
+                    default: {
+                        assertUnreachable(d.apiLevel)
+                    }
+                }
+            }
+            // ==================================
+            // MIGRATION ENDS
+            // ==================================
             return Object.assign(storageManager.getDefaultData(), d)
         }).catch((err) => {
             console.error('Error when getting settings from browser.storage:', err)
