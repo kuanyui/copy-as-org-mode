@@ -131,6 +131,13 @@ browser.runtime.onMessage.addListener((_msg: any) => {
   }
 })
 
+function getDigest(str: string, maxLen: number): string {
+  let final = str.substr(0, maxLen)
+  if (str.length > maxLen) {
+    final += '...'
+  }
+  return final
+}
 function showBgNotification(title: string, message: string) {
   console.log('showBgNotification(), method =', STORAGE.notificationMethod, Date.now(), title, message)
   if (STORAGE.notificationMethod === 'inPagePopup') {
@@ -142,7 +149,7 @@ function showBgNotification(title: string, message: string) {
         msgManager.sendToTab(tab.id, {
           type: 'showInPageNotification',
           title: title,
-          message: message,
+          message: getDigest(message, 600),
         })
       }
     })
@@ -154,7 +161,7 @@ function showBgNotification(title: string, message: string) {
       title: title,
       type: 'image' as any,
       iconUrl: browser.runtime.getURL("img/icon.png"),
-      message: message,
+      message: getDigest(message, 140),
     })
     console.log('showBgNotification finished.')
   }
@@ -181,11 +188,7 @@ function bgCopyToClipboard(text: string, html?: string): boolean {
 
   console.warn('[bgCopyToClipboard()] run navigator.clipboard.writeText()...')
   navigator.clipboard.writeText(text)
-  let digest = text.substr(0, 140)
-  if (text.length > 140) {
-    digest += '...'
-  }
-  showBgNotification('Org-Mode Text Copied Successfully!', digest)
+  showBgNotification('Org-Mode Text Copied Successfully!', text)
   return true
 }
 

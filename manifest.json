@@ -24,6 +24,7 @@
     "background": {
         "scripts": ["dist/background.js"]
     },
+    "web_accessible_resources": ["img/*.png"],
     "permissions": ["activeTab", "clipboardWrite", "menus", "storage", "notifications"],
     "commands": {
         "_execute_browser_action": {

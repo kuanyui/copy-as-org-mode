@@ -11,10 +11,10 @@ export function inPageNotify(title: string, msg: string) {
     rootEl.style.zIndex = '99999999999999999'
     rootEl.style.top = '16px'
     rootEl.style.right = '16px'
-    rootEl.style.width = '450px'
+    rootEl.style.width = '550px'
     rootEl.style.height = '200px'
     rootEl.style.padding = '16px'
-    rootEl.style.backgroundColor = '#77AA99'
+    rootEl.style.backgroundColor = '#c3f0e1' // '#77AA99'
     rootEl.style.color = '#2d4f28'
     rootEl.style.borderColor = '#2d4f28'
     rootEl.style.borderStyle = 'solid'
@@ -25,15 +25,25 @@ export function inPageNotify(title: string, msg: string) {
     rootEl.onclick = close
     window.setTimeout(() => {
         close()
-    }, 7000)
+    }, 12000)
     // title
     const titleEl = document.createElement('b')
-    titleEl.style.display = 'block'
+    titleEl.style.display = 'flex'
+    titleEl.style.alignItems = 'center'
     titleEl.style.fontSize = '1.2rem'
     titleEl.innerText = title
+    // icon
+    const imgEl = document.createElement('img')
+    imgEl.src = browser.runtime.getURL('img/icon.png')
+    imgEl.width = 32
+    imgEl.height = 32
+    titleEl.prepend(imgEl)
     // content
     const contentEl = document.createElement('p')
     contentEl.style.display = 'block'
+    contentEl.style.whiteSpace = 'pre'
+    contentEl.style.fontFamily = 'monospace'
+    contentEl.style.fontSize = '0.8em'
     contentEl.innerText = msg
     // final
     rootEl.appendChild(titleEl)
