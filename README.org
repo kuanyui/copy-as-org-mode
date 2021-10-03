@@ -40,7 +40,12 @@ Thanks for your contribution!
 * Known Issues (Please feel free to open PR to fix them)
 - It's *IMPOSSIBLE* to use this add-on under some special pages or domains like https://addons.mozilla.org/ . This is the restriction of Firefox browser itself.
 - Nested mark (e.g. =~*bold and* /italic in code/=~) may has some issues for org-mode renderer. This is a common usage in HTML, but may mess up the org-mode renderer. *This is the limitation of org-mode's syntax & renderer, I cannot do anything for it*.
-- Some children HTML elements, for example, =<img>=, in =<a>=, may cannot be handled properly. *This is the limitation of org-mode's syntax*. *I've not decided which workaround should I use currently.*
+- Some block elements in =<a>= (e.g. =<img>=) may cannot be handled properly. *This is the limitation of org-mode's syntax*. *I've not decided which workaround should I use currently.*
+  #+begin_quote
+  For example, ~<a> inner text 1 <img src="..."> another text 2 <img src="..."> another text 3 </a>~
+    - One of the workarounds I can think up so far is to split each Node and make each of them an independent links, but looks disgusting... Like =[[url][inner text 1]] [[url][imgsrc]] [[url][another text 2]] [[url][imgsrc]] [[url][another text 3]]=....
+    - Or use ~#+HTML: <a href="url">~ and ~#+HTML:</a>~ to wrap the children contents and elements. However, this will make the =<a>= to a block element and create unneeded inevitable new lines.
+  #+end_quote
 - =<pre>= may lost newlines in some page (e.g. https://kuanyui.github.io/2017/08/16/macros-for-qproperty/). Should be fixed now but I cannot sure.
 - Notification may freeze the whole Firefox *when using on Linux* (Test on Firefox 92, Ubuntu & Manjaro), but such issue seems not occurs on Firefox for Windows. So I make this feature an optional setting, you can enable it manually.
 
