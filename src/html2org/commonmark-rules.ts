@@ -123,8 +123,7 @@ let rules = createRulesObject({
     filter: function (node: CustomNode, options: Html2OrgOptions) {
       return (
         options.codeBlockStyle === 'colon' &&
-        node.nodeName === 'PRE' &&
-        judgeCodeblockLanguage(node) !== ''
+        node.nodeName === 'PRE'
       )
     },
 
@@ -144,8 +143,7 @@ let rules = createRulesObject({
     filter: function (node: CustomNode, options: Html2OrgOptions) {
       return (
         options.codeBlockStyle === 'beginEnd' &&
-        node.nodeName === 'PRE' &&
-        judgeCodeblockLanguage(node) !== ''
+        node.nodeName === 'PRE'
       )
     },
 
@@ -259,8 +257,8 @@ let rules = createRulesObject({
   code: {
     filter: function (node) {
       var hasSiblings = node.previousSibling || node.nextSibling
-      var isCodeBlock = node.parentNode.nodeName === 'PRE' && !hasSiblings
-      return (node.nodeName === 'CODE' || node.nodeName === 'KBD') && !isCodeBlock
+      var isInCodeBlock = node.parentNode.nodeName === 'PRE' && !hasSiblings
+      return (node.nodeName === 'CODE' || node.nodeName === 'KBD') && !isInCodeBlock
     },
 
     replacement: function (content, node, options): string {
