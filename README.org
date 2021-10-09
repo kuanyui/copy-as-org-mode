@@ -3,7 +3,9 @@ A WebExtension to copy selected web page into Org-mode formatted text!
 
 #+begin_html
 <blockquote>
-I develop and release <b>ALL</b> my open-source software projects <b>for free</b>, and are ALL licensed under <b><code>WTFPL</code>, <code>GPL</code>, <code>MIT</code>, or <code>MPL</code>. however, my "free time" is not free actually</b>. If my works are usable to you or make you happy, please consider to donate to <b>reduce my business hours to <i>make more free and open-source projects for you and this world</i></b>:
+<p>I develop and release <b>all</b> my open-source software projects <b>for free</b>, and are ALL licensed under <b><code>WTFPL</code>, <code>GPL</code>, <code>MIT</code>, or <code>MPL</code>. however, my "free time" is not free actually</b>. If my works are usable to you or make you happy, please consider to donate to <b>reduce my business hours to <i>make more free and open-source projects for you and this world</i></b>.</p>
+
+Attention: Donate <b>only if you feel happy</b>; it is totally voluntary, I would never force you to do this. I always try as possible as I can to make good project because I need, and wish my work could also be helpful to others. If you donate, I will be glad and grateful, <b>but I cannot provide any gurantee or warranty for this project even if you do this.</b>
 <ul>
   <li><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=G4F7NM38ADPEC&source=url"> <img width="24" height="24" src="https://raw.githubusercontent.com/kuanyui/kuanyui/main/img/paypal.svg"/>PayPal</a></li>
   <li><a href="https://liberapay.com/onoono"> <img width="24" height="24" src="https://raw.githubusercontent.com/kuanyui/kuanyui/main/img/liberapay.svg"/>LiberaPay</a></li>
@@ -37,7 +39,7 @@ Thanks for your contribution!
 - =[[link url][link title]]=, =[[a.href][img.src]]= (Notice: multiple =<img>= elements + other elements wrapped in =<a>= element is not supported by org-mode syntax. I have serveral plans as workaround for this but haven't decided which one is better, hence not implemented this yet..)
 - =[[imgSrc]]= (Notice: I haven't decide how to deal with HTML =title= and =alt= attribute)
 
-* Known Issues (Please feel free to open PR to fix them)
+* Known Issues (Plegase feel free to open PR to fix them)
 - It's *IMPOSSIBLE* to use this add-on under some special pages or domains like https://addons.mozilla.org/ . This is the restriction of Firefox browser itself.
 - Nested mark (e.g. ~*=bold and=* /=italic code=/~) may has some issues for org-mode renderer. This is a common usage in HTML, but may mess up the org-mode renderer. *This is the limitation of org-mode's syntax & renderer, I cannot do anything for it*.
 - Some block elements in =<a>= (e.g. =<img>=) may cannot be handled properly. *This is the limitation of org-mode's syntax*. *I've not decided which workaround should I use currently.*
