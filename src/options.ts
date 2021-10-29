@@ -130,7 +130,7 @@ class StorageManager {
             insertReferenceLink: {
                 enabled: false,
                 pos: 'append',
-                format: '-----\nOriginal Reference: [[%title%][%url%]]\n(Retrieved at [%datetime%])\n'
+                format: '-----\nOriginal Reference: [[%url%][%title%]]\n(Retrieved at [%datetime%])\n'
             },
             titleBlackList: '',
             convertImageAsDataUrl: false,
