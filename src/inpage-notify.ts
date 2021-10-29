@@ -45,6 +45,7 @@ export function inPageNotify(title: string, msg: string) {
     contentEl.style.whiteSpace = 'pre-wrap'
     contentEl.style.fontFamily = 'monospace'
     contentEl.style.fontSize = '0.8em'
+    contentEl.style.lineHeight = '1rem'
     contentEl.innerText = msg
     // final
     rootEl.appendChild(titleEl)
