@@ -12,7 +12,7 @@ export function inPageNotify(title: string, msg: string) {
     rootEl.style.top = '16px'
     rootEl.style.right = '16px'
     rootEl.style.width = '550px'
-    rootEl.style.height = '260px'
+    rootEl.style.height = '360px'
     rootEl.style.padding = '16px'
     rootEl.style.backgroundColor = '#c3f0e1' // '#77AA99'
     rootEl.style.color = '#2d4f28'
