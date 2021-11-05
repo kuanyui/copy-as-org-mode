@@ -277,6 +277,35 @@ let rules = createRulesObject({
       return wrapInlineMarkWithSpace(content, node, ch)
     }
   },
+  rp: {
+    filter: 'rp',
+    replacement: function (content, node, options): string {
+      switch (options.ruby) {
+        case 'removeRuby': return ''
+        case 'forceAddParenthesis': return ''
+        case 'keepIfWrappedByRp': return content
+      }
+    }
+  },
+  rt: {
+    filter: 'rt',
+    replacement: function (content, node, options): string {
+      switch (options.ruby) {
+        case 'removeRuby': return ''
+        case 'forceAddParenthesis': return '（' + content + '）'
+        case 'keepIfWrappedByRp': {
+          const prev = node.previousElementSibling
+          if (!prev) { return '' }
+          const next = node.nextElementSibling
+          if (!next) { return '' }
+          if (prev.nodeName === 'RP' && next.nodeName === 'RP') {
+            return content
+          }
+          return ''
+        }
+      }
+    }
+  },
   image: {
     filter: 'img',
     // TODO: alt & title

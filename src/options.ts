@@ -24,6 +24,8 @@ export type ol_mark_t = '.' | ')'
 export type code_mark_t = '=' | '~'
 export type codeblock_style_t = 'colon' | 'beginEnd'
 export type source_link_insert_pos_t = 'prepend' | 'append'
+export type ruby_style_t = 'forceAddParenthesis' | 'keepIfWrappedByRp' | 'removeRuby'
+
 type fmt_template_token_t =
     '%title%' |
     '%url%' |
@@ -60,7 +62,8 @@ export interface CopyAsOrgModeOptions {
     titleBlackList: string
     convertImageAsDataUrl: boolean,
     /** NOTE: Add this option because it seems browser.notifications may freezed browser... Donno why... */
-    notificationMethod: notification_method_t
+    notificationMethod: notification_method_t,
+    ruby: ruby_style_t,
 }
 
 
@@ -125,6 +128,7 @@ class StorageManager {
             ulBulletChar: '-',
             olBulletChar: '.',
             codeChar: '=',
+            ruby: 'removeRuby',
             codeBlockStyle: 'beginEnd',
             escapeHtmlEntities: false,
             insertReferenceLink: {
@@ -181,6 +185,7 @@ class StorageManager {
             while (final.apiLevel !== DEFAULT.apiLevel) {
                 switch (final.apiLevel) {
                     case undefined: {
+                        final.apiLevel = 1
                         continue migrateLoop
                     }
                     case 1: {

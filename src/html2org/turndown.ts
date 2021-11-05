@@ -62,6 +62,7 @@ type h2o_underline_delimiter_t = '_'
 type h2o_strike_delimiter_t = '+'
 type h2o_link_style_t = 'inlined' | 'referenced'  // TODO: NOT IMPLEMENTED YET
 type h2o_link_ref_style_t = `full` | `collapsed` | `shortcut`  // TODO: NOT IMPLEMENTED YET
+type h2o_ruby_style_t = 'forceAddParenthesis' | 'keepIfWrappedByRp' | 'removeRuby'
 type h2o_preformatted_code_t = boolean
 type h2o_list_indent_size_t = number
 
@@ -83,6 +84,7 @@ export interface Html2OrgOptions {
   br: '  ',
   preformattedCode: false,
   decodeUri: boolean,
+  ruby: h2o_ruby_style_t,
   blankReplacement: RuleReplacementFn
   keepReplacement: RuleReplacementFn
   defaultReplacement: RuleReplacementFn
@@ -106,6 +108,7 @@ const DEFAULT_OPTION: Readonly<Html2OrgOptions> = {
   br: '  ',
   preformattedCode: false,
   decodeUri: true,
+  ruby: 'removeRuby',
   blankReplacement: function (content, node) {
     return node.isBlock ? '\n\n' : ''
   },
