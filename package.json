@@ -1,6 +1,6 @@
 {
   "name": "copy-as-org-mode",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Copy selected text as Org-Mode format",
   "main": "dist/index.js",
   "dependencies": {
