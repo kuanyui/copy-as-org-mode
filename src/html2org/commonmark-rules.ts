@@ -292,7 +292,7 @@ let rules = createRulesObject({
     replacement: function (content, node, options): string {
       switch (options.ruby) {
         case 'removeRuby': return ''
-        case 'forceAddParenthesis': return '（' + content + '）'
+        case 'forceAddParenthesis': return '(' + content + ')'
         case 'keepIfWrappedByRp': {
           const prev = node.previousElementSibling
           if (!prev) { return '' }

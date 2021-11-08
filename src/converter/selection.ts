@@ -54,6 +54,7 @@ export async function getSelectionAndConvertToOrgMode(options: CopyAsOrgModeOpti
         listIndentSize: options.listIndentSize,
         codeBlockStyle: options.codeBlockStyle,
         decodeUri: options.decodeUri,
+        ruby: options.rubyHandleMethod,
     })
     const orgStr = turndownService.turndown(htmlStr)
     return {

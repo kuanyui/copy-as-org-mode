@@ -106,6 +106,7 @@ async function loadFromLocalStorage() {
     setSelectValue('insertReferenceLink_pos', d.insertReferenceLink.pos)
     setContentEditableValue('insertReferenceLink_format', d.insertReferenceLink.format)
     setRadioValue('notificationMethod', d.notificationMethod)
+    setRadioValue('rubyHandleMethod', d.rubyHandleMethod)
     setCheckboxValue('decodeUri', d.decodeUri)
 }
 
@@ -128,6 +129,7 @@ async function saveFormToLocalStorage() {
             format: getContentEditableValue('insertReferenceLink_format') as any,
         },
         notificationMethod: getRadioValue('notificationMethod') as any,
+        rubyHandleMethod: getRadioValue('rubyHandleMethod') as any,
         decodeUri: getCheckboxValue('decodeUri'),
     })
 }

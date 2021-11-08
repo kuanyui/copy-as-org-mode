@@ -24,7 +24,7 @@ export type ol_mark_t = '.' | ')'
 export type code_mark_t = '=' | '~'
 export type codeblock_style_t = 'colon' | 'beginEnd'
 export type source_link_insert_pos_t = 'prepend' | 'append'
-export type ruby_style_t = 'forceAddParenthesis' | 'keepIfWrappedByRp' | 'removeRuby'
+export type ruby_tag_handle_method_t = 'forceAddParenthesis' | 'keepIfWrappedByRp' | 'removeRuby'
 
 type fmt_template_token_t =
     '%title%' |
@@ -63,7 +63,7 @@ export interface CopyAsOrgModeOptions {
     convertImageAsDataUrl: boolean,
     /** NOTE: Add this option because it seems browser.notifications may freezed browser... Donno why... */
     notificationMethod: notification_method_t,
-    ruby: ruby_style_t,
+    rubyHandleMethod: ruby_tag_handle_method_t,
 }
 
 
@@ -128,7 +128,7 @@ class StorageManager {
             ulBulletChar: '-',
             olBulletChar: '.',
             codeChar: '=',
-            ruby: 'removeRuby',
+            rubyHandleMethod: 'removeRuby',
             codeBlockStyle: 'beginEnd',
             escapeHtmlEntities: false,
             insertReferenceLink: {

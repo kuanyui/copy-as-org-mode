@@ -93,6 +93,14 @@ html
       table
         +tablerow_checkbox('decodeUri')
           span use #[code decodeURI()] to process URL in #[code= '<a>'] and #[code= '<img>'] #[#decodeUriExample]
+      h2 Ruby / Furigana
+      // table
+        +tablerow_select('ruby', {'forceAddParenthesis': 'Force add parenthesis around it', 'keepIfWrappedByRp': 'Keep if wrapped by parenthesis', 'removeRuby': 'Remove all' })
+          span= "How to handle ruby tag (<ruby>)"
+      div How to handle ruby tag (#[code='<ruby>']), for example, #[ruby #[rb 林檎] #[rt りんご]]:
+      +line_radio('rubyHandleMethod', 'removeRuby'): span Remove all: #[code 林檎]
+      +line_radio('rubyHandleMethod', 'keepIfWrappedByRp'): span Keep if wrapped by parenthesis:　#[code 林檎] or #[code 林檎(りんご)]
+      +line_radio('rubyHandleMethod', 'forceAddParenthesis'): span Force add parenthesis around it: #[code 林檎(りんご)]
       h2 Reference Link
       table
         +tablerow_checkbox('insertReferenceLink_enabled'): span When copy selection, insert a link to the current page as reference
