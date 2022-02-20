@@ -54,6 +54,7 @@ const config = {
     new HtmlWebpackPlugin({
         template: './src/options_ui/options_ui.pug',
         filename: 'options_ui.html',
+        chunks: [],  // 'options_ui'  // IMPORTANT: If you don't add this manually, this shitty HtmlWebpackPlugin will add ALL entries into options_ui.html...
     }),
     //new HtmlWebpackPugPlugin({
     //
