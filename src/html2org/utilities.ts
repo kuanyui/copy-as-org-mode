@@ -212,11 +212,20 @@ const LANGS: Record<string, string> = {
   "go": "go|golang",
 }
 
-export function safeDecodeURI(str: string): string {
+/**
+ * - `%5Ba%5D` => `[a]`
+ * - `%E6%97%A5%E6%9C%AC%E8%AA%9E` => "日本語`
+ */
+export function exceptionSafeDecodeURI(str: string): string {
   try {
     return decodeURI(str)
   } catch (e) {
     console.error('[ERROR] decodeURI error', e)
     return str
   }
+}
+
+/** String in link URI should **NEVER** include square brackets */
+export function handleSquareBracketForUri(anyUri: string): string {
+  return anyUri.replace(/\[/gi, '%5B').replace(/\]/gi, '%5D')
 }

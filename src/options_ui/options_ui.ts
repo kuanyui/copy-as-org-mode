@@ -108,6 +108,8 @@ async function loadFromLocalStorage() {
     setRadioValue('notificationMethod', d.notificationMethod)
     setRadioValue('rubyHandleMethod', d.rubyHandleMethod)
     setCheckboxValue('decodeUri', d.decodeUri)
+    setSelectValue('squareBracketsInLink', d.squareBracketsInLink)
+
 }
 
 async function resetToDefault() {
@@ -131,6 +133,7 @@ async function saveFormToLocalStorage() {
         notificationMethod: getRadioValue('notificationMethod') as any,
         rubyHandleMethod: getRadioValue('rubyHandleMethod') as any,
         decodeUri: getCheckboxValue('decodeUri'),
+        squareBracketsInLink: getSelectValue('squareBracketsInLink') as any,
     })
 }
 

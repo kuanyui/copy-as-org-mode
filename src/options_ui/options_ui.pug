@@ -93,6 +93,8 @@ html
       table
         +tablerow_checkbox('decodeUri')
           span use #[code decodeURI()] to process URL in #[code= '<a>'] and #[code= '<img>'] #[#decodeUriExample]
+        +tablerow_select('squareBracketsInLink', {'leaveUntouched': "Keep (Don't Handle)", 'omit': 'Omit', 'replaceWithSpaces': 'Replace with spaces','replaceWithRoundBrackets': 'Replace with round brackets "()"' })
+          span Square brackets <code>[]</code> in link text
       h2 Ruby / Furigana
       // table
         +tablerow_select('ruby', {'forceAddParenthesis': 'Force add parenthesis around it', 'keepIfWrappedByRp': 'Keep if wrapped by parenthesis', 'removeRuby': 'Remove all' })

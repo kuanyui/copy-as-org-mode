@@ -42,8 +42,8 @@ var escapes: [RegExp, string][] = [
   [/^(#{1,6}) /g, '\\$1 '],
   [/`/g, '\\`'],
   [/^~~~/g, '\\~~~'],
-  [/\[/g, '\\['],
-  [/\]/g, '\\]'],
+  // [/\[/g, '\\['],
+  // [/\]/g, '\\]'],
   [/^>/g, '\\>'],
   [/_/g, '\\_'],
   [/^(\d+)\. /g, '$1\\. ']
@@ -65,6 +65,7 @@ type h2o_link_ref_style_t = `full` | `collapsed` | `shortcut`  // TODO: NOT IMPL
 type h2o_ruby_style_t = 'forceAddParenthesis' | 'keepIfWrappedByRp' | 'removeRuby'
 type h2o_preformatted_code_t = boolean
 type h2o_list_indent_size_t = number
+type h2o_square_brackets_in_link_t = 'keep' | 'omit' | 'replaceWithSpaces' | 'replaceWithRoundBrackets'
 
 export interface Html2OrgOptions {
   rules: Record<string, Rule>,
@@ -81,9 +82,10 @@ export interface Html2OrgOptions {
   codeDelimiter: h2o_code_delimiter_t,
   linkStyle: h2o_link_style_t,
   linkReferenceStyle: h2o_link_ref_style_t,
+  squareBracketsInLink: h2o_square_brackets_in_link_t,
+  decodeUri: boolean,
   br: '  ',
   preformattedCode: false,
-  decodeUri: boolean,
   ruby: h2o_ruby_style_t,
   blankReplacement: RuleReplacementFn
   keepReplacement: RuleReplacementFn
@@ -105,9 +107,10 @@ const DEFAULT_OPTION: Readonly<Html2OrgOptions> = {
   boldDelimiter: '*',
   linkStyle: 'inlined',
   linkReferenceStyle: 'full',
+  squareBracketsInLink: 'replaceWithRoundBrackets',
+  decodeUri: true,
   br: '  ',
   preformattedCode: false,
-  decodeUri: true,
   ruby: 'removeRuby',
   blankReplacement: function (content, node) {
     return node.isBlock ? '\n\n' : ''

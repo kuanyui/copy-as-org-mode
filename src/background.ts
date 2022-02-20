@@ -26,7 +26,7 @@
  */
 
 import { MyMsg, msgManager } from "./common";
-import { safeDecodeURI } from "./html2org/utilities";
+import { exceptionSafeDecodeURI } from "./html2org/utilities";
 import { CopyAsOrgModeOptions, objectAssignPerfectly, storageManager } from "./options";
 
 
@@ -103,7 +103,7 @@ browser.menus.onClicked.addListener((info, tab) => {
       let linkUrl = info.linkUrl
       console.log('Options ===>', STORAGE)
       if (STORAGE.decodeUri) {
-        linkUrl = safeDecodeURI(linkUrl)
+        linkUrl = exceptionSafeDecodeURI(linkUrl)
       }
       bgCopyToClipboard( `[[${linkUrl}][${linkText}]]`, `<a href="${linkUrl}">${linkText}</a>` )
     })

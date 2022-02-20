@@ -25,7 +25,7 @@ export type code_mark_t = '=' | '~'
 export type codeblock_style_t = 'colon' | 'beginEnd'
 export type source_link_insert_pos_t = 'prepend' | 'append'
 export type ruby_tag_handle_method_t = 'forceAddParenthesis' | 'keepIfWrappedByRp' | 'removeRuby'
-
+export type square_brackets_in_link_t = 'keep' | 'omit' | 'replaceWithSpaces' | 'replaceWithRoundBrackets'
 type fmt_template_token_t =
     '%title%' |
     '%url%' |
@@ -58,6 +58,8 @@ export interface CopyAsOrgModeOptions {
     }
     /** process uri with window.decodeURI() */
     decodeUri: boolean,
+    /** How to handle with [square brackets] in link text */
+    squareBracketsInLink: square_brackets_in_link_t
     /** Remove matched string or RegExp pattern in the title */
     titleBlackList: string
     convertImageAsDataUrl: boolean,
@@ -131,6 +133,7 @@ class StorageManager {
             rubyHandleMethod: 'removeRuby',
             codeBlockStyle: 'beginEnd',
             escapeHtmlEntities: false,
+            squareBracketsInLink: 'replaceWithRoundBrackets',
             insertReferenceLink: {
                 enabled: false,
                 pos: 'append',

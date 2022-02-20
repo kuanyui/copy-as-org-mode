@@ -27,7 +27,7 @@
 
 import { msgManager, MyMsg } from "./common";
 import { getSelectionAndConvertToOrgMode } from "./converter/selection";
-import { safeDecodeURI } from "./html2org/utilities";
+import { exceptionSafeDecodeURI } from "./html2org/utilities";
 import { inPageNotify } from "./inpage-notify";
 import { source_link_text_fmt_t, storageManager } from "./options";
 
@@ -49,7 +49,7 @@ async function main() {
     }
     let url = document.URL
     if (options.decodeUri) {
-      url = safeDecodeURI(url)
+      url = exceptionSafeDecodeURI(url)
     }
     /** Unused currently, actually */
     let htmlLink = `<a href="${url}">${title}</a>`;

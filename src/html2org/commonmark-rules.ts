@@ -30,7 +30,7 @@
 import { CustomNode } from './node'
 import { Rule } from './rules'
 import { Html2OrgOptions } from './turndown'
-import { judgeCodeblockLanguage, repeat, safeDecodeURI, wrapInlineMarkWithSpace } from './utilities'
+import { judgeCodeblockLanguage, repeat, exceptionSafeDecodeURI, wrapInlineMarkWithSpace, handleSquareBracketForUri } from './utilities'
 
 // https://stackoverflow.com/questions/49538199/is-it-possible-to-infer-the-keys-of-a-record-in-typescript
 function createRulesObject<T extends { [ruleName: string]: Rule }>(rulesObject: T): T {
@@ -191,8 +191,9 @@ let rules = createRulesObject({
       if (content === '') { return '' } // For example, Github's H1/H2/H3... has invisible # link
       let href = node.getAttribute('href') || ''
       if (options.decodeUri) {
-        href = safeDecodeURI(href)
+        href = exceptionSafeDecodeURI(href)
       }
+      href = handleSquareBracketForUri(href)
       let title = cleanAttribute(node.getAttribute('title') || '')
       if (title) {
         title = ' "' + title + '"'
@@ -205,9 +206,22 @@ let rules = createRulesObject({
           if (href === img.src) {
             return `[[${href}]]`
           }
-          const imgSrc = options.decodeUri ? safeDecodeURI(img.src) :img.src
+          const imgSrc = options.decodeUri ? exceptionSafeDecodeURI(img.src) :img.src
           return `[[${href}][${imgSrc}]]`  // Org-mode's canonical syntax for Image + Link
         }
+      }
+      switch (options.squareBracketsInLink) {
+        case 'keep':
+          break
+        case 'omit':
+          content = content.replace(/[\[\]]/ig, '')
+          break
+        case 'replaceWithSpaces':
+          content = content.replace(/[\[\]]/ig, ' ')
+          break
+        case 'replaceWithRoundBrackets':
+          content = content.replace(/[\[]/ig, '(').replace(/[\]]/ig, ')')
+          break
       }
       return `[[${href}][${content}]]`
     }
@@ -313,7 +327,7 @@ let rules = createRulesObject({
       var alt = cleanAttribute(node.getAttribute('alt') || '')
       var src = node.getAttribute('src') || ''
       if (options.decodeUri) {
-        src = safeDecodeURI(src)
+        src = exceptionSafeDecodeURI(src)
       }
       var title = cleanAttribute(node.getAttribute('title') || '')
       return '[[' + src + ']]'
