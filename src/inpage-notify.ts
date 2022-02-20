@@ -31,7 +31,7 @@ export function inPageNotify(title: string, msg: string) {
     const titleEl = document.createElement('b')
     titleEl.style.display = 'flex'
     titleEl.style.alignItems = 'center'
-    titleEl.style.fontSize = '1.2em'
+    titleEl.style.fontSize = '20px'
     titleEl.innerText = title
     // icon
     const imgEl = document.createElement('img')
@@ -44,8 +44,8 @@ export function inPageNotify(title: string, msg: string) {
     contentEl.style.display = 'block'
     contentEl.style.whiteSpace = 'pre-wrap'
     contentEl.style.fontFamily = 'monospace'
-    contentEl.style.fontSize = '0.8em'
-    contentEl.style.lineHeight = '1rem'
+    contentEl.style.fontSize = '12px'
+    contentEl.style.lineHeight = '14px'
     contentEl.innerText = msg
     // final
     rootEl.appendChild(titleEl)
