@@ -14,7 +14,8 @@
 
 import { storageManager } from "../options"
 import { initSyntaxhlElements } from "../syntaxhl/syntaxhl"
-
+import tippy from 'tippy.js'
+import 'tippy.js/dist/tippy.css'
 
 function q<T extends HTMLElement>(elementId: string): T {
     const el = document.getElementById(elementId)
@@ -166,6 +167,13 @@ function postProcessUi() {
     // @ts-expect-error
     let arr: string[] = window[obj][key]
     if (arr.some(token => lst.some(voi => token.includes(voi))) || arr.every(x => x.startsWith('en'))) {
+        const root = document.createElement('span')
+        root.appendChild(newElem('span', '(For example, replace '))
+        root.appendChild(newElem('code', "%E6%9E%97%E6%AA%8E"))
+        root.appendChild(newElem('span', ' in URI with '))
+        root.appendChild(newElem('code', "林檎"))
+        root.appendChild(newElem('span', ')'))
+        document.querySelector('#decodeUriExample')!.after(root)
         return
     }
     const root = document.createElement('span')
@@ -184,8 +192,18 @@ function postProcessUi() {
     labelEl.title = title
 }
 
+function installTippy() {
+    document.querySelectorAll('[title]').forEach(el => {
+        const msg = el.getAttribute('title')!
+        el.removeAttribute('title')
+        el.setAttribute('data-tippy-content', msg)
+    })
+    tippy('[data-tippy-content]')
+}
+
 async function main() {
     postProcessUi()
+    installTippy()
     await loadFromLocalStorage()
     watchForm()
     initSyntaxhlElements()

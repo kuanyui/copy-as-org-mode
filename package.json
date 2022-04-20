@@ -4,6 +4,7 @@
   "description": "Copy selected text as Org-Mode format",
   "main": "dist/index.js",
   "dependencies": {
+    "tippy.js": "^6.3.7",
     "url": "^0.11.0"
   },
   "devDependencies": {
