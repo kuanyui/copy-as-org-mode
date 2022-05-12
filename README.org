@@ -19,9 +19,10 @@ Thanks for your contribution!
 - [[https://addons.mozilla.org/en-US/firefox/addon/copy-as-org-mode/][Mozilla Add-ons]]
 
 * Screenshot
-[[https://addons.cdn.mozilla.net/user-media/previews/full/261/261819.png?modified=1632850827]]
-[[https://addons.cdn.mozilla.net/user-media/previews/full/261/261939.png?modified=1633179542]]
-[[https://addons.cdn.mozilla.net/user-media/previews/full/261/261818.png?modified=1632850827]]
+[[https://addons.mozilla.org/user-media/previews/full/261/261819.png]]
+[[https://addons.mozilla.org/user-media/previews/full/261/261939.png]]
+[[https://addons.mozilla.org/user-media/previews/full/261/261818.png]]
+
 * Supported Browser
 - Firefox for Desktop >= 92
 

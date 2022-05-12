@@ -25,3 +25,7 @@ clear:
 
 zip-repo: clear
 	zip -r '../${NAME}-upload.zip' . -x .git/\* node_modules/\*
+
+
+update-readme-screenshot:
+	${BIN}/ts-node -P ./tsconfig.json ./script/update-readme-screenshot.ts
