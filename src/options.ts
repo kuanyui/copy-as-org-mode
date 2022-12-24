@@ -103,6 +103,7 @@ function getAllKeyAsStringArray<T>(enumObj: T): Array<keyof T> {
 
 function assertUnreachable (x: never) { x }
 export function objectAssignPerfectly<T>(target: T, newValue: T) {
+    // @ts-ignore
     return Object.assign(target, newValue)
 }
 export function deepCopy<T>(x: T): T {

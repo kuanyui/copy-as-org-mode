@@ -40,7 +40,7 @@ Thanks for your contribution!
 - =[[link url][link title]]=, =[[a.href][img.src]]= (Notice: multiple =<img>= elements + other elements wrapped in =<a>= element is not supported by org-mode syntax. I have serveral plans as workaround for this but haven't decided which one is better, hence not implemented this yet..)
 - =[[imgSrc]]= (Notice: I haven't decide how to deal with HTML =title= and =alt= attribute)
 
-* Known Issues (Plegase feel free to open PR to fix them)
+* Known Issues (Please feel free to open PR to fix them)
 - It's *IMPOSSIBLE* to use this add-on under some special pages or domains like https://addons.mozilla.org/ . This is the restriction of Firefox browser itself.
 - Nested mark (e.g. ~*=bold and=* /=italic code=/~) may has some issues for org-mode renderer. This is a common usage in HTML, but may mess up the org-mode renderer. *This is the limitation of org-mode's syntax & renderer, I cannot do anything for it*.
 - Some block elements in =<a>= (e.g. =<img>=) may cannot be handled properly. *This is the limitation of org-mode's syntax*. *I've not decided which workaround should I use currently.*
@@ -109,6 +109,12 @@ make zip-repo
 * TODOs
 - Customizable keyboard shortcuts.
 - Image to data URL?
+** Known Bugs
+- [ ] [Invalid Table](https://imagemagick.org/script/webp.php#:~:text=It%20controls%20the%20trade%20off,Default%20value%20is%204.)
+- [ ] https://www.reddit.com/r/linux/comments/t7pxpk/are_all_of_your_usb_devices_disconnecting/
+  - [ ] Tips and Tricks" links has multiple lines, which breaks Org formatted link.
+  - [ ] CSS source code is also copied (`<style>` tag should be ignored...)
+  - [ ] Empty line after each source code block.
 
 * License
 MPL-2.0.

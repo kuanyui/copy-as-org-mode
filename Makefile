@@ -29,3 +29,5 @@ zip-repo: clear
 
 update-readme-screenshot:
 	${BIN}/ts-node -P ./tsconfig.json ./script/update-readme-screenshot.ts
+
+test:

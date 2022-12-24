@@ -15,17 +15,49 @@
 import TurndownService from "./turndown";
 
 type section_t = 'thead' | 'tbody' | 'tfoot'
-type TableModel = RowModel[]
+
+interface TableModel {
+  maxRowsCount: number
+  maxColsCount: number
+  rows: RowModel[]
+}
 type RowModel = CellModel[]
 interface CellModel {
   /** Formatted org-mode content */
   orgContent: string
   /**
-   * Browser spec: rowspan="0" means merging from current row # to last row #.
+   * Browser behavior: rowspan="0" means merging from current row # to last row #.
    *  if its value is set to 0, it extends until the end of the table section
+   *
+   * #### rowspan [MDN Doc]
+   *
+   * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/td#attr-rowspan
+   *
+   * This attribute contains a non-negative integer value that indicates for how
+   * many rows the cell extends. Its default value is 1; if its value is set to
+   * 0, it extends until the end of the table section (<thead>, <tbody>,
+   * <tfoot>, even if implicitly defined), that the cell belongs to. Values
+   * higher than 65534 are clipped down to 65534.
+   *
    */
   rowSpan: number
-  /** Browser spec: When greater than max column amount, it will be set to colSpan */
+  /** Browser behavior: ~When greater than actual column amount across all tr,
+   * it will be set to colSpan~. Donnot what were I writing.
+   *
+   * When a cell (td / tr) has `colspan` greater than actual remaining column
+   * amount across all rows (tr), this cell (td or th) will be extends to the
+   * last column.
+   *
+   * #### colspan [MDN Doc]
+   *
+   * @see
+   * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/td#attr-colspan
+   *
+   * This attribute contains a non-negative integer value that indicates for how
+   * many columns the cell extends. Its default value is 1. Values higher than
+   * 1000 will be considered as incorrect and will be set to the default value
+   * (1).
+  */
   colSpan: number
   inSection: section_t
   tag: 'th' | 'td'
@@ -75,7 +107,11 @@ function isTd(node: Node): node is HTMLTableDataCellElement { return node.nodeNa
 * This will apply rules on td & th only. */
 export function replacementForTable(service: TurndownService, tableElem: HTMLTableElement): string {
   console.log('TABLE ENTRY POINT!')
-  const table: TableModel = []
+  const table: TableModel = {
+    maxRowsCount: -1,
+    maxColsCount: -1,
+    rows: [],
+  }
   for (const el of tableElem.children) {
     if (isThead(el) || isTfoot(el)) {
       for (const row of el.children) {
@@ -94,7 +130,18 @@ export function replacementForTable(service: TurndownService, tableElem: HTMLTab
       continue
     }
   }
+
+
   return '\n\n' + tableModelToOrg(table) + '\n\n'
+}
+
+function calculateMaxRowAndCol(table: TableModel): void {
+  // maxRow
+  for (const tr of table.rows) {
+    for (const td of tr) {
+      if (td.)
+    }
+  }
 }
 
 function processRow(service: TurndownService, table: TableModel, row: HTMLTableRowElement, inSection: section_t): void {
@@ -107,13 +154,13 @@ function processRow(service: TurndownService, table: TableModel, row: HTMLTableR
         colSpan: cell.colSpan,
         rowSpan: cell.rowSpan,
         inSection: inSection,
-        tag: 'th'
+        tag: isTh(cell) ? 'th' : 'td'
       })
     } else {
       continue
     }
   }
-  table.push(rowModel)
+  table.rows.push(rowModel)
 }
 
 function tableModelToOrg(table: TableModel): string {
